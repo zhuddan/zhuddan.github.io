@@ -20,4 +20,7 @@ git config --global --unset http.proxy
  
 git config --global --unset https.proxy
 
+### [git] git 大小写不敏感
+git config core.ignorecase  false
+
  ```
