@@ -24,3 +24,7 @@
 
 6. include exclude
 该选项指定了 TypeScript 编译器应该编译哪些文件。默认情况下，编译器会编译项目根目录下所有以 .ts、.tsx、.d.ts、.js 和 .jsx 结尾的文件，但如果需要包含或排除某些文件，就可以使用 include 和 exclude 选项来手动指定需要编译的文件列表
+
+
+
+verbatimModuleSyntax 替代 preserveValueImports ??
