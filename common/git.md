@@ -1,5 +1,8 @@
 ```shell
 
+git config --global user.name "zd"
+git config --global user.email "yobaci@163.com"
+
 git config --global http.sslVerify "false"
 git config --global https.sslVerify "false"
 
