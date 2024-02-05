@@ -10,10 +10,6 @@ nvm install 20.11.0
 
 Remove-Item Alias:ni -Force -ErrorAction Ignore
 
-
-npm i -g pnpm yarn @antfu/ni degit npkill esno typescript tsx http-server
-
-
-degit https://github.com/zhuddan/vite-vanilla
+npm i -g pnpm yarn @antfu/ni degit npkill esno typescript tsx http-server node-gyp
 
 ```
