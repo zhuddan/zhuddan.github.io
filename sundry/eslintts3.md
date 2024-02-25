@@ -7,7 +7,7 @@ ni stylelint stylelint-config-recommended stylelint-config-recommended-vue style
 
 
 
-ni postcss postcss-html postcss-scss
+ni postcss postcss-html postcss-scss -D
 
 
 ```
