@@ -5,6 +5,8 @@ export default defineConfig({
   title: "小本本",
   description: "zd@小本本",
   themeConfig: {
+    logo:'/static/jbj.png',
+    logoLink:'/',
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '首页', link: '/' },
