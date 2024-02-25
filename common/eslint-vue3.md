@@ -1,3 +1,11 @@
+install
+
+```shell
+ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-import-resolver-custom-alias eslint-plugin-eslint-comments eslint-plugin-import eslint-plugin-simple-import-sort eslint-plugin-unused-imports eslint-plugin-vue vue-eslint-parser -D
+```
+
+.eslintrc
+```json
 {
   "overrides": [
     {
@@ -371,3 +379,25 @@
     ]
   }
 }
+
+
+```
+
+
+.eslintignore
+
+```shell
+node_modules
+dist
+es
+
+
+auto-imports.d.ts
+
+script/iconfont
+echarts.min.js
+echarts.js
+mqtt.min.js
+
+backup/*
+```

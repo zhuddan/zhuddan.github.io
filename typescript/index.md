@@ -1,6 +1,0 @@
-1. [自定义类型保护函数](./自定义类型保护函数.md)
-2. [note](./note.md)
-3. [CamelCase](./CamelCase.md)
-4. [tsconfig.json](./tsconfig.json.md)
-5. [filter过滤类型.json](./filter过滤类型.md)
-6. [extends.json](./extends.md)
