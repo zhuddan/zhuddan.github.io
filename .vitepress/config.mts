@@ -2,15 +2,17 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "notebook",
-  description: "A VitePress Site",
+  title: "小本本",
+  description: "zd@小本本",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: '首页', link: '/' },
+      { text: '开始', link: '/start.md' }
     ],
-
+    search: {
+      provider: 'local'
+    },
     sidebar: [
       // {
       //   text: 'Examples',
@@ -75,6 +77,10 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
+    ],
+    footer: {
+      message: 'Released under the MIT License.',
+      copyright: 'Copyright © zd'
+    }
   }
 })

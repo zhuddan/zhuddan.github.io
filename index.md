@@ -3,23 +3,27 @@
 layout: home
 
 hero:
-  name: "notebook"
-  text: "notebook"
-  tagline: My great project tagline
+  name: "小本本"
+  # text: ""
+  tagline: 我的小本本
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: 开始
+      link: /start.md
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: 记一下
+      link: /start.md
 
 features:
-  - title: Feature A
+  - title: 记录
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
+  - title: 记录
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
+  - title: 记录
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 
+### Title <Badge type="info" text="default" />
+### Title <Badge type="tip" text="^1.9.0" />
+### Title <Badge type="warning" text="beta" />
+### Title <Badge type="danger" text="caution" />
