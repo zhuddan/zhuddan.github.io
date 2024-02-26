@@ -4,7 +4,10 @@ install
 ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-import-resolver-custom-alias eslint-plugin-eslint-comments eslint-plugin-import eslint-plugin-simple-import-sort eslint-plugin-unused-imports eslint-plugin-vue vue-eslint-parser -D
 ```
 
-.eslintrc
+
+
+<details><summary>.eslintrc</summary>
+
 ```json
 {
   "overrides": [
@@ -379,12 +382,10 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
     ]
   }
 }
-
-
 ```
+</details>
 
-
-.eslintignore
+<details><summary>.eslintignore</summary>
 
 ```shell
 node_modules
@@ -401,3 +402,5 @@ mqtt.min.js
 
 backup/*
 ```
+
+</details>

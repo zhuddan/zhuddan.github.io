@@ -74,7 +74,12 @@ export default defineConfig({
           { text: 'is', link: '/code/is.md' },
         ]
       },
-     
+      {
+        text: 'npm',
+        items: [
+          { text: 'npm包推荐', link: '/npm/recommend.md' },
+        ]
+      },
     ],
 
     socialLinks: [
