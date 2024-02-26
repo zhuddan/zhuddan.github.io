@@ -77,7 +77,7 @@ export default defineConfig({
       {
         text: 'npm',
         items: [
-          { text: 'npm包推荐', link: '/npm/recommend.md' },
+          { text: 'npm包推荐', link: '/node/recommend.md' },
         ]
       },
     ],
