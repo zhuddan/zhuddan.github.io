@@ -57,7 +57,7 @@ const classified: DefaultTheme.SidebarItem[] = [
   },
   {
     text: "npm",
-    items: [{ text: "npm包推荐", link: "/classified/node/recommend" }],
+    items: [{ text: "npm包推荐", link: "node/recommend" }],
   },
 ];
 export default defineConfig({
