@@ -1,93 +1,106 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig, type DefaultTheme } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
+
+const unclassified: DefaultTheme.SidebarItem[] = [
+  {
+    text: "公共",
+    items: [
+      { text: "git常见命令", link: "/unclassified/common/git" },
+      { text: "nodejs常见命令", link: "/unclassified/common/nodejs" },
+      { text: "stylelint", link: "/unclassified/common/stylelint" },
+      { text: "eslint(vue3)", link: "/unclassified/common/eslint-vue3" },
+      { text: "wsl", link: "/unclassified/common/wsl" },
+    ],
+  },
+  {
+    text: "乱七八糟",
+    items: [
+      { text: "如何卸载vscode", link: "/unclassified/sundry/uninstall-vscode" },
+      { text: "Wangjunjun`s homework", link: "/unclassified/sundry/homework" },
+      { text: "pnpm monorepo", link: "/unclassified/sundry/pnpm-monorepo" },
+      { text: "VsCode 配置第三方终端 Cmder", link: "/unclassified/sundry/vscode-cmder" },
+    ],
+  },
+];
+
+const classified: DefaultTheme.SidebarItem[] = [
+  {
+    text: "javascript",
+    items: [
+      { text: "ruoyi list 接口排序", link: "/classified/js/ruoyi-sort" },
+      { text: "cesium 天气特效", link: "/classified/js/cesium-weather-effect" },
+      { text: "cesium-overlay 组件", link: "/classified/js/cesium-overlay" },
+    ],
+  },
+  {
+    text: "typescript",
+    items: [
+      { text: "tsconfig.json", link: "/classified/ts/tsconfig.json" },
+      { text: "奇怪的类型", link: "/classified/ts/types" },
+      { text: "promise 报错", link: "/classified/ts/promise-error" },
+      { text: "filter 过滤类型", link: "/classified/ts/filter" },
+      { text: "extends  用法", link: "/classified/ts/extends" },
+      { text: "自定义类型保护函数", link: "/classified/ts/type-predicate-function" },
+    ],
+  },
+  {
+    text: "electron",
+    items: [{ text: "electron打包错误", link: "/classified/electron/error" }],
+  },
+  {
+    text: "code",
+    items: [
+      { text: "useCache", link: "/classified/code/useCache" },
+      { text: "is", link: "/classified/code/is" },
+    ],
+  },
+  {
+    text: "npm",
+    items: [{ text: "npm包推荐", link: "/classified/node/recommend" }],
+  },
+];
 export default defineConfig({
   title: "小本本",
   description: "zd@小本本",
   themeConfig: {
-    logo:'/static/jbj.png',
-    logoLink:'/',
+    logo: "/static/jbj.png",
+    logoLink: "/",
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: '首页', link: '/' },
-      { text: '开始', link: '/start.md' }
+      { text: "首页", link: "/" },
+      {
+        text: "unclassified",
+        link: '/unclassified/common/git',
+        activeMatch: '/unclassified/'
+      },
+      {
+        text: "classified",
+        link: '/classified/js/ruoyi-sort',
+        activeMatch: '/classified/'
+      },
+  
     ],
     search: {
-      provider: 'local'
+      provider: "local",
     },
-    sidebar: [
-      // {
-      //   text: 'Examples',
-      //   items: [
-      //     { text: 'Markdown Examples', link: '/markdown-examples' },
-      //     { text: 'Runtime API Examples', link: '/api-examples' },
-      //   ]
-      // },
-      {
-        text: '公共',
-        items: [
-          { text: 'git常见命令', link: '/common/git.md' },
-          { text: 'nodejs常见命令', link: '/common/nodejs.md' },
-          { text: 'stylelint', link: '/common/stylelint.md' },
-          { text: 'eslint(vue3)', link: '/common/eslint-vue3.md' },
-          { text: 'wsl', link: '/common/wsl.md' },
-        ]
+    sidebar: {
+      "/unclassified": {
+        base:'/',
+        items:unclassified
       },
-      {
-        text: '乱七八糟',
-        items: [
-          { text: '如何卸载vscode', link: '/sundry/uninstall-vscode.md' },
-          { text: 'Wangjunjun`s homework', link: '/sundry/homework.md' },
-          { text: 'pnpm monorepo', link: '/sundry/pnpm-monorepo.md' },
-          { text: 'VsCode 配置第三方终端 Cmder', link: '/sundry/vscode-cmder.md' },
-        ]
+      "/classified":  {
+        base:'/',
+        items:classified
       },
-      {
-        text: 'javascript',
-        items: [
-          { text: 'ruoyi list 接口排序', link: '/js/ruoyi-sort.md' },
-          { text: 'cesium 天气特效', link: '/js/cesium-weather-effect.md' },
-          { text: 'cesium-overlay 组件', link: '/js/cesium-overlay.md' },
-        ]
-      },
-      {
-        text: 'typescript',
-        items: [
-          { text: 'tsconfig.json', link: '/ts/tsconfig.json.md' },
-          { text: '奇怪的类型', link: '/ts/types.md' },
-          { text: 'promise 报错', link: '/ts/promise-error.md' },
-          { text: 'filter 过滤类型', link: '/ts/filter.md' },
-          { text: 'extends  用法', link: '/ts/extends.md' },
-          { text: '自定义类型保护函数.md', link: '/ts/type-predicate-function.md' },
-        ]
-      },
-      {
-        text: 'electron',
-        items: [
-          { text: 'electron打包错误', link: '/electron/error.md' },
-        ]
-      },
-      {
-        text: 'code',
-        items: [
-          { text: 'useCache', link: '/code/useCache.md' },
-          { text: 'is', link: '/code/is.md' },
-        ]
-      },
-      {
-        text: 'npm',
-        items: [
-          { text: 'npm包推荐', link: '/node/recommend.md' },
-        ]
-      },
-    ],
+    },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+      { icon: "github", link: "https://github.com/vuejs/vitepress" },
     ],
     footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © zd'
-    }
-  }
-})
+      message: "Released under the MIT License.",
+      copyright: "Copyright © zd",
+    },
+  },
+});
