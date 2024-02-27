@@ -6,53 +6,53 @@ const unclassified: DefaultTheme.SidebarItem[] = [
   {
     text: "公共",
     items: [
-      { text: "git常见命令", link: "/unclassified/common/git" },
-      { text: "nodejs常见命令", link: "/unclassified/common/nodejs" },
-      { text: "stylelint", link: "/unclassified/common/stylelint" },
-      { text: "eslint(vue3)", link: "/unclassified/common/eslint-vue3" },
-      { text: "wsl", link: "/unclassified/common/wsl" },
+      { text: "git常见命令", link: "common/git" },
+      { text: "nodejs常见命令", link: "common/nodejs" },
+      { text: "stylelint", link: "common/stylelint" },
+      { text: "eslint(vue3)", link: "common/eslint-vue3" },
+      { text: "wsl", link: "common/wsl" },
     ],
   },
   {
     text: "乱七八糟",
     items: [
-      { text: "如何卸载vscode", link: "/unclassified/sundry/uninstall-vscode" },
-      { text: "Wangjunjun`s homework", link: "/unclassified/sundry/homework" },
-      { text: "pnpm monorepo", link: "/unclassified/sundry/pnpm-monorepo" },
-      { text: "VsCode 配置第三方终端 Cmder", link: "/unclassified/sundry/vscode-cmder" },
+      { text: "如何卸载vscode", link: "sundry/uninstall-vscode" },
+      { text: "Wangjunjun`s homework", link: "sundry/homework" },
+      { text: "pnpm monorepo", link: "sundry/pnpm-monorepo" },
+      { text: "VsCode 配置第三方终端 Cmder", link: "sundry/vscode-cmder" },
+      { text: "ruoyi list 接口排序", link: "sundry/ruoyi-sort" },
     ],
   },
 ];
 
 const classified: DefaultTheme.SidebarItem[] = [
   {
-    text: "javascript",
+    text: "typescript",
     items: [
-      { text: "ruoyi list 接口排序", link: "/classified/js/ruoyi-sort" },
-      { text: "cesium 天气特效", link: "/classified/js/cesium-weather-effect" },
-      { text: "cesium-overlay 组件", link: "/classified/js/cesium-overlay" },
+      { text: "tsconfig.json", link: "ts/tsconfig.json" },
+      { text: "奇怪的类型", link: "ts/types" },
+      { text: "promise 报错", link: "ts/promise-error" },
+      { text: "filter 过滤类型", link: "ts/filter" },
+      { text: "extends  用法", link: "ts/extends" },
+      { text: "自定义类型保护函数", link: "ts/type-predicate-function" },
     ],
   },
   {
-    text: "typescript",
+    text: "javascript",
     items: [
-      { text: "tsconfig.json", link: "/classified/ts/tsconfig.json" },
-      { text: "奇怪的类型", link: "/classified/ts/types" },
-      { text: "promise 报错", link: "/classified/ts/promise-error" },
-      { text: "filter 过滤类型", link: "/classified/ts/filter" },
-      { text: "extends  用法", link: "/classified/ts/extends" },
-      { text: "自定义类型保护函数", link: "/classified/ts/type-predicate-function" },
+      { text: "cesium 天气特效", link: "js/cesium-weather-effect" },
+      { text: "cesium-overlay 组件", link: "js/cesium-overlay" },
     ],
   },
   {
     text: "electron",
-    items: [{ text: "electron打包错误", link: "/classified/electron/error" }],
+    items: [{ text: "electron打包错误", link: "electron/error" }],
   },
   {
     text: "code",
     items: [
-      { text: "useCache", link: "/classified/code/useCache" },
-      { text: "is", link: "/classified/code/is" },
+      { text: "useCache", link: "code/useCache" },
+      { text: "is", link: "code/is" },
     ],
   },
   {
@@ -76,7 +76,7 @@ export default defineConfig({
       },
       {
         text: "classified",
-        link: '/classified/js/ruoyi-sort',
+        link: '/classified/ts/tsconfig.json',
         activeMatch: '/classified/'
       },
   
@@ -86,11 +86,11 @@ export default defineConfig({
     },
     sidebar: {
       "/unclassified": {
-        base:'/',
+        base:'/unclassified/',
         items:unclassified
       },
       "/classified":  {
-        base:'/',
+        base:'/classified/',
         items:classified
       },
     },
