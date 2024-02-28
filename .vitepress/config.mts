@@ -29,12 +29,13 @@ const classified: DefaultTheme.SidebarItem[] = [
   {
     text: "typescript",
     items: [
-      { text: "tsconfig.json", link: "ts/tsconfig.json" },
+      { text: "tsconfig.json", link: "ts/ts 拓展第三方库声明" },
       { text: "奇怪的类型", link: "ts/types" },
       { text: "promise 报错", link: "ts/promise-error" },
       { text: "filter 过滤类型", link: "ts/filter" },
       { text: "extends  用法", link: "ts/extends" },
       { text: "自定义类型保护函数", link: "ts/type-predicate-function" },
+      { text: "ts 拓展第三方库声明", link: "ts/expand" },
     ],
   },
   {
