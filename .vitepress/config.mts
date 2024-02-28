@@ -47,7 +47,10 @@ const classified: DefaultTheme.SidebarItem[] = [
   },
   {
     text: "electron",
-    items: [{ text: "electron打包错误", link: "electron/error" }],
+    items: [
+      { text: "electron打包错误", link: "electron/error" },
+      { text: "ipcRenderer 引入报错", link: "electron/ipcRenderer-error" },
+    ],
   },
   {
     text: "code",
