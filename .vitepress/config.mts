@@ -77,7 +77,7 @@ export default defineConfig({
       },
       {
         text: "classified",
-        link: '/classified/ts/tsconfig.json',
+        link: '/classified/ts/tsconfig-json',
         activeMatch: '/classified/'
       },
   
