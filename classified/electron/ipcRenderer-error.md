@@ -14,15 +14,11 @@ ipcRenderer 引入报错
 
 ```
 
-替换下面方式为
+引入方式
 ```js
 import { ipcRenderer } from 'electron'
 ```
+替换下面方式为
 ```js
 const { ipcRenderer } = window.require('electron');
 ```
-
-
-
-electron 获取打印机dpi出错 导致 打印效果变小
-    "electron": "24.8.3",
