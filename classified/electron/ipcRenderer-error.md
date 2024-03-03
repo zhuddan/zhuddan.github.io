@@ -21,3 +21,8 @@ import { ipcRenderer } from 'electron'
 ```js
 const { ipcRenderer } = window.require('electron');
 ```
+
+
+
+electron 获取打印机dpi出错 导致 打印效果变小
+    "electron": "24.8.3",

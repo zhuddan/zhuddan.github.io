@@ -50,6 +50,7 @@ const classified: DefaultTheme.SidebarItem[] = [
     items: [
       { text: "electron打包错误", link: "electron/error" },
       { text: "ipcRenderer 引入报错", link: "electron/ipcRenderer-error" },
+      { text: "静默打印bug", link: "electron/print-error" },
     ],
   },
   {
@@ -64,6 +65,7 @@ const classified: DefaultTheme.SidebarItem[] = [
     items: [{ text: "npm包推荐", link: "node/recommend" }],
   },
 ];
+
 export default defineConfig({
   title: "小本本",
   description: "zd@小本本",

@@ -28,3 +28,7 @@
 
 
 verbatimModuleSyntax 替代 preserveValueImports ??
+
+> 废弃属性
+Option 'importsNotUsedAsValues' is deprecated and will stop functioning in TypeScript 5.5. Specify compilerOption '"ignoreDeprecations": "5.0"' to silence this error.
+Use 'verbatimModuleSyntax' instead
