@@ -21,6 +21,7 @@ const unclassified: DefaultTheme.SidebarItem[] = [
       { text: "pnpm monorepo", link: "sundry/pnpm-monorepo" },
       { text: "VsCode 配置第三方终端 Cmder", link: "sundry/vscode-cmder" },
       { text: "ruoyi list 接口排序", link: "sundry/ruoyi-sort" },
+      { text: "谷歌浏览器静默打印", link: "sundry/chrome-kiosk-printing" },
     ],
   },
 ];

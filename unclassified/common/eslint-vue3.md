@@ -9,6 +9,7 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
 <details><summary>.eslintrc</summary>
 
 ```json
+// cspell:disable
 {
   "overrides": [
     {
@@ -22,7 +23,10 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
         "simple-import-sort/imports": "off",
         "simple-import-sort/exports": "off",
         "unused-imports/no-unused-imports": "off",
-        "unused-imports/no-unused-vars": "off"
+        "unused-imports/no-unused-vars": "off",
+        "vue/valid-v-slot":["error", {
+          "allowModifiers": true
+        }]
       }
     },
     { "files": ["*.d.ts"], "rules": { "no-unused-vars": "off" } }
@@ -166,7 +170,7 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
       { "multiline": { "delimiter": "semi" } }
     ],
     "@typescript-eslint/type-annotation-spacing": ["error", {}],
-    "@typescript-eslint/consistent-type-imports": ["off"],
+    "@typescript-eslint/consistent-type-imports": ["error"],
     "import/newline-after-import": "error",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
@@ -277,7 +281,14 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/triple-slash-reference": "off",
-    "vue/max-attributes-per-line": "off",
+    "vue/max-attributes-per-line": ["error", {
+      "singleline": {
+        "max": 1
+      },      
+      "multiline": {
+        "max": 1
+      }
+    }],
     "vue/no-v-html": "off",
     "vue/require-prop-types": "off",
     "vue/require-default-prop": "off",
