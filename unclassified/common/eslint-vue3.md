@@ -19,7 +19,18 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
       "rules": {
         "no-unused-vars": "off",
         "no-undef": "off",
-        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "args": "all",
+            "argsIgnorePattern": "^_",
+            "caughtErrors": "all",
+            "caughtErrorsIgnorePattern": "^_",
+            "destructuredArrayIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "ignoreRestSiblings": true
+          }
+        ],
         "simple-import-sort/imports": "off",
         "simple-import-sort/exports": "off",
         "unused-imports/no-unused-imports": "off",
@@ -170,7 +181,14 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
       { "multiline": { "delimiter": "semi" } }
     ],
     "@typescript-eslint/type-annotation-spacing": ["error", {}],
-    "@typescript-eslint/consistent-type-imports": ["error"],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "disallowTypeAnnotations": false,
+        "fixStyle": "separate-type-imports",
+        "prefer": "type-imports"
+      }
+    ],
     "import/newline-after-import": "error",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
