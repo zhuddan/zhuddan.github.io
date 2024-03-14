@@ -19,25 +19,16 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
       "rules": {
         "no-unused-vars": "off",
         "no-undef": "off",
-        "@typescript-eslint/no-unused-vars": [
-          "error",
-          {
-            "args": "all",
-            "argsIgnorePattern": "^_",
-            "caughtErrors": "all",
-            "caughtErrorsIgnorePattern": "^_",
-            "destructuredArrayIgnorePattern": "^_",
-            "varsIgnorePattern": "^_",
-            "ignoreRestSiblings": true
-          }
-        ],
         "simple-import-sort/imports": "off",
         "simple-import-sort/exports": "off",
         "unused-imports/no-unused-imports": "off",
         "unused-imports/no-unused-vars": "off",
-        "vue/valid-v-slot":["error", {
-          "allowModifiers": true
-        }]
+        "vue/valid-v-slot": [
+          "error",
+          {
+            "allowModifiers": true
+          }
+        ]
       }
     },
     { "files": ["*.d.ts"], "rules": { "no-unused-vars": "off" } }
@@ -189,7 +180,6 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
         "prefer": "type-imports"
       }
     ],
-    "import/newline-after-import": "error",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
     "@typescript-eslint/prefer-ts-expect-error": "error",
@@ -239,7 +229,15 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
     "no-unused-expressions": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
-      { "argsIgnorePattern": "^_" }
+      {
+        "args": "after-used",
+        "argsIgnorePattern": "^_",
+        "caughtErrors": "none",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "varsIgnorePattern": "^_|(props)|(emit)",
+        "ignoreRestSiblings": true
+      }
     ],
     "no-redeclare": "off",
     "@typescript-eslint/no-redeclare": "error",
@@ -299,14 +297,17 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/triple-slash-reference": "off",
-    "vue/max-attributes-per-line": ["error", {
-      "singleline": {
-        "max": 1
-      },      
-      "multiline": {
-        "max": 1
+    "vue/max-attributes-per-line": [
+      "error",
+      {
+        "singleline": {
+          "max": 1
+        },
+        "multiline": {
+          "max": 1
+        }
       }
-    }],
+    ],
     "vue/no-v-html": "off",
     "vue/require-prop-types": "off",
     "vue/require-default-prop": "off",
@@ -411,6 +412,7 @@ ni  @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-imp
     ]
   }
 }
+
 ```
 </details>
 
