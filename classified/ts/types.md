@@ -55,3 +55,14 @@ interface Data {
 
 type Keys = DeepKeys<Data>;
 ```
+
+5. Merge类型
+```ts
+type Merge<A, B> = {
+  [K in keyof (A & B)]: K extends keyof B
+    ? B[K]
+    : K extends keyof A
+      ? A[K]
+      : never
+};
+```
