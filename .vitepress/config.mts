@@ -40,6 +40,12 @@ const classified: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: "css",
+    items: [
+      { text: "css透明度的写法16进制透明度的转化", link: "css/color-opacity" },
+    ],
+  },
+  {
     text: "javascript",
     items: [
       { text: "cesium 天气特效", link: "js/cesium-weather-effect" },
