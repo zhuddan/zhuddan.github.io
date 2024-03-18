@@ -426,11 +426,6 @@ es
 
 auto-imports.d.ts
 
-script/iconfont
-echarts.min.js
-echarts.js
-mqtt.min.js
-
 backup/*
 ```
 
