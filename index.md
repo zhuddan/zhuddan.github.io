@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "小本本"
+  name: "本本"
   text: "小本本"
   tagline: 我的小本本
   actions:
