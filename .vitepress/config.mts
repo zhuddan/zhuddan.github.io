@@ -1,5 +1,5 @@
 import { defineConfig, type DefaultTheme } from "vitepress";
-
+import fs from 'fs-extra';
 // https://vitepress.dev/reference/site-config
 
 const unclassified: DefaultTheme.SidebarItem[] = [
@@ -121,5 +121,8 @@ export default defineConfig({
       copyright: "Copyright © zd",
     },
   },
-  outDir: './docs'
+  outDir: './docs',
+  async buildEnd(siteConfig) {
+    fs.copySync('./static', './docs/static');
+  }
 });
