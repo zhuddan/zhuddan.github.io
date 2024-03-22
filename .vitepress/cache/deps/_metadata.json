@@ -1,52 +1,52 @@
 {
-  "hash": "5a3f3add",
-  "configHash": "07100804",
-  "lockfileHash": "83734b8b",
-  "browserHash": "4b784f54",
+  "hash": "c80ae93b",
+  "configHash": "78ced656",
+  "lockfileHash": "0de85b25",
+  "browserHash": "58b0aa2e",
   "optimized": {
     "vue": {
       "src": "../../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "6a241a9c",
+      "fileHash": "b3479011",
       "needsInterop": false
     },
     "vitepress > @vue/devtools-api": {
       "src": "../../../node_modules/@vue/devtools-api/dist/index.js",
       "file": "vitepress___@vue_devtools-api.js",
-      "fileHash": "d815e5e0",
+      "fileHash": "33cb4eea",
       "needsInterop": false
     },
     "vitepress > @vueuse/core": {
       "src": "../../../node_modules/@vueuse/core/index.mjs",
       "file": "vitepress___@vueuse_core.js",
-      "fileHash": "68bbe5d1",
+      "fileHash": "e8a4367e",
       "needsInterop": false
     },
     "vitepress > @vueuse/integrations/useFocusTrap": {
       "src": "../../../node_modules/@vueuse/integrations/useFocusTrap.mjs",
       "file": "vitepress___@vueuse_integrations_useFocusTrap.js",
-      "fileHash": "1dd9a7f8",
+      "fileHash": "a2f2949e",
       "needsInterop": false
     },
     "vitepress > mark.js/src/vanilla.js": {
       "src": "../../../node_modules/mark.js/src/vanilla.js",
       "file": "vitepress___mark__js_src_vanilla__js.js",
-      "fileHash": "7b982931",
+      "fileHash": "02c85b3f",
       "needsInterop": false
     },
     "vitepress > minisearch": {
       "src": "../../../node_modules/minisearch/dist/es/index.js",
       "file": "vitepress___minisearch.js",
-      "fileHash": "6a9198d8",
+      "fileHash": "fa776844",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-UA3BMFN7": {
-      "file": "chunk-UA3BMFN7.js"
+    "chunk-WZSWIX5T": {
+      "file": "chunk-WZSWIX5T.js"
     },
-    "chunk-456JUNPJ": {
-      "file": "chunk-456JUNPJ.js"
+    "chunk-Z6B2QTD3": {
+      "file": "chunk-Z6B2QTD3.js"
     }
   }
 }
