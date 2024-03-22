@@ -121,4 +121,5 @@ export default defineConfig({
       copyright: "Copyright © zd",
     },
   },
+  outDir: './docs'
 });
