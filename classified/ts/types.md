@@ -66,3 +66,8 @@ type Merge<A, B> = {
       : never
 };
 ```
+
+6. 指定某一个属性为必选参数
+```ts
+type MakeOptionalPropertyRequired<T, K extends keyof T> = T & Required<Pick<T, K>>;
+```
