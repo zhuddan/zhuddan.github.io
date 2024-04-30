@@ -71,3 +71,15 @@ type Merge<A, B> = {
 ```ts
 type MakeOptionalPropertyRequired<T, K extends keyof T> = T & Required<Pick<T, K>>;
 ```
+
+7. 去除undefined
+```ts
+type WithoutUndefined<T> = T extends undefined ? never : T;
+```
+
+8. 去除 readonly
+```ts
+type RemoveReadonly<T> = {
+  -readonly [K in keyof T]: T[K];
+};
+```

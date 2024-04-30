@@ -13,7 +13,7 @@ nvm install 20.11.0
 全局包
 
 ```shell
-npm i -g pnpm yarn @antfu/ni degit npkill esno typescript tsx http-server node-gyp
+npm i -g pnpm yarn @antfu/ni degit npkill esno typescript tsx http-server node-gyp bun
 ```
 
 @antfu/ni  注意事项 powershell 管理员运行
