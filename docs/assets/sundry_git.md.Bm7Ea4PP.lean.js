@@ -1,0 +1,1 @@
+import{_ as s,c as i,o as a,a5 as t}from"./chunks/framework.DFluhY12.js";const C=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"sundry/git.md","filePath":"sundry/git.md"}'),n={name:"sundry/git.md"},l=t("",7),h=[l];function p(k,e,F,g,r,d){return a(),i("div",null,h)}const y=s(n,[["render",p]]);export{C as __pageData,y as default};

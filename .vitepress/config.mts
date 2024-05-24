@@ -1,30 +1,20 @@
 import { defineConfig, type DefaultTheme } from "vitepress";
-import fs from 'fs-extra';
+import fs from "fs-extra";
 // https://vitepress.dev/reference/site-config
 
-const unclassified: DefaultTheme.SidebarItem[] = [
-  {
-    text: "公共",
-    items: [
-      { text: "git常见命令", link: "common/git" },
-      { text: "nodejs常见命令", link: "common/nodejs" },
-      { text: "stylelint", link: "common/stylelint" },
-      { text: "eslint(vue3)", link: "common/eslint-vue3" },
-      { text: "wsl", link: "common/wsl" },
-    ],
-  },
-  {
-    text: "乱七八糟",
-    items: [
-      { text: "如何卸载vscode", link: "sundry/uninstall-vscode" },
-      { text: "Wangjunjun`s homework", link: "sundry/homework" },
-      { text: "pnpm monorepo", link: "sundry/pnpm-monorepo" },
-      { text: "VsCode 配置第三方终端 Cmder", link: "sundry/vscode-cmder" },
-      { text: "ruoyi list 接口排序", link: "sundry/ruoyi-sort" },
-      { text: "谷歌浏览器静默打印", link: "sundry/chrome-kiosk-printing" },
-      { text: "地图", link: "sundry/map" },
-    ],
-  },
+const sundry: DefaultTheme.SidebarItem[] = [
+  { text: "git常见命令", link: "git" },
+  { text: "nodejs常见命令", link: "nodejs" },
+  { text: "stylelint", link: "stylelint" },
+  { text: "eslint(vue3)", link: "eslint-vue3" },
+  { text: "wsl", link: "wsl" },
+  { text: "如何卸载vscode", link: "uninstall-vscode" },
+  { text: "Wangjunjun`s homework", link: "homework" },
+  { text: "pnpm monorepo", link: "pnpm-monorepo" },
+  { text: "VsCode 配置第三方终端 Cmder", link: "vscode-cmder" },
+  { text: "ruoyi list 接口排序", link: "ruoyi-sort" },
+  { text: "谷歌浏览器静默打印", link: "chrome-kiosk-printing" },
+  { text: "地图", link: "map" },
 ];
 
 const classified: DefaultTheme.SidebarItem[] = [
@@ -43,7 +33,8 @@ const classified: DefaultTheme.SidebarItem[] = [
   {
     text: "css",
     items: [
-      { text: "css透明度的写法16进制透明度的转化", link: "css/color-opacity" },
+      { text: "16进制透明度", link: "css/color-opacity" },
+      { text: "阻止所有事件", link: "css/disable-events" },
     ],
   },
   {
@@ -51,6 +42,8 @@ const classified: DefaultTheme.SidebarItem[] = [
     items: [
       { text: "cesium 天气特效", link: "js/cesium-weather-effect" },
       { text: "cesium-overlay 组件", link: "js/cesium-overlay" },
+      { text: "element-ui 自定义表单组件校验", link: "js/ele2-elFormItem" },
+      { text: "js模块", link: "js/modules" },
     ],
   },
   {
@@ -72,45 +65,44 @@ const classified: DefaultTheme.SidebarItem[] = [
     text: "npm",
     items: [{ text: "npm包推荐", link: "node/recommend" }],
   },
-].map(e=>{
+].map((e) => {
   return {
     ...e,
-    collapsed: true
-  }
+    collapsed: true,
+  };
 });
 
 export default defineConfig({
-  title: "小本本",
-  description: "zd@小本本",
+  title: "笔记",
+  description: "zd@笔记",
   themeConfig: {
-    logo: "/static/jbj.png",
-    logoLink: "/",
+    // logo: "/static/jbj.png",
+    // logoLink: "/",
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "首页", link: "/" },
       {
-        text: "unclassified",
-        link: '/unclassified/common/git',
-        activeMatch: '/unclassified/'
+        text: "杂项",
+        link: "/sundry/git",
+        activeMatch: "/sundry/",
       },
       {
-        text: "classified",
-        link: '/classified/ts/tsconfig-json',
-        activeMatch: '/classified/'
+        text: "分类",
+        link: "/classified/ts/tsconfig-json",
+        activeMatch: "/classified/",
       },
-  
     ],
     search: {
       provider: "local",
     },
     sidebar: {
-      "/unclassified": {
-        base:'/unclassified/',
-        items:unclassified
+      "/sundry": {
+        base: "/sundry/",
+        items: sundry,
       },
-      "/classified":  {
-        base:'/classified/',
-        items:classified
+      "/classified": {
+        base: "/classified/",
+        items: classified,
       },
     },
 
@@ -122,8 +114,8 @@ export default defineConfig({
       copyright: "Copyright © zd",
     },
   },
-  outDir: './docs',
+  outDir: "./docs",
   async buildEnd(siteConfig) {
-    fs.copySync('./static', './docs/static');
-  }
+    fs.copySync("./static", "./docs/static");
+  },
 });

@@ -26,21 +26,3 @@ css透明度的写法16进制透明度的转化
 
 
 
-```ts
-import type { ElLoadingDirective } from 'element-plus'
-import type { vShow } from 'vue'
-
-declare module '@vue/runtime-core' {
-  export interface GlobalComponents {
-    Component: (props: { is: Component | string }) => void
-  }
-
-  export interface ComponentCustomProperties {
-    vShow: typeof vShow
-    vLoading: typeof ElLoadingDirective
-  }
-}
-
-export {}
-
-```

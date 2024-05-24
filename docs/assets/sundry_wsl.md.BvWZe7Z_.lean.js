@@ -1,0 +1,1 @@
+import{_ as s,c as a,o as i,a5 as n}from"./chunks/framework.DFluhY12.js";const g=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"sundry/wsl.md","filePath":"sundry/wsl.md"}'),t={name:"sundry/wsl.md"},e=n("",1),l=[e];function p(h,r,c,d,o,k){return i(),a("div",null,l)}const u=s(t,[["render",p]]);export{g as __pageData,u as default};
