@@ -57,8 +57,9 @@ const classified: DefaultTheme.SidebarItem[] = [
   {
     text: "code",
     items: [
-      { text: "useCache", link: "code/useCache" },
-      { text: "is", link: "code/is" },
+      { text: "异步指南", link: "code/async" },
+      // { text: "useCache", link: "code/useCache" },
+      // { text: "is", link: "code/is" },
     ],
   },
   {
