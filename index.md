@@ -2,9 +2,9 @@
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 hero:
-  name: "笔记"
-  # text: "笔记"
-  # tagline: 我的笔记
+  name: "notebook"
+  # text: "notebook"
+  # tagline: 我的notebook
   # actions:
   #   - theme: brand
   #     text: 开始

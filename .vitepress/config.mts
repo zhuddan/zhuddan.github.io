@@ -6,7 +6,7 @@ const sundry: DefaultTheme.SidebarItem[] = [
   { text: "git常见命令", link: "git" },
   { text: "nodejs常见命令", link: "nodejs" },
   { text: "stylelint", link: "stylelint" },
-  { text: "eslint(vue3)", link: "eslint-vue3" },
+  { text: "eslint", link: "eslint-vue3" },
   { text: "wsl", link: "wsl" },
   { text: "如何卸载vscode", link: "uninstall-vscode" },
   { text: "Wangjunjun`s homework", link: "homework" },
@@ -15,6 +15,7 @@ const sundry: DefaultTheme.SidebarItem[] = [
   { text: "ruoyi list 接口排序", link: "ruoyi-sort" },
   { text: "谷歌浏览器静默打印", link: "chrome-kiosk-printing" },
   { text: "地图", link: "map" },
+  { text: "package.json 更新版本号", link: "update-version" },
 ];
 
 const classified: DefaultTheme.SidebarItem[] = [
@@ -74,8 +75,8 @@ const classified: DefaultTheme.SidebarItem[] = [
 });
 
 export default defineConfig({
-  title: "笔记",
-  description: "zd@笔记",
+  title: "notebook",
+  description: "zd@notebook",
   themeConfig: {
     // logo: "/static/jbj.png",
     // logoLink: "/",
