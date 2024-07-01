@@ -3,15 +3,34 @@ import fs from "fs-extra";
 // https://vitepress.dev/reference/site-config
 
 const sundry: DefaultTheme.SidebarItem[] = [
-  { text: "git常见命令", link: "git" },
-  { text: "nodejs常见命令", link: "nodejs" },
-  { text: "stylelint", link: "stylelint" },
-  { text: "eslint", link: "eslint-vue3" },
+  { text: "git", link: "git" },
+  {
+    text: "npm",
+    collapsed: true,
+    items: [
+      { text: "npm新环境", link: "npm/init" },
+      { text: "npm包推荐", link: "npm/recommend" }
+    ],
+  },
+  {
+    text: "vscode",
+    collapsed: true,
+    items: [
+      { text: "卸载vscode", link: "vscode/uninstall" },
+      { text: "第三方终端 Cmder", link: "vscode/cmder" },
+    ],
+  },
+    {
+    text: "eslint",
+    collapsed: true,
+    items: [
+      { text: "推荐", link: "eslint/recommend" },
+      { text: "vue3", link: "eslint/vue3" },
+      { text: "stylelint", link: "eslint/stylelint" },
+    ],
+  },
   { text: "wsl", link: "wsl" },
-  { text: "如何卸载vscode", link: "uninstall-vscode" },
-  { text: "Wangjunjun`s homework", link: "homework" },
   { text: "pnpm monorepo", link: "pnpm-monorepo" },
-  { text: "VsCode 配置第三方终端 Cmder", link: "vscode-cmder" },
   { text: "ruoyi list 接口排序", link: "ruoyi-sort" },
   { text: "谷歌浏览器静默打印", link: "chrome-kiosk-printing" },
   { text: "地图", link: "map" },
@@ -62,11 +81,7 @@ const classified: DefaultTheme.SidebarItem[] = [
       // { text: "useCache", link: "code/useCache" },
       // { text: "is", link: "code/is" },
     ],
-  },
-  {
-    text: "npm",
-    items: [{ text: "npm包推荐", link: "node/recommend" }],
-  },
+  }
 ].map((e) => {
   return {
     ...e,

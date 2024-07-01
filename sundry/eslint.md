@@ -1,1 +1,0 @@
-1. @typescript-eslint/consistent-type-imports

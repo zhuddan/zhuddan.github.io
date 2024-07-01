@@ -1,4 +1,4 @@
-nvm
+下载 [nvm](https://github.com/nvm-sh/nvm)
 
 ```shell
 nvm install 14.21.3
