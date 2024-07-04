@@ -86,13 +86,13 @@ type RemoveReadonly<T> = {
 
 9. 类型 
 三个ts中的类型
-
+```ts
 type c = string
 
 type d = c[]
 
 type e = number[]
-
+```
 我期望把type e 改为一个泛型，接受d，然后e的每一项都是d的每一项字符串的长度。
 
 ``` ts
@@ -105,4 +105,16 @@ type e<T extends string[]> = {
 // 示例用法
 const exampleArray: d = ["apple", "banana", "orange"];
 const result: e<d> = [5, 6, 6]; // e<d> 的每一项都是 d 中每一项字符串的长度
+```
+
+10. 获取函数key
+```ts
+type GetFunctionKeys<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never
+}[keyof T]
+type Fn = GetFunctionKeys<{
+  done():void,
+  msg():void,
+  name:void,
+}> // ===> 'done' | 'msg'
 ```
