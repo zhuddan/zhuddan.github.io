@@ -118,3 +118,10 @@ type Fn = GetFunctionKeys<{
   name:void,
 }> // ===> 'done' | 'msg'
 ```
+
+11. 获取函数名称
+```ts
+type FunctionKeys<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never;
+}[keyof T];
+```
