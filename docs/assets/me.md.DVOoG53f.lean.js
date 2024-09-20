@@ -1,0 +1,1 @@
+import{_ as e,c as i,o,a5 as l}from"./chunks/framework.DFluhY12.js";const V=JSON.parse('{"title":"简介","description":"","frontmatter":{},"headers":[],"relativePath":"me.md","filePath":"me.md"}'),t={name:"me.md"},c=l("",13),a=[c];function p(r,d,n,s,u,m){return o(),i("div",null,a)}const g=e(t,[["render",p]]);export{V as __pageData,g as default};
