@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # js模块说明
 
 ## amd
