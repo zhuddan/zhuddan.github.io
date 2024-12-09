@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # tsconfig.json
 
 1. compilerOptions.isolatedModules

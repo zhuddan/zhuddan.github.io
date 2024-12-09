@@ -1,3 +1,7 @@
+---
+sidebar_position: 99
+---
+
 # npm 包推荐
 
 1. 终端输入

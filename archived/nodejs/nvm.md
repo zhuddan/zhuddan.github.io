@@ -1,4 +1,8 @@
-# 版本管理
+---
+sidebar_position: 1
+---
+
+# NVM版本管理
 
 ## 下载[nvm](https://github.com/nvm-sh/nvm)
 

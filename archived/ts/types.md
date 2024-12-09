@@ -1,6 +1,6 @@
 # 类型体操
 
-1. 某个类型前面直接加`good_`前缀
+## 1. 某个类型前面直接加`good_`前缀
 
 ```ts
 type AppendGood<T> = {
@@ -8,7 +8,7 @@ type AppendGood<T> = {
 }
 ```
 
-2. 把横线命名的字符串类名转化为驼峰命名 CamelCase
+## 2. 把横线命名的字符串类名转化为驼峰命名 CamelCase
 
 ```ts
 export type CamelCase<S extends string> =
@@ -22,7 +22,7 @@ type B = CamelCase<A> // ==> listChange
 
 ```
 
-3. 对象合并
+## 3. 对象合并
 
 ```ts
 export type Merge<A, B> = {
@@ -34,7 +34,7 @@ export type Merge<A, B> = {
 }
 ```
 
-4. 点点获取对象的key
+## 4. 点点获取对象的key
 
 ```ts
 type Primitive = string | boolean | number | bigint | symbol | undefined | null
@@ -59,7 +59,7 @@ interface Data {
 type Keys = DeepKeys<Data>
 ```
 
-5. Merge类型
+## 5. Merge类型
 
 ```ts
 type Merge<A, B> = {
@@ -71,19 +71,19 @@ type Merge<A, B> = {
 }
 ```
 
-6. 指定某一个属性为必选参数
+## 6. 指定某一个属性为必选参数
 
 ```ts
 type MakeOptionalPropertyRequired<T, K extends keyof T> = T & Required<Pick<T, K>>
 ```
 
-7. 去除undefined
+## 7. 去除undefined
 
 ```ts
 type WithoutUndefined<T> = T extends undefined ? never : T
 ```
 
-8. 去除 readonly
+## 8. 去除 readonly
 
 ```ts
 type RemoveReadonly<T> = {
@@ -91,8 +91,9 @@ type RemoveReadonly<T> = {
 }
 ```
 
-9. 类型
-   三个ts中的类型
+## 9. 类型
+
+三个ts中的类型
 
 ```ts
 type c = string
@@ -116,7 +117,7 @@ const exampleArray: d = ['apple', 'banana', 'orange']
 const result: e<d> = [5, 6, 6] // e<d> 的每一项都是 d 中每一项字符串的长度
 ```
 
-10. 获取函数key
+## 10. 获取函数key
 
 ```ts
 type GetFunctionKeys<T> = {
@@ -129,7 +130,7 @@ type Fn = GetFunctionKeys<{
 }> // ===> 'done' | 'msg'
 ```
 
-11. 获取函数名称
+## 11. 获取函数名称
 
 ```ts
 type FunctionKeys<T> = {

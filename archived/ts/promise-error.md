@@ -1,3 +1,5 @@
+# 错误处理
+
 > 在 JavaScript（包括 TypeScript）中，throw 和 Promise.reject 都能用来表示一个错误的发生。然而，他们在使用方法和场景上有些不同。 throw 通常用于同步代码中，当发生错误时，我们可以直接抛出一个错误。
 
 在 JavaScript（包括 TypeScript）中，throw 和 Promise.reject 都能用来表示一个错误的发生。然而，他们在使用方法和场景上有些不同。
@@ -25,12 +27,12 @@ class A {
 }
 ```
 
-在 JavaScript 的 Promise 中，我们可以通过两种方式来表示 Promise 的最终状态：resolve（解决）和 reject（拒绝）。resolve 表示 Promise 成功完成，而 reject 表示 Promise 失败或被拒绝。
-
-在上述代码中，我们使用了 .catch() 方法来捕获异常。.catch() 方法是 Promise 的一种错误处理机制，它会在 Promise 被 reject 时被调用，并接收拒绝的原因作为参数。在 .catch() 方法中，我们通过调用 this.handle.onError?.(e.message) 来处理错误，并根据需要执行一些特定的错误处理逻辑。
-
-在这种情况下，我们使用 throw e 来重新抛出错误。这是因为 Promise 链式调用中的每个 .then() 和 .catch() 都返回一个新的 Promise 对象，它们会将前一个 Promise 的结果传递给下一个 Promise。通过抛出错误，我们可以将错误传递给下一个 .catch() 方法，并继续 Promise 链的错误处理流程。
-
-使用 throw e 而不是调用 reject(e) 的原因是，Promise 的异常处理机制会将错误自动地传递给 Promise 链中最近的 .catch() 方法。这种方式更符合 Promise 的语义，并且可以更好地利用 JavaScript 异常处理的特性。
-
-总结起来，使用 throw e 可以将错误重新抛出，并使其继续在 Promise 链中进行错误处理，而不需要显式地调用 reject。
+> 在 JavaScript 的 Promise 中，我们可以通过两种方式来表示 Promise 的最终状态：resolve（解决）和 reject（拒绝）。resolve 表示 Promise 成功完成，而 reject 表示 Promise 失败或被拒绝。
+>
+> 在上述代码中，我们使用了 .catch() 方法来捕获异常。.catch() 方法是 Promise 的一种错误处理机制，它会在 Promise 被 reject 时被调用，并接收拒绝的原因作为参数。在 .catch() 方法中，我们通过调用 this.handle.onError?.(e.message) 来处理错误，并根据需要执行一些特定的错误处理逻辑。
+>
+> 在这种情况下，我们使用 throw e 来重新抛出错误。这是因为 Promise 链式调用中的每个 .then() 和 .catch() 都返回一个新的 Promise 对象，它们会将前一个 Promise 的结果传递给下一个 Promise。通过抛出错误，我们可以将错误传递给下一个 .catch() 方法，并继续 Promise 链的错误处理流程。
+>
+> 使用 throw e 而不是调用 reject(e) 的原因是，Promise 的异常处理机制会将错误自动地传递给 Promise 链中最近的 .catch() 方法。这种方式更符合 Promise 的语义，并且可以更好地利用 JavaScript 异常处理的特性。
+>
+> 总结起来，使用 throw e 可以将错误重新抛出，并使其继续在 Promise 链中进行错误处理，而不需要显式地调用 reject。

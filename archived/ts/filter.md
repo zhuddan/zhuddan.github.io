@@ -9,5 +9,4 @@ const img1 = cookbook
 const img2 = cookbook
   .map(e => e._cookbookDetailSrc)
   .filter((e): e is string => e !== undefined)
-
 ```
