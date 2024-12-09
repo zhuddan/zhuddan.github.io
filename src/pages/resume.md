@@ -1,7 +1,3 @@
----
-hide_table_of_contents: false
----
-
 # 简历
 
 ## 简介
