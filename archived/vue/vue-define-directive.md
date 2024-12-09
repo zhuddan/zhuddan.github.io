@@ -1,9 +1,5 @@
 ---
-tags:
-  - vue
-  - vue3
-  - element-plus
-  - typescript
+tags: [vue, vue3,element-plus,typescript]
 ---
 
 # vue 定义指令类型
