@@ -83,7 +83,7 @@ const config: Config = {
         },
         { to: '/blog', label: '博客', position: 'left' },
         {
-          href: 'https://github.com/https://github.com/zhuddan/zhuddan.github.io',
+          href: 'https://github.com/zhuddan/zhuddan.github.io',
           label: 'GitHub',
           position: 'right',
         },
