@@ -1,3 +1,7 @@
+---
+sidebar_position: 4
+---
+
 # 项目版本升级
 
 :::tip
