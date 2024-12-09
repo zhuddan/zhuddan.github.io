@@ -1,1 +1,0 @@
-import{_ as s,c as i,o as a,a5 as n}from"./chunks/framework.DFluhY12.js";const F=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"sundry/map.md","filePath":"sundry/map.md"}'),h={name:"sundry/map.md"},k=n("",7),p=[k];function l(E,t,e,r,d,g){return a(),i("div",null,p)}const C=s(h,[["render",l]]);export{F as __pageData,C as default};
