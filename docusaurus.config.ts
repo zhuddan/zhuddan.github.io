@@ -5,20 +5,20 @@ import { themes as prismThemes } from 'prism-react-renderer'
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'ZD',
-  tagline: 'ZD\'s Blog',
+  title: 'ZD\'s Blog',
+  tagline: '🚫🤖 请不要过渡使用AI ',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://zhuddan.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'zd', // Usually your GitHub org/user name.
+  projectName: 'zd', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -69,9 +69,9 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'My Site',
+      title: 'ZD\'s Blog',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'ZD Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -81,9 +81,9 @@ const config: Config = {
           position: 'left',
           label: '归档', // archived
         },
-        { to: '/blog', label: 'Blog', position: 'left' },
+        { to: '/blog', label: '博客', position: 'left' },
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/https://github.com/zhuddan/zhuddan.github.io',
           label: 'GitHub',
           position: 'right',
         },
