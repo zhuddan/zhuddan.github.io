@@ -1,7 +1,8 @@
 ---
 tags:
-  - Vue2
-  - Element-UI
+  - vue
+  - vue2
+  - element-ui
 ---
 
 # 自定义表单组件

@@ -1,8 +1,8 @@
 ---
 tags:
-  - Vue
-  - Vue3
-  - Element-PLUS
+  - vue
+  - vue3
+  - element-plus
   - typescript
 ---
 
