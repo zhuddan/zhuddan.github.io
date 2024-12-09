@@ -1,0 +1,38 @@
+# extends
+
+1. 泛型约束：
+
+```ts
+function logLength<T extends { length: number }>(arg: T): void {
+  console.log(arg.length)
+}
+
+logLength('hello') // OK
+logLength([1, 2, 3]) // OK
+logLength(42) // Error，因为数字类型没有 length 属性
+```
+
+<!-- 在这个例子中，T extends { length: number } 表示泛型类型 T 必须是一个具有 length 属性的类型。 -->
+
+2. 条件类型：
+
+```ts
+type IsString<T> = T extends string ? true : false
+
+const result1: IsString<'hello'> = true // OK
+const result2: IsString<42> = false // OK
+```
+
+这里，T extends string ? true : false 表示如果类型 T 可以赋值给 string 类型，结果为 true，否则为 false。
+
+3. 映射类型：
+
+```ts
+type MyMappedType<T> = {
+  [K in keyof T]: T[K] | null;
+}
+
+const example: MyMappedType<{ a: number, b: string }> = { a: 1, b: null }
+```
+
+在映射类型中，in 关键字也使用了 extends 的概念。[K in keyof T] 表示遍历类型 T 的所有属性，并将它们转换为新类型的属性

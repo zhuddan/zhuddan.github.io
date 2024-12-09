@@ -1,0 +1,32 @@
+# tsconfig.json
+
+1. compilerOptions.isolatedModules
+
+用于告诉编译器在编译时将每个文件视为单独的模块，而不是将它们合并到一个共享的命名空间中。这个选项的作用在于，当 TypeScript 编译器将每个文件视为单独的模块时，它会强制执行更严格的类型检查。这是因为每个文件都被视为相对独立的模块，不存在相互依赖的关系，因此在文件之间传递的变量、函数等等需要明确定义。这种严格的类型检查可以帮助开发者在编写代码时避免一些常见的错误。
+
+2. compilerOptions.output
+
+来指定编译输出目录的路径。
+需要注意的是，outDir 只会影响 TypeScript 文件的编译输出目录，对于非 TypeScript 文件（如图片、字体等资源文件），需要使用其他工具来将它们复制到指定的输出目录中。
+另外，如果你使用的是打包工具（如 Webpack、Rollup 等），你可能还需要在打包配置中指定输出目录。例如，如果你使用 Rollup 来打包 TypeScript 项目，可以在 Rollup 配置中指定 output.dir 属性来指定输出目录
+
+3. compilerOptions.types
+
+该选项指定了 TypeScript 编译器应该包含哪些类型声明文件（.d.ts 文件）。默认情况下，编译器会自动包含 @types 作用域下的所有类型声明文件，但如果需要排除某些类型声明文件，就可以使用 types 选项来手动指定需要包含的类型声明文件的列表
+
+4. compilerOptions.typeRoots
+   该选项指定了 TypeScript 编译器应该搜索类型声明文件的根目录。默认情况下，编译器会搜索 node_modules/@types 和 node_modules 目录下的类型声明文件。但如果需要搜索自定义的类型声明文件目录，就可以使用 typeRoots 选项来手动指定需要搜索的目录列表
+
+5. compilerOptions.rootDir
+   是 TypeScript 编译器选项中的一个属性，它指定了 TypeScript 源文件的根目录。具体来说，它指定了编译器应该从哪个目录开始查找源代码文件
+
+需要注意的是，rootDir 的设置通常与 include 选项配合使用。include 选项指定了需要编译的源代码文件的匹配模式，而 rootDir 指定了这些文件的根目录。这样编译器就可以根据 rootDir 和 include 的设置来查找源代码文件并进行编译。
+
+6. include exclude
+   该选项指定了 TypeScript 编译器应该编译哪些文件。默认情况下，编译器会编译项目根目录下所有以 .ts、.tsx、.d.ts、.js 和 .jsx 结尾的文件，但如果需要包含或排除某些文件，就可以使用 include 和 exclude 选项来手动指定需要编译的文件列表
+
+verbatimModuleSyntax 替代 preserveValueImports ??
+
+> 废弃属性
+> Option 'importsNotUsedAsValues' is deprecated and will stop functioning in TypeScript 5.5. Specify compilerOption '"ignoreDeprecations": "5.0"' to silence this error.
+> Use 'verbatimModuleSyntax' instead
