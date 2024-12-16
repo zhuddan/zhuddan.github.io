@@ -28,7 +28,7 @@ function HomepageHeader() {
             >
               归档
             </Link>
-            <Link
+            {/* <Link
               className="button button--secondary button--lg"
               style={{
                 marginLeft: '10px',
@@ -36,7 +36,7 @@ function HomepageHeader() {
               to="/blog"
             >
               博客
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
