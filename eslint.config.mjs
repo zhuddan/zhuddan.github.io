@@ -5,5 +5,6 @@ export default antfu({
   react: false,
   rules: {
     'prefer-spread': 'off',
+    'no-console': 'off',
   },
 })
