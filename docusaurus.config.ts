@@ -139,6 +139,7 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
+  themes: ['@docusaurus/theme-live-codeblock'],
 }
 
 export default config

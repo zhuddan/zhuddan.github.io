@@ -1,0 +1,416 @@
+---
+sidebar_position: 5
+tags: ['To be Improved']
+---
+
+# echarts
+
+```ts title="init-echarts.ts"
+import type {
+  BarSeriesOption,
+  LineSeriesOption,
+  PieSeriesOption,
+  RadarSeriesOption,
+} from 'echarts/charts'
+import type {
+  GraphicComponentOption,
+  GridComponentOption,
+  TitleComponentOption,
+  ToolboxComponentOption,
+  TooltipComponentOption,
+} from 'echarts/components'
+
+import { BarChart, LineChart, PieChart, RadarChart } from 'echarts/charts'
+import {
+  GraphicComponent,
+  GridComponent,
+  LegendComponent,
+  TitleComponent,
+  TooltipComponent,
+} from 'echarts/components'
+import * as echarts from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+
+echarts.use([
+  GridComponent,
+  BarChart,
+  CanvasRenderer,
+  TooltipComponent,
+  PieChart,
+  LegendComponent,
+  TitleComponent,
+  RadarChart,
+  GraphicComponent,
+  LineChart,
+])
+
+export type CustomEChartsOption = echarts.ComposeOption<
+  | TitleComponentOption
+  | ToolboxComponentOption
+  | TooltipComponentOption
+  | GridComponentOption
+  | LineSeriesOption
+  | BarSeriesOption
+  | PieSeriesOption
+  | RadarSeriesOption
+> |
+echarts.ComposeOption<GraphicComponentOption>
+
+export { echarts }
+```
+
+```ts title="wx-canvas.ts"
+import type { EChartsType } from 'echarts/core'
+
+export default class WxCanvas {
+  ctx: UniApp.CanvasContext
+  canvasId: string
+  chart: EChartsType | null
+  isNew: boolean
+  canvasNode?: HTMLCanvasElement
+  event: Record<string, any> = {}
+  constructor(ctx: UniApp.CanvasContext, canvasId: string, isNew: boolean, canvasNode?: HTMLCanvasElement) {
+    this.ctx = ctx
+    this.canvasId = canvasId
+    this.chart = null
+    this.isNew = isNew
+    if (isNew) {
+      this.canvasNode = canvasNode
+    }
+    else {
+      this._initStyle(ctx)
+    }
+
+    this._initEvent()
+  }
+
+  getContext(contextType: string) {
+    if (contextType === '2d') {
+      return this.ctx
+    }
+  }
+
+  setChart(chart: EChartsType) {
+    this.chart = chart
+  }
+
+  addEventListener() {
+    // noop
+  }
+
+  attachEvent() {
+    // noop
+  }
+
+  detachEvent() {
+    // noop
+  }
+
+  _initCanvas(zrender: any, ctx: any) {
+    zrender.util.getContext = function () {
+      return ctx
+    }
+
+    zrender.util.$override('measureText', (text: any, font: any) => {
+      ctx.font = font || '12px sans-serif'
+      return ctx.measureText(text)
+    })
+  }
+
+  _initStyle(ctx: any) {
+    ctx.createRadialGradient = () => {
+      // eslint-disable-next-line prefer-rest-params
+      return ctx.createCircularGradient(arguments)
+    }
+  }
+
+  _initEvent() {
+    this.event = {}
+    const eventNames = [{
+      wxName: 'touchStart',
+      ecName: 'mousedown',
+    }, {
+      wxName: 'touchMove',
+      ecName: 'mousemove',
+    }, {
+      wxName: 'touchEnd',
+      ecName: 'mouseup',
+    }, {
+      wxName: 'touchEnd',
+      ecName: 'click',
+    }]
+    eventNames.forEach((name) => {
+      this.event[name.wxName] = (e: any) => {
+        const touch = e.touches[0]
+        this.chart?.getZr().handler.dispatch(name.ecName as any, {
+          zrX: name.wxName === 'tap' ? touch.clientX : touch.x,
+          zrY: name.wxName === 'tap' ? touch.clientY : touch.y,
+          preventDefault: () => {},
+          stopImmediatePropagation: () => {},
+          stopPropagation: () => {},
+        })
+      }
+    })
+  }
+
+  set width(w) {
+    if (this.canvasNode)
+      this.canvasNode.width = w
+  }
+
+  get width() {
+    if (this.canvasNode)
+      return this.canvasNode?.width
+    return 0
+  }
+
+  set height(h) {
+    if (this.canvasNode)
+      this.canvasNode.height = h
+  }
+
+  get height() {
+    if (this.canvasNode)
+      return this.canvasNode.height
+    return 0
+  }
+}
+```
+
+```ts title="components/ec-canvas/types.ts"
+import type { ComponentExposed } from 'vue-component-type-helpers'
+import type EcCanvas from './ec-canvas.vue'
+
+export type { CustomEChartsOption } from '@cloud/shared'
+
+export type EcCanvasInstance = ComponentExposed<typeof EcCanvas>
+```
+
+```html title="components/ec-canvas/types.ts"
+<script setup lang="ts">
+  import type { CustomEChartsOption } from './types'
+
+  import { WxCanvas, createBooleanProp, echarts, mergeDeep } from '@cloud/shared'
+  import { onReady } from '@dcloudio/uni-app'
+  import { getCurrentInstance, nextTick, ref, watch } from 'vue'
+
+  const props = defineProps({
+    canvasId: {
+      type: String,
+      default: () => 'ec-canvas',
+    },
+    option: {
+      type: Object as PropType<CustomEChartsOption>,
+      default: () => ({}),
+    },
+    disabled: createBooleanProp(),
+  })
+
+  type TouchCanvasEvent = UniHelper.CanvasOnTouchcancelEvent
+
+  const currentInstance = getCurrentInstance()
+  let canvasNode: HTMLCanvasElement | null = null
+  let chart: echarts.EChartsType | null = null
+  const isReady = ref(false)
+
+  function getOption() {
+    const option: CustomEChartsOption = {}
+
+    const optionMerge = props.option
+
+    return mergeDeep(option, optionMerge)
+  }
+
+  function init() {
+    echarts.registerPreprocessor((option) => {
+      if (option && option.series) {
+        if (option.series instanceof Array && option.series.length > 0) {
+          option.series.forEach((series) => {
+            series.progressive = 0
+          })
+        } else if (typeof option.series === 'object') {
+          ;(option.series as { progressive: number }).progressive = 0
+        }
+      }
+    })
+    initEcharts()
+  }
+
+  async function initEcharts() {
+    // version >= 2.9.0：使用新的方式初始化
+    await nextTick()
+    isReady.value = true
+    const query = uni.createSelectorQuery().in(currentInstance)
+    query
+      .select(`#${props.canvasId}`)
+      .fields({ node: true, size: true } as any, () => {})
+      .exec((res) => {
+        if (chart) chart.dispose()
+        canvasNode = res[0].node as unknown as HTMLCanvasElement
+        const dpr = uni.getSystemInfoSync().pixelRatio
+        const canvasWidth = res[0].width
+        const canvasHeight = res[0].height
+        const ctx = canvasNode!.getContext('2d') as any as UniNamespace.CanvasContext
+        const canvas = new WxCanvas(ctx, props.canvasId, true, canvasNode)
+        echarts.setPlatformAPI({
+          createCanvas: () => canvas as unknown as HTMLCanvasElement,
+          loadImage: (src, onload, onerror) => {
+            if ((canvasNode as any)?.createImage) {
+              const image = (canvasNode as any).createImage()
+              image.onload = onload
+              image.onerror = onerror
+              image.src = src
+              return image
+            }
+            console.error('加载图片依赖 `Canvas.createImage()` API，要求小程序基础库版本在 2.7.0 及以上。')
+            // PENDING fallback?
+          },
+        })
+        chart = echarts.init(canvas as unknown as HTMLCanvasElement, null, {
+          width: canvasWidth,
+          height: canvasHeight,
+          devicePixelRatio: dpr, // new
+        })
+        nextTick(() => {
+          chart?.setOption(getOption())
+        })
+        canvas.setChart(chart as any)
+      })
+  }
+
+  function wrapTouch(event: TouchCanvasEvent): any {
+    return {
+      ...event,
+      touches: event.touches.map((touch) => {
+        return {
+          ...touch,
+          offsetX: touch.x,
+          offsetY: touch.y,
+        }
+      }),
+    }
+  }
+
+  function touchStart(e: TouchCanvasEvent) {
+    if (props.disabled) return
+    if (chart && e.touches.length > 0) {
+      const touch = e.touches[0]
+      const handler = chart.getZr().handler
+      handler.dispatch('mousedown', {
+        zrX: touch.x,
+        zrY: touch.y,
+        preventDefault: () => {},
+        stopImmediatePropagation: () => {},
+        stopPropagation: () => {},
+      })
+      handler.dispatch('mousemove', {
+        zrX: touch.x,
+        zrY: touch.y,
+        preventDefault: () => {},
+        stopImmediatePropagation: () => {},
+        stopPropagation: () => {},
+      })
+      handler.processGesture(wrapTouch(e), 'start')
+    }
+  }
+
+  function touchMove(e: TouchCanvasEvent) {
+    if (props.disabled) return
+    if (chart && e.touches.length > 0) {
+      const touch = e.touches[0]
+      const handler = chart.getZr().handler
+      handler.dispatch('mousemove', {
+        zrX: touch.x,
+        zrY: touch.y,
+        preventDefault: () => {},
+        stopImmediatePropagation: () => {},
+        stopPropagation: () => {},
+      })
+      handler.processGesture(wrapTouch(e), 'change')
+    }
+  }
+
+  function touchEnd(e: TouchCanvasEvent) {
+    if (props.disabled) return
+    if (chart) {
+      const touch = e.changedTouches ? e.changedTouches[0] : {}
+      const handler = chart.getZr().handler
+      handler.dispatch('mouseup', {
+        zrX: touch.x,
+        zrY: touch.y,
+        preventDefault: () => {},
+        stopImmediatePropagation: () => {},
+        stopPropagation: () => {},
+      })
+      handler.dispatch('click', {
+        zrX: touch.x,
+        zrY: touch.y,
+        preventDefault: () => {},
+        stopImmediatePropagation: () => {},
+        stopPropagation: () => {},
+      })
+      handler.processGesture(wrapTouch(e), 'end')
+    }
+  }
+  watch(
+    [() => props.option, () => isReady.value],
+    () => {
+      if (isReady.value && chart) {
+        chart.setOption(getOption())
+      }
+    },
+    {
+      deep: true,
+    },
+  )
+
+  defineExpose({
+    getDataURL: () => {
+      return new Promise<string>((resolve, reject) => {
+        uni
+          .canvasToTempFilePath({
+            canvasId: 'ec-canvas',
+            canvas: canvasNode as any,
+            width: canvasNode?.width,
+            height: canvasNode?.height,
+          })
+          .then((res) => {
+            return uni.getImageInfo({
+              src: res.tempFilePath,
+            })
+          })
+          .then((res) => {
+            resolve(res.path)
+          })
+          .catch((e) => {
+            reject(e)
+            throw e
+          })
+      })
+    },
+    getEchartsInstance() {
+      return chart
+    },
+  })
+  onReady(init)
+</script>
+
+<template>
+  <canvas
+    :id="canvasId"
+    type="2d"
+    class="ec-canvas"
+    :canvas-id="canvasId"
+    @touchstart="e => !disabled ? touchStart(e) : undefined"
+    @touchmove="e => !disabled ? touchMove(e) : undefined"
+    @touchend="e => !disabled ? touchEnd(e) : undefined"
+  ></canvas>
+</template>
+
+<style>
+  .ec-canvas {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+```

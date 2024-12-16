@@ -1,0 +1,92 @@
+---
+sidebar_position: 4
+tags: ['To be Improved']
+---
+
+# mqtt
+
+## install
+
+```
+npm i mqtt@3.0.0
+```
+
+## declaration
+
+```ts title="mqtt.min.d.ts"
+import * as mqtt from 'mqtt'
+
+export declare module './mqtt.min.js' {
+  export = mqtt
+}
+```
+
+## use
+
+```ts
+import { EventEmitter } from '@cloud/shared'
+// highlight-start
+import mqtt from 'mqtt/dist/mqtt.min.js'
+// highlight-end
+
+export class Mq extends EventEmitter<{
+  message: (deviceNo: string, data: any) => void
+}> {
+  client: mqtt.MqttClient | null = null
+  topic: string[] = []
+  init(options: mqtt.IClientOptions, topic: string[]) {
+    if (!this.client) {
+      console.log('mqtt init 🚀🚀🚀🚀 client init')
+      this.client = mqtt.connect(MQTT_URL, options)
+      this.topic = topic
+      this.client.on('error', (err) => {
+        console.log(err, 'err')
+      })
+
+      this.client.on('connect', () => {
+        console.log('topic', topic)
+        this.client?.subscribe(topic, (e) => {
+          console.log(`订阅了主题3 ${topic.join('和')}`)
+          console.log('订阅了主题4 error', [e])
+        })
+      })
+      // eslint-disable-next-line node/prefer-global/buffer
+      const handleMsg = (topic: string, message: Buffer) => {
+        const data = JSON.parse(message.toString())
+        if (Object.keys(data).length !== 0) {
+          const deviceNo = topic.replace('/environment/', '')
+          const obj = JSON.parse(message.toString())
+          const pm25 = obj.pm25
+          const co2 = obj.co2
+          console.log(`MQ ${pm25 ? 'pro 版本 pm25' : '青春版本 co2'}`, pm25 ? pm25.val : co2.val, pm25 ? pm25.info : co2.info)
+          this.emit('message', deviceNo, obj)
+        }
+      }
+      this.client?.addListener('message', handleMsg)
+    }
+    else {
+      console.log(' client 已经存在了')
+      const _topic = this.topic.filter(e => !topic.includes(e))
+      console.log('未订阅', _topic)
+      if (_topic.length) {
+        this.client?.subscribe(_topic, (e) => {
+          console.log(`补充 订阅了主题5 ${_topic.join('和')}`)
+          console.log('补充 订阅了主题6 error', [e])
+        })
+      }
+    }
+  }
+
+  resetClient() {
+    console.log('resetClient >>> ')
+    if (this.client) {
+      this.client.end()
+      this.client = null
+      this.topic = []
+      this.reset()
+    }
+  }
+}
+
+export const MQ = new Mq()
+```

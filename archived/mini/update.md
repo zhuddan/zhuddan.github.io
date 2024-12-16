@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 小程序检测更新
+# 更新检测
 
 参考[https://developers.weixin.qq.com/miniprogram/dev/api/base/update/wx.getUpdateManager.html](https://developers.weixin.qq.com/miniprogram/dev/api/base/update/wx.getUpdateManager.html)
 
