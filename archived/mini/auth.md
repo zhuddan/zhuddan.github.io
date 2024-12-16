@@ -13,11 +13,71 @@ graph TD;
     B --> C{location.href否包含code?}
     C -->|是| D[提交code给开发者后台]
     C -->|否| E[跳转微信授权]
-    D --> F[结束]
+    D --> F[获取登录凭证]
+    F --> G[结束]
     E --> B[进入网页]
 ```
 
-```ts
+> react 项目为例
+
+```tsx title="main.tsx"
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import { getTokenCookie } from './utils/cookie.ts'
+import { wxAuth } from './utils/wx'
+
+/**
+ * init app
+ */
+function renderApp() {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    /**
+     * do not remove StrictMode it will cause error
+     * @see https://react.dev/reference/react/StrictMode
+     */
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  )
+}
+
+/**
+ * init wx auth
+ */
+function handleWxAuthorization() {
+  const url = new URL(window.location.href)
+  const code = url.searchParams.get('code')
+  if (code) {
+    try {
+      renderApp()
+    }
+    catch (error) {
+      console.error('微信登录失败:', error)
+      wxAuth() // 失败时重新引导授权
+    }
+  }
+  else {
+    wxAuth()
+  }
+}
+
+/**
+ * init
+ */
+async function init() {
+  if (getTokenCookie()) {
+    renderApp()
+  }
+  else {
+    handleWxAuthorization()
+  }
+}
+
+init()
+```
+
+```ts title="./utils/wx.ts"
 /**
  * @description 微信授权
  */
@@ -38,7 +98,6 @@ export function wxAuth() {
   wxAuthUrl.searchParams.set('scope', 'snsapi_userinfo')
   wxAuthUrl.searchParams.set('state', state)
   wxAuthUrl.hash = 'wechat_redirect'
-
   window.location.href = wxAuthUrl.href
 }
 ```
