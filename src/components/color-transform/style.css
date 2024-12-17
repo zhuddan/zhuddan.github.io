@@ -1,9 +1,13 @@
-.color-input .input-wrapper {
+/* .color-transform .input-wrapper {
   max-width: 100% !important;
 }
-.color-input .input-wrapper input,
-.color-input .input-wrapper datalist {
+.color-transform .input-wrapper input,
+.color-transform .input-wrapper datalist {
   width: 100%;
+}
+
+input{
+  height: 2rem;
 }
 
 datalist {
@@ -17,7 +21,7 @@ datalist {
 option {
   padding: 0;
   font-size: 12px;
-}
+} */
 
 /* .color-box {
   width: 100%;
