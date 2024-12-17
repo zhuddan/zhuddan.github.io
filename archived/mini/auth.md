@@ -5,7 +5,7 @@ tags: ['To be Improved']
 
 # 微信登录授权处理
 
-参考[公众号网页授权2](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html)
+参考[公众号网页授权](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html)
 
 ```mermaid
 graph TD;
