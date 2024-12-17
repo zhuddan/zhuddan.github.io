@@ -1,7 +1,6 @@
 import clsx from 'clsx'
 import React, { useMemo, useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
-import './style.css'
 import 'react-toastify/dist/ReactToastify.css'
 
 export default function ColorTransform() {

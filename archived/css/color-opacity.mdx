@@ -9,13 +9,13 @@ import ColorTransform from "@site/src/components/color-transform"
 ## 原理
 > 以`#154AC680`为例，透明度是`0x80`和`0x100`比值，结果为`50%`。
 
-- 直接计算
+- 直接使用16进制进行计算
 
 ``` js
 const opacity = 0x80 / 0x100 // => 0.5 = 50%
 ```
 
-- 转为16进制
+- 转为10进制后计算
 
 ``` js
 const opacity = parseInt('80', 16) / parseInt('100', 16) // => 128 / 256 = 0.5 = 50%
