@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: 
-      - master  # 当push到master分支时触发
+      - main
 
 jobs:
   deploy:
@@ -15,7 +15,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8  # 指定pnpm版本
+          version: 8
       
       - name: Use Node.js
         uses: actions/setup-node@v3
@@ -32,6 +32,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build  # Docusaurus默认构建目录
-          publish_branch: gh-pages  # 部署到的分支
+          personal_token: ${{ secrets.GH_DEPLOY_TOKEN }}  # 使用新的Token
+          publish_dir: ./build
+          publish_branch: gh-pages
