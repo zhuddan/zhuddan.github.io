@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://zhuddan.github.io/blog</id>
+    <title>ZD's Blog Blog</title>
+    <updated>2019-05-28T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://zhuddan.github.io/blog"/>
+    <subtitle>ZD's Blog Blog</subtitle>
+    <icon>https://zhuddan.github.io/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[first-blog-post]]></title>
+        <id>https://zhuddan.github.io/blog/2019/05/28/first-blog-post</id>
+        <link href="https://zhuddan.github.io/blog/2019/05/28/first-blog-post"/>
+        <updated>2019-05-28T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Lorem ipsum dolor sit amet...]]></summary>
+        <content type="html"><![CDATA[<p>Lorem ipsum dolor sit amet...</p>
+<p>...consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet</p>]]></content>
+    </entry>
+</feed>
