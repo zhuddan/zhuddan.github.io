@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: 
-      - main
+      - master  # 修改为 master 分支
 
 jobs:
   deploy:
@@ -32,6 +32,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          personal_token: ${{ secrets.GH_DEPLOY_TOKEN }}  # 使用新的Token
-          publish_dir: ./build
-          publish_branch: gh-pages
+          github_token: ${{ secrets.GH_DEPLOY_TOKEN }}
+          publish_dir: ./build  # Docusaurus默认构建目录
+          publish_branch: gh-pages  # 部署到的分支
