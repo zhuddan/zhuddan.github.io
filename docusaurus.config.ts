@@ -1,7 +1,7 @@
 import type * as Preset from '@docusaurus/preset-classic'
 import type { Config } from '@docusaurus/types'
 import { themes as prismThemes } from 'prism-react-renderer'
-
+import tailwindPlugin from './plugins/tailwind-config.cjs'
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
@@ -146,6 +146,7 @@ const config: Config = {
   markdown: {
     mermaid: true,
   },
+  plugins: [tailwindPlugin],
 }
 
 export default config

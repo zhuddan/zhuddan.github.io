@@ -4,11 +4,38 @@ sidebar_position: 1
 
 import ColorInput from "@site/src/components/color-input"
 
-# 16进制透明度
+# HEX透明度
+
+## 原理
+> `#154AC680`的`80`代表透明度，值为16进制值`80`对应10进制的值和`256`的比值
+
+1. 16进制值`80`转为10进制
+
+``` js
+const decimalValue = parseInt('80', 16) // 128
+```
+
+2. 计算透明度
+
+``` js
+const opacity = decimalValue / 255 // 0.5019607843137255 ≈ 0.5 = 50%
+```
+
+> `#154AC680`也就是表示颜色为`#154AC6`，透明度为`50%`，本质上和转化为rgba颜色一样，每两位16进制值，分别表示红、绿、蓝、透明度。所以转为rgba颜色为`rgba(21, 74, 198, 50)`。
+
+<img src="/img/color-opacity.svg" style={{
+  display:'block',
+  margin:'0 auto'
+}}/>
+
+
+
+
+
 
 ## 在线转化
 <ColorInput />
-
+{/* 
 ## 参考
 
 | 百分比 | 十六进制 |
@@ -33,4 +60,4 @@ import ColorInput from "@site/src/components/color-input"
 | 15%    | 26       |
 | 10%    | 1A       |
 | 5%     | 0D       |
-| 0%     | 00       |
+| 0%     | 00       | */}

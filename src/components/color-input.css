@@ -1,7 +1,9 @@
-.color-input input,
-.color-input datalist {
-  width: 500px !important;
+.color-input .input-wrapper {
   max-width: 100% !important;
+}
+.color-input .input-wrapper input,
+.color-input .input-wrapper datalist {
+  width: 100%;
 }
 
 datalist {
@@ -17,14 +19,9 @@ option {
   font-size: 12px;
 }
 
-input[type='range'] {
-  width: 200px;
-  margin: 0;
-}
-
-.color-box {
+/* .color-box {
   width: 100%;
   height: 5em;
   margin-top: 4px;
   border-radius: 4px;
-}
+} */
