@@ -91,7 +91,7 @@ export default function ColorInput() {
           </datalist>
         </div>
 
-        <div className="input-wrapper flex mt-2">
+        <div className="input-wrapper flex mt-8">
           <input type="text" value={output} readOnly />
           <button
             type="button"
