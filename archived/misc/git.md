@@ -46,10 +46,18 @@ git config core.ignorecase  false
 
 ```
 
-2.  删除文件并保留本地副本。
+2. 删除文件并保留本地副本。
 
 ```bash
 
 git rm --cached /path/to/ignored_file
+
+```
+
+3. 删除文件并从本地和远程仓库中完全移除
+
+```bash
+
+git rm -r --cached /path/to/ignored_file
 
 ```
