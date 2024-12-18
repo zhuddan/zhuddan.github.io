@@ -2,7 +2,7 @@
 tags: [git]
 ---
 
-# git
+# git 常用命令
 
 ## git 初始化配置
 
