@@ -35,3 +35,21 @@ git config --global --unset https.proxy
 ```shell
 git config core.ignorecase  false
 ```
+
+## 忽略已经在仓库中的文件
+
+1. 在 `gitignore` 文件中添加要忽略的文件或文件夹路径。
+
+```bash title=".gitignore"
+
+/path/to/ignored_file
+
+```
+
+2.  删除文件并保留本地副本。
+
+```bash
+
+git rm --cached /path/to/ignored_file
+
+```
