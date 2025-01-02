@@ -23,6 +23,8 @@
    > #### 技术栈: Vue 3 + Vite + TypeScript + uni-app + Electron
    >
    > 项目由生产管理后台系统、卖家系统(app)、操作员系统(app)、买家系统(H5网页)、称重系统和自助服务系统组成。
+   >
+   > - 微信公众号 `昆明中禄农副产品有限公司`
 
    - **后台系统：**
 
@@ -55,6 +57,9 @@
    > #### 技术栈: Vue 3 + Vite + TypeScript + uni-app + pnpm + monorepo + unocss
    >
    > 该项目包括系统后台、云上托育小程序（园长端、教师端、家长端），以及公众号H5。
+   >
+   > - 微信公众号 `云上托育`
+   > - 微信小程序 `云上托育园长端`、`云上托育教师端`、`云上托育家长端`
 
    - **后台系统：**
 
@@ -83,8 +88,8 @@
 3. **通用航空器飞行气象保障服务系统**
 
    > ### 技术栈: Vue 3 + Vite + TypeScript + Vuetify + Leaflet.js + Cesium.js + D3.js
-
-   > 该项目由系统后台和用户操作端组成。
+   >
+   > 该项目由系统后台和用户操作端组成。(内部使用系统)
 
 - **后台系统：**
 
@@ -109,12 +114,35 @@
   - 封装三维云图类，结合`canvas`实现三维云图的展示。
   - 使用`WebWorker`和`[MCB算法](https://en.wikipedia.org/wiki/Marching_cubes)`实现三维雷达图的展示，提供更丰富的气象数据可视化。
 
+4. **星光华人通手机充值系统**
+
+   > ### 技术栈: React + Vite + TypeScript + TailwindCSS + @tanstack/react-query + Zustand
+   >
+   > 该项目为微信公众号网页。请使用微信搜索`星光华人通`公众号进行查看。
+
+- **公众号网页**
+
+- 使用 `Vite` + `React` + `TypeScript` 构建高性能的移动端 Web 应用，采用 `TailwindCSS` 实现响应式布局。
+- 基于 `@tanstack/react-query` 封装数据请求层，配合 `react-loading-skeleton` 实现骨架屏，优化首屏加载体验。
+- 使用 `Zustand` 管理全局状态，实现全局数据的统一管理。
+- 集成 `weixin-js-sdk`，实现微信授权登录、支付等核心功能。
+- 实现图片资源懒加载和长列表性能优化，使用 `react-lazy-load-image-component` 减少并发请求。
+- 基于 `react-simple-pull-to-refresh` 封装下拉刷新组件，提升用户交互体验。
+- 本地开发：配置 `vite-plugin-mock` + `Mock.js` 实现数据 Mock。
+- 自动化部署：使用 `GitHub Actions` + `ftp-action` 实现持续集成。
+
 # 个人评价
 
-除了上述项目之外，我还开发过基于Pixi.js/CreateJS的H5小游戏，搭建过商城系统，并且研究过Node.js服务端，编写过Koa服务端，涉足过Nuxt.js等全栈开发。
+除了上述项目之外，我还开发过基于`Pixi.js/CreateJS`的H5小游戏，搭建过商城系统，并且研究过`Node.js`服务端，编写过`Koa`服务端，涉足过`Nuxt.js`等全栈开发。
 
 尽管还有许多年久失修、难以追溯的项目未列出，我依然对这些经历充满热情。
 
-我非常喜欢TypeScript、Vue和React，并且乐于接触新技术。我热衷于钻研问题，喜欢编写各种小工具来提升开发效率。
+我非常喜欢 `TypeScript`、`Vue`和`React`，并且乐于接触新技术。我热衷于钻研问题，喜欢编写各种小工具来提升开发效率。
 
 未来，我希望在某一个具体的技术方向深入研究并持续发展。
+
+# 参考链接
+
+- [github](https://github.com/zhuddan)
+- [npmjs](https://www.npmjs.com/~zhuddan)
+- [zhuddan.github.io](https://zhuddan.github.io/)
