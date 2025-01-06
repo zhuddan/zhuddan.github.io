@@ -142,7 +142,18 @@ module.exports = { extends: ['@commitlint/config-conventional'] }
 
 ```bash
 pnpm dlx husky install
-pnpm dlx husky add .husky/commit-msg 'npx --no-install commitlint --edit "$1"'
+```
+
+创建 commit-msg 钩子文件：
+
+```bash
+echo "npx --no-install commitlint --edit \$1" > .husky/commit-msg
+```
+
+然后使脚本可执行：
+
+```bash
+chmod +x .husky/commit-msg
 ```
 
 4. 验证提交信息： 当提交的消息不符合规范时，Git 会报错并中断提交流程。
