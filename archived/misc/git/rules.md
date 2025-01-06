@@ -164,3 +164,5 @@ chmod +x .husky/commit-msg
 :::important
 ::: 使用 Angular 提交规范可以提高项目协作的效率，并为版本管理和自动化工具（如 Semantic Release）提供基础支持。
 :::
+
+> 也可以使用[simple-git-hooks](https://www.npmjs.com/package/simple-git-hooks)
