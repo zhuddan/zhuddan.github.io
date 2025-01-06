@@ -2,8 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: 
-      - master  # 修改为 master 分支
+    tags:
+      - 'v*.*.*'
 
 jobs:
   deploy:
