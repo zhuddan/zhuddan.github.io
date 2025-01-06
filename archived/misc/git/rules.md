@@ -129,7 +129,7 @@ Closes #101
 1. 安装依赖：
 
 ```bash
-pnpm install --save-dev @commitlint/{config-conventional,cli} husky
+pnpm install --save-dev @commitlint/config-conventional @commitlint/cli husky
 ```
 
 2. 创建 commitlint.config.js 文件：
