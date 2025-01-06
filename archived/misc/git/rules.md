@@ -146,8 +146,11 @@ pnpm dlx husky install
 
 创建 commit-msg 钩子文件：
 
-```bash
-echo "npx --no-install commitlint --edit \$1" > .husky/commit-msg
+```bash title=".husky/commit-msg"
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx --no-install commitlint --edit "$1"
 ```
 
 然后使脚本可执行：
