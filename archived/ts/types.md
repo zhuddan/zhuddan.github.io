@@ -137,3 +137,38 @@ type FunctionKeys<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never;
 }[keyof T]
 ```
+
+## 12. 相等判断
+
+```ts
+ type IsEqual<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends (<T>() => T extends Y ? 1 : 2)
+    ? true
+    : false
+```
+
+分解每个部分：
+
+- `<T>`() 是一个泛型函数声明
+- `T extends X ? 1 : 2` 是条件类型检查
+- 整体使用 `extends` 比较两个函数类型是否相同
+
+这种实现的巧妙之处在于：
+
+- 当 `X` 和 `Y` 完全相同时，两个函数类型会生成完全相同的条件类型
+- 如果 `X` 和 `Y` 有任何差异（比如一个有 readonly，另一个没有），生成的条件类型就会不同
+
+```ts
+interface A { a: string }
+interface B { readonly a: string }
+
+// 以下两个类型是不同的：
+type Func1 = <T>() => T extends A ? 1 : 2 // (可能返回 1 或 2)
+type Func2 = <T>() => T extends B ? 1 : 2 // (可能返回 1 或 2)
+```
+
+这样做更准确:
+
+- 普通的 `X extends Y` 在处理结构类似但修饰符不同的类型时可能会给出错误的结果
+- 使用函数类型包装可以捕获到更细微的类型差异
+- 泛型参数 `T` 在这里起到了"探测器"的作用，帮助我们识别类型的完整结构
