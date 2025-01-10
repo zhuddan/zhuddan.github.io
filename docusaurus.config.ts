@@ -96,43 +96,43 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
+              label: '归档',
               to: '/docs/css/color-opacity',
             },
           ],
         },
         {
-          title: 'Community',
+          title: '参考链接',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'github',
+              href: 'https://github.com/zhuddan',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              label: 'npm',
+              href: 'https://www.npmjs.com/~zhuddan',
             },
             {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              label: 'zhuddan.github.io',
+              href: 'https://zhuddan.github.io/',
             },
           ],
         },
         {
-          title: 'More',
+          title: '更多链接',
           items: [
+            // {
+            //   label: 'Blog',
+            //   to: '/blog',
+            // },
             {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              label: 'docusaurus 参考文档',
+              href: 'https://docusaurus.io/',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} zhuddan, Inc. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
