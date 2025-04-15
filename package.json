@@ -1,6 +1,6 @@
 {
   "name": "zdecode",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -8,7 +8,8 @@
     "dev:turbo": "next dev --turbo",
     "start": "next start",
     "lint": "eslint . --fix",
-    "tag": "bumpp patch --yes",
+    "tag": "bumpp",
+    "tag:patch": "bumpp patch --yes",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
