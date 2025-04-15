@@ -16,6 +16,7 @@ export const baseOptions: BaseLayoutProps = {
       </>
     ),
   },
+  githubUrl: 'https://github.com/zhuddan/zhuddan.github.io',
   links: [
     {
       text: '归档',
