@@ -1,6 +1,6 @@
+import type { Metadata } from 'next'
 import { blog } from '@/lib/source'
 import { getMDXComponents } from '@/mdx-components'
-
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
 import { notFound } from 'next/navigation'
 
@@ -42,4 +42,20 @@ export function generateStaticParams(): { slug: string }[] {
   return blog.getPages().map(page => ({
     slug: page.slugs[0],
   }))
+}
+
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const params = await props.params
+  const page = blog.getPage([params.slug])
+
+  if (!page)
+    notFound()
+
+  return {
+    title: page.data.title,
+    description:
+      page.data.description ?? 'The library for building documentation sites',
+  }
 }
