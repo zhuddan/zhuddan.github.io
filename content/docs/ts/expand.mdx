@@ -1,0 +1,13 @@
+---
+title: 拓展第三方库声明
+---
+
+```ts
+declare module 'awesomeLibrary' {
+  export function someFunction(param: string): number
+  export class SomeClass {
+    constructor(value: string)
+    method(): void
+  }
+}
+```

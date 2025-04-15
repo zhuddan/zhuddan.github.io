@@ -1,0 +1,176 @@
+---
+title: 类型体操
+---
+
+## 1. 某个类型前面直接加`good_`前缀
+
+```ts
+type AppendGood<T> = {
+  [P in keyof T as `good_${string & P}`]: T[P];
+}
+```
+
+## 2. 把横线命名的字符串类名转化为驼峰命名 CamelCase
+
+```ts
+export type CamelCase<S extends string> =
+  S extends `${infer Head}-${infer Rest}`
+    ? `${Lowercase<Head>}${CamelCase<Capitalize<Rest>>}`
+    : S
+
+type A = 'list-change'
+
+type B = CamelCase<A> // ==> listChange
+
+```
+
+## 3. 对象合并
+
+```ts
+export type Merge<A, B> = {
+  [K in keyof (A & B)]: K extends keyof B
+    ? B[K]
+    : K extends keyof A
+      ? A[K]
+      : never
+}
+```
+
+## 4. 点点获取对象的key
+
+```ts
+type Primitive = string | boolean | number | bigint | symbol | undefined | null
+
+type DeepKeys<T, P extends string | number | symbol = ''> = {
+  [K in keyof T]-?: T[K] extends Primitive
+    ? `${P extends '' ? '' : `${P & string}.`}${K & string}`
+    : `${P extends '' ? '' : `${P & string}.`}${K & string}` | DeepKeys<T[K], `${P & string}.${K & string}`>
+}[keyof T]
+
+interface Data {
+  foo: {
+    bar: {
+      value: 'foobar'
+    }
+    count: 6
+    included: true
+  }
+  hello: 'world'
+}
+
+type Keys = DeepKeys<Data>
+```
+
+## 5. Merge类型
+
+```ts
+type Merge<A, B> = {
+  [K in keyof (A & B)]: K extends keyof B
+    ? B[K]
+    : K extends keyof A
+      ? A[K]
+      : never
+}
+```
+
+## 6. 指定某一个属性为必选参数
+
+```ts
+type MakeOptionalPropertyRequired<T, K extends keyof T> = T & Required<Pick<T, K>>
+```
+
+## 7. 去除undefined
+
+```ts
+type WithoutUndefined<T> = T extends undefined ? never : T
+```
+
+## 8. 去除 readonly
+
+```ts
+type RemoveReadonly<T> = {
+  -readonly [K in keyof T]: T[K];
+}
+```
+
+## 9. 类型
+
+三个ts中的类型
+
+```ts
+type c = string
+
+type d = c[]
+
+type e = number[]
+```
+
+我期望把type e 改为一个泛型，接受d，然后e的每一项都是d的每一项字符串的长度。
+
+```ts
+type c = string
+type d = c[]
+type e<T extends string[]> = {
+  [K in keyof T]: T[K]['length'];
+}
+
+// 示例用法
+const exampleArray: d = ['apple', 'banana', 'orange']
+const result: e<d> = [5, 6, 6] // e<d> 的每一项都是 d 中每一项字符串的长度
+```
+
+## 10. 获取函数key
+
+```ts
+type GetFunctionKeys<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never
+}[keyof T]
+type Fn = GetFunctionKeys<{
+  done: () => void
+  msg: () => void
+  name: void
+}> // ===> 'done' | 'msg'
+```
+
+## 11. 获取函数名称
+
+```ts
+type FunctionKeys<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never;
+}[keyof T]
+```
+
+## 12. 相等判断
+
+```ts
+ type IsEqual<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends (<T>() => T extends Y ? 1 : 2)
+    ? true
+    : false
+```
+
+分解每个部分：
+
+- `<T>`() 是一个泛型函数声明
+- `T extends X ? 1 : 2` 是条件类型检查
+- 整体使用 `extends` 比较两个函数类型是否相同
+
+这种实现的巧妙之处在于：
+
+- 当 `X` 和 `Y` 完全相同时，两个函数类型会生成完全相同的条件类型
+- 如果 `X` 和 `Y` 有任何差异（比如一个有 readonly，另一个没有），生成的条件类型就会不同
+
+```ts
+interface A { a: string }
+interface B { readonly a: string }
+
+// 以下两个类型是不同的：
+type Func1 = <T>() => T extends A ? 1 : 2 // (可能返回 1 或 2)
+type Func2 = <T>() => T extends B ? 1 : 2 // (可能返回 1 或 2)
+```
+
+这样做更准确:
+
+- 普通的 `X extends Y` 在处理结构类似但修饰符不同的类型时可能会给出错误的结果
+- 使用函数类型包装可以捕获到更细微的类型差异
+- 泛型参数 `T` 在这里起到了"探测器"的作用，帮助我们识别类型的完整结构

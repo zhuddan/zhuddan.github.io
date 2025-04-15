@@ -1,0 +1,17 @@
+---
+title: 静默打印
+---
+
+参考[issues#39179](https://github.com/electron/electron/issues/39179)
+
+```ts {2}
+const printOptions: WebContentsPrintOptions = {
+  silent: true,
+}
+```
+
+`electron` 获取的打印机`DPI`不正确, 导致打印出来的结果很小, 切换一下electron版本即可。
+
+```
+ni electron@24.8.3
+```

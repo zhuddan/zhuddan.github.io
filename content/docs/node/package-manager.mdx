@@ -1,0 +1,60 @@
+---
+title: 包管理器的差异 
+description: npm/pnpm/yarn 的差异
+---
+
+### 安装命令
+
+<NodeCmd type="install" cmd="package"/>
+
+### 运行命令
+
+<NodeCmd type="run" cmd="dev"/>
+
+### 依赖处理
+
+#### 考虑下面这种情况
+
+1. ```element-plus``` 是个基于vue3的npm包, 他依赖了 ```dayjs```
+
+2. 当你使用三种包管理器方式下载```element-plus```
+
+<NodeCmd type="install" cmd="element-plus"/>
+
+3. 使用`element-plus`
+
+```js 
+import ElementPlus from "element-plus"
+```
+
+4. 使用`dayjs`
+你发现你的项目也需要使用 `dayjs` 包, 恰恰这个时候你又发现了 `element-plus` 依赖了 `dayjs`。
+
+于是你直接使用```import dayjs from 'dayjs'``` 
+
+神奇的事情发生了, `npm` 和 `yarn(v1)` 均可以正常工作, 但是 `pnpm` 和 `yarn(v2)` 都炸了
+
+```shell
+Cannot find module 'dayjs' or its corresponding type declarations.ts(2307)
+```
+
+#### 为什么会出现这种情况呢? 
+
+> 依赖扁平化 vs 严格隔离
+
+1. npm 的做法 (扁平化)
+
+- `npm` 安装时，会将 `所有依赖` 扁平化地安装在项目根目录的 `node_modules` 里。
+- 所以即使你没显式安装 `dayjs`, 只要它是 `element-plus` 的依赖，就会被放在根目录的 `node_modules`, 你也能直接 `import dayjs`。
+- 这其实是**依赖穿透**，是 Node.js 的模块解析机制默认支持的，但并**不推荐**依赖这一特性。
+
+2. pnpm 的做法 (严格的隔离依赖)
+- `pnpm` 使用所谓的 **内容寻址 `Content Addressable` 和硬链接的结构**，并且默认遵守**模块隔离**
+原则。
+- 它只会将你的直接依赖暴露在顶层 `node_modules`。
+- `element-plus` 的依赖(即 dayjs)被安装在 `element-plus` 的 `node_modules` 下，你项目的代码无法直接访问。
+- 所以：如果你想直接 `import dayjs`，你必须把 `dayjs` 加到你的 `dependencies` 中。
+
+3. yarn 的行为
+- Yarn v1 类似于 npm, 默认也会扁平化依赖，所以一般可以访问 `element-plus` 的依赖 `dayjs`。
+- Yarn Berry (v2+) 更像 pnpm, 引入了 `Plug'n'Play(PnP)`机制，完全不使用 `node_modules`，而是基于 `.pnp.js` 映射，更加严格，不允许穿透依赖。

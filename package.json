@@ -1,67 +1,45 @@
 {
-  "name": "zhuddan-github-io",
-  "version": "0.0.99",
+  "name": "zdecode",
+  "version": "0.0.2",
   "private": true,
-  "engines": {
-    "node": ">=18.0"
-  },
   "scripts": {
-    "docusaurus": "docusaurus",
-    "dev": "docusaurus start",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc",
-    "release": "bumpp"
+    "build": "next build",
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbo",
+    "start": "next start",
+    "lint": "eslint . --fix",
+    "tag": "bumpp patch --yes",
+    "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.19.10",
-    "@docusaurus/core": "3.7.0",
-    "@docusaurus/preset-classic": "3.7.0",
-    "@docusaurus/theme-live-codeblock": "3.7.0",
-    "@docusaurus/theme-mermaid": "3.7.0",
-    "@mdx-js/react": "^3.0.0",
-    "@monaco-editor/react": "^4.6.0",
     "clsx": "^2.1.1",
-    "prism-react-renderer": "^2.3.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-toastify": "^11.0.0"
+    "fumadocs-core": "15.2.6",
+    "fumadocs-mdx": "11.5.8",
+    "fumadocs-ui": "15.2.6",
+    "lucide-react": "^0.488.0",
+    "next": "15.2.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.11.2",
-    "@commitlint/cli": "^19.6.1",
-    "@commitlint/config-conventional": "^19.6.0",
-    "@docusaurus/module-type-aliases": "3.7.0",
-    "@docusaurus/tsconfig": "3.7.0",
-    "@docusaurus/types": "3.7.0",
-    "@eslint-react/eslint-plugin": "^1.17.1",
-    "autoprefixer": "^10.4.20",
-    "bumpp": "^9.8.1",
-    "eslint": "^9.16.0",
-    "eslint-plugin-format": "^0.1.2",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.14",
-    "husky": "^9.1.7",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.16",
-    "typescript": "~5.6.2"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 3 chrome version",
-      "last 3 firefox version",
-      "last 5 safari version"
-    ]
+    "@antfu/eslint-config": "^4.11.0",
+    "@eslint-react/eslint-plugin": "^1.37.3",
+    "@fumadocs/mdx-remote": "^1.3.0",
+    "@tailwindcss/postcss": "^4.1.3",
+    "@types/mdx": "^2.0.13",
+    "@types/node": "22.14.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.1",
+    "bumpp": "^10.1.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "fumadocs-docgen": "^2.0.0",
+    "oxc-transform": "0.53.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.3",
+    "typescript": "^5.8.3"
   }
 }

@@ -1,0 +1,18 @@
+---
+title: Nodejs 设置代理
+description: 处理特定情况下无法安装依赖的情况
+---
+
+## 设置代理
+
+```shell
+npm config set proxy=http://127.0.0.1:7890
+npm config set https-proxy=http://127.0.0.1:7890
+```
+
+## 取消代理
+
+```shell
+npm config delete proxy
+npm config delete https-proxy
+```

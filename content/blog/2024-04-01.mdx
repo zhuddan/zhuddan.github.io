@@ -1,0 +1,182 @@
+---
+title: 更新项目版本号
+description: 优雅地修改 package.json 的 version
+---
+
+## 动机
+
+很多项目会在首页底部, 或者更有甚者app的logo底部就是一个版本号(参考银行app)。除去银行app的营销手段, 在客户端展示版本号对于开发来说是个`debugger`。最简单的用途就是判断用户的应用是否最新版本? 排除版本问题导致的滞留bug, 进而引导用户进行更新应用。
+
+
+## 更新方式
+
+### 1. 暴力更新
+
+直接读取`package.json`的版本, 修改版本号覆盖原来的`package.json`文件
+
+#### 新建 `update-version.mjs` 输入下面内容
+
+```js title="update-version.mjs"
+import fs from "fs"
+
+const data = JSON.parse(fs.readFileSync('./package.json').toString())
+
+const versionParts = data.version.split('.').map(Number)
+
+let versionNumber = versionParts[0] * 10000 + versionParts[1] * 100 + versionParts[2];
+
+versionNumber += 1;
+
+const major = Math.floor(versionNumber / 10000);
+const minor = Math.floor((versionNumber % 10000) / 100);
+const patch = versionNumber % 100;
+
+data.version = `${major}.${minor}.${patch}`;
+
+console.log("New version:", data.version);
+
+fs.writeFileSync('./package.json', JSON.stringify(data, null, 2))
+```
+
+> 为什么是 `update-version.mjs` 而不是 `update-version.js`
+
+`mjs` 是 `esm模块`, 是**js标准**, 可以直接使用 `import` 语法，`update-version.js` 也可以在 `package.json` 中配置 `"type": "module"`, 但是很多项目是直接上不了`esm`模块的, 很多历史悠久的包也只支持 `cjs`, 所以不建议直接修改 `package.json`。如果直接使用`.js`也可以, 但是就要使用`cjs`语法，也就是`const fs = require("fs")`, 但是这又有个问题, 一些`eslint`推荐配置不会建议你使用`require`语法, 本质上来说, 只是我的个人习惯。
+
+> 为什么不直接`import pkg from './package.json'`
+
+这个是[esm规范](https://github.com/tc39/proposal-import-attributes)的原因，你可以`import json from "./foo.json" with { type: "json" };` 但是`eslint`不支持。
+
+#### `package.json`新增更新版本号脚本
+
+```json title="package.json"
+{
+  "name": "test",
+  "version": "1.0.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "update-version": "node update-version.mjs" // [!code highlight]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+**再暴力点**, 每次打包之前都更新版本号
+
+```json title="package.json"
+{
+  "name": "test",
+  "version": "1.0.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "update-version": "node update-version.mjs",
+    "prebuild": "npm run update-version" // [!code highlight]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+到这里, 暴力更新版本号的操作就完成了, `prebuild` 也会在执行 `npm run build` 之前自动运行。
+不过, 这种方式实在太“硬核”了 —— 它直接修改了 `package.json`, 可能引发一些意料之外的问题。另外版本号也是每次暴力`+1`，缺乏语义化， 只能使用于简陋的项目。而且它也没有和 `Git` 提交做联动，更新版本后你还得手动执行 `git commit -m "update version x.x.x"`，整体流程不太优雅。有没有更优雅的方式呢?
+
+### 2. 暴力更新进阶版
+
+使用`npm命令`更新
+
+``` shell
+# 1.0.0 -> 1.0.1
+npm version patch
+
+# 1.0.1 -> 1.1.0
+npm version minor
+
+# 1.1.0 -> 2.0.0
+npm version major
+```
+
+
+```json title="package.json"
+{
+  "name": "test",
+  "version": "1.0.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "version:patch:": "npm version patch", // [!code highlight]
+    "version:patch:": "minor version minor", // [!code highlight]
+    "version:major:": "npm version major" // [!code highlight]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+这种方式也完成了, 和[1 暴力更新](./2024-04-01#1-暴力更新)差不多，仅仅除去了手写`update-version.mjs`脚本，整体流程还是不太优雅。
+
+如果你喜欢倒腾, 也可以[simple-git](https://www.npmjs.com/package/simple-git)完成git流程。
+
+### 3. 优雅更新
+
+使用[bumpp](https://github.com/antfu-collective/bumpp)
+
+<NodeCmd type="install" cmd="bumpp"/>
+
+他是fork[version-bump-prompt](https://github.com/JS-DevTools/version-bump-prompt), 你也可以使用`version-bump-prompt`
+
+<NodeCmd type="install" cmd="@jsdevtools/version-bump-prompt"/>
+
+- 简单使用
+
+```shell
+bumpp
+```
+他会展示下一个版本号，你可以上下键手动选择，甚至选择`custom`手动输入
+```shell
+Current version 0.0.0 »
+            major 1.0.0
+            minor 0.1.0
+            patch 0.0.1
+>            next 0.0.1
+     conventional 0.0.1
+        pre-patch 0.0.1-beta.1
+        pre-minor 0.1.0-beta.1
+        pre-major 1.0.0-beta.1
+            as-is 0.0.0
+           custom ...
+```
+
+更新之后`git`会自动提交一条`chore:release vx.x.x`的`git tag`，可以免去手动提交，并且后续这个可以很好的和`github`CI/CD工作流工作, 或者和一些 `git-hooks`联动。
+
+如果你需要它暴力更新，也可以，直接
+
+``` shell
+# 1.0.0 -> 1.0.1
+bumpp patch
+
+# 1.0.1 -> 1.1.0
+bumpp minor
+
+# 1.1.0 -> 2.0.0
+bumpp major
+```
+
+如果你不想输入`yes`或者回车进行确认，可以更暴力
+``` shell
+bumpp patch  --yes
+```
+
+除此之外，如果你使用的是工作区(workspace), `git tag` 是全局唯一的，而子项目的版本号可能不唯一，这种情况下可以通过指定 `tag` 前缀来区分：
+
+```shell
+bumpp --tag "a@%s"
+```
+
+这样生成的 tag 就会变成 `a@x.x.x`。
+
+至此，你已经可以最优雅地修改 `package.json` 的版本号。

@@ -1,0 +1,90 @@
+---
+title: Pnpm工作空间
+description: 在单一项目中优雅地管理多个子项目
+---
+
+## 简介
+
+参考[https://pnpm.io/workspaces](https://pnpm.io/workspaces)
+
+- pnpm 是一种节省磁盘空间并提升安装速度的包管理工具，它通过使用硬链接和符号链接来避免重复下载依赖。
+- Monorepo 是一种将多个项目放在同一个代码仓库中的管理方式，它可以提高代码复用、协作、测试和发布的效率。
+
+## 什么时候使用？
+
+- 当你的n个项目共用一套UI/逻辑时候, 例如两个小程序共用一套UI
+- 开发一个工具库时, 可以把库核心代码/测试代码/demo代码/官网代码合并为一个工作区
+
+
+## 搭建
+
+
+### 1. 在根目录下创建一个 `pnpm-workspace.yaml` 文件来定义工作区范围。
+
+``` shell title="pnpm-workspace.yaml"
+packages:
+  - apps/** # patient 病人端 / doctor 医生端
+  - packages/**
+```
+
+
+### 2. 在根目录下创建一个 `tsconfig.json` 文件来定义公共的 typescript 配置，并使用 `references` 字段来指定子项目之间的依赖关系。
+
+
+### 3. 在每个子项目下创建一个 `tsconfig.json` 文件来继承公共配置，并使用 `paths` 字段来映射本地模块路径。
+
+
+```json title="tsconfig.json" 
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "jsx": "react-jsx",
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "rootDir": ".",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "paths": {
+      "@mini/*": ["packages/*/src/index.ts"] // [!code highlight]
+    },
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "lib",
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "apps/**/src", // [!code highlight]
+    "apps/**/types", // [!code highlight]
+    "apps/**/config", // [!code highlight]
+    "packages/**/*.ts", // [!code highlight]
+    "packages/**/*.js", // [!code highlight]
+    "packages/**/*.d.ts", // [!code highlight]
+    "packages/**/*.tsx", // [!code highlight]
+    "packages/**/*.json",  // [!code highlight]
+    "types" // [!code highlight]
+  ],
+  "compileOnSave": false
+}
+```
+
+
+### 4. 使用 `pnpm install` 命令来安装所有依赖，并使用 `pnpm run` 命令来执行各个子项目的脚本。
+
+
+
+## 注意事项
+
+如果你的某个包 `x` 依赖了`a`包, `a` 包又依赖了 `b`包。`x` 没有指定 `b` 为它的 `dependencies`, 它却采用 [npm/yarn](./package-manager#依赖处理) 的特性去直接使用`b`, 那么当前`pnpm工作区环境`会导致导入失败, 比较暴力的做法, 在项目根目录新建`.npmrc`, 并且输入下面内容, 参考[https://pnpm.io/settings#shamefullyhoist](https://pnpm.io/settings#shamefullyhoist)
+
+```shell title=".npmrc"
+shamefully-hoist=true
+```
+

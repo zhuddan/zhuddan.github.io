@@ -1,0 +1,49 @@
+---
+title: 使用NVM管理多版本Nodejs 
+description: 优雅地管理多个nodejs版本
+---
+
+
+## 1. 下载NVM
+
+- [windows](https://github.com/coreybutler/nvm-windows)
+- [mac](https://github.com/nvm-sh/nvm)
+
+## 2. 使用NVM下载nodejs
+
+```shell
+nvm install 18
+```
+
+## 3. 查看版本
+
+```shell
+nvm ls
+```
+
+``` shell
+  * 22.14.0 (Currently using 64-bit executable)
+    20.19.0
+    18.20.7
+    16.20.2
+    14.21.3
+```
+
+## 4. 切换Node版本
+
+```shell
+nvm use 14
+```
+
+## 5. 安装npm全局包
+
+### 包管理器
+
+```shell
+npm i pnpm yarn -g
+```
+
+### 其他包
+```shell
+npm i @antfu/ni degit npkill esno typescript tsx http-server node-gyp bun -g
+```

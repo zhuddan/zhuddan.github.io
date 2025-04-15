@@ -1,0 +1,192 @@
+---
+title: 小程序
+---
+
+## 代码上传/预览 CI/CD
+
+<CodeDetails>
+```js
+import fs from 'node:fs'
+import path from 'node:path'
+import { parseArgs } from 'node:util'
+import ci from 'miniprogram-ci'
+import { exec } from './exec.mjs'
+
+/**
+ * @typedef {'string'} Projectname
+ */
+/**
+ * @typedef {object} Config
+ * @property {string} appid appid
+ * @property {string} version version
+ * @property {string} projectPath projectPath
+ * @property {string} privateKeyPath privateKeyPath
+ */
+/**
+ *
+ * @param {Projectname} projectname
+ * @returns {Config} Config
+ */
+function getConfig(projectname) {
+  const projectRoot = path.resolve('apps', projectname)
+  const projectConfigJson = JSON.parse(
+    fs.readFileSync(
+      path.join(projectRoot, 'project.config.json'),
+    ).toString(),
+  )
+  const packageJson = JSON.parse(
+    fs.readFileSync(
+      path.join(projectRoot, 'package.json'),
+    ).toString(),
+  )
+
+  const /** @type {string} */ appid = projectConfigJson.appid
+  const /** @type {string} */ version = packageJson.version
+  const projectPath = path.join(projectRoot, 'dist')
+  const privateKeyPath = path.resolve('scripts', 'keys', `private.${appid}.key`)
+  return {
+    appid,
+    version,
+    projectPath,
+    privateKeyPath,
+  }
+}
+/**
+ *
+ * @param {Config} config config
+ * @returns {ci.Project} Project
+ */
+function createProject(config) {
+  const project = new ci.Project({
+    appid: config.appid,
+    type: 'miniProgram',
+    projectPath: config.projectPath,
+    privateKeyPath: config.privateKeyPath,
+  })
+
+  return project
+}
+
+/**
+ * @param {Projectname} projectname
+ */
+async function upload(projectname = 'doctor') {
+  const config = getConfig(projectname)
+  const project = createProject(config)
+  try {
+    await ci.upload({
+      project,
+      version: config.version,
+      desc: '机器人',
+      setting: {
+        es6: true,
+        minify: true,
+        minifyJS: true,
+        minifyWXML: true,
+        minifyWXSS: true,
+      },
+      onProgressUpdate: console.log,
+    })
+    process.exit(0)
+  }
+  catch (error) {
+    console.error('[mini-ci]', error)
+    process.exit(1)
+  }
+}
+
+async function preview(projectname = 'doctor') {
+  const config = getConfig(projectname)
+  const project = createProject(config)
+  const qrcodeOutputDest = path.resolve(
+    'scripts',
+    'preview.jpg',
+  )
+  try {
+    const previewResult = await ci.preview({
+      project,
+      desc: 'hello',
+      setting: {
+        useProjectConfig: true,
+      },
+      qrcodeFormat: 'image',
+      qrcodeOutputDest,
+      onProgressUpdate: console.log,
+      // pagePath: 'pages/index/index', // 预览页面
+      // scene: 1011, // 场景值
+    })
+    await exec('cmd', ['/c', 'code', '', qrcodeOutputDest])
+    console.log(previewResult)
+    process.exit(0)
+  }
+  catch (error) {
+    console.error(error)
+    process.exit(1)
+  }
+}
+
+const { values } = parseArgs({
+  allowPositionals: true,
+  options: {
+    project: {
+      type: 'string',
+    },
+    preview: {
+      type: 'boolean',
+    },
+    upload: {
+      type: 'boolean',
+    },
+  },
+})
+
+function init() {
+  // console.log(values)
+  if (values.preview) {
+    preview(values.project)
+  }
+  if (values.upload) {
+    upload(values.project)
+  }
+}
+
+init()
+```
+</CodeDetails>
+
+## 更新检测
+
+参考[https://developers.weixin.qq.com/miniprogram/dev/api/base/update/wx.getUpdateManager.html](https://developers.weixin.qq.com/miniprogram/dev/api/base/update/wx.getUpdateManager.html)
+
+<CodeDetails>
+```ts ts2js  title="以 Taro 为例"
+import Taro from '@tarojs/taro'
+import logger from './logger'
+import { showModal } from './ui'
+
+/**
+ * 检查更新
+ */
+export async function updateApp() {
+  const updateManager = Taro.getUpdateManager()
+  updateManager.onCheckForUpdate((res) => {
+    if (res.hasUpdate) {
+      logger.info(`检测到新的更新`)
+    }
+  })
+  updateManager.onUpdateReady(async () => {
+    try {
+      await showModal('新版本已经准备好，是否重启应用？', '更新提示')
+      updateManager.applyUpdate()
+    }
+    catch {
+      logger.warn('用户取消更新')
+    }
+  })
+  updateManager.onUpdateFailed(() => {
+    logger.error('新版本下载失败')
+  })
+}
+```
+</CodeDetails>
+

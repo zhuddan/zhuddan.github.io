@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "css",
+    "js",
+    "ts",
+    "mini",
+    "electron",
+    "node",
+    "misc",
+    "snippets",
+    "git",
+    "vscode"
+  ]
+}

@@ -1,0 +1,31 @@
+---
+title: HEX透明度
+---
+
+import ColorTransform from "@/components/ColorTransform.tsx"
+
+## 原理
+> 以`#154AC680`为例，透明度是`0x80`和`0x100`比值，结果为`50%`。
+
+- 直接使用16进制进行计算
+
+``` js
+const opacity = 0x80 / 0x100 // => 0.5 = 50%
+```
+
+- 转为10进制后计算
+
+``` js
+const opacity = parseInt('80', 16) / parseInt('100', 16) // => 128 / 256 = 0.5 = 50%
+```
+
+> 本质上和转化为rgba颜色一样, 也就是16进制和10进制的转化。HEX中每两位16进制值, 分别表示红、绿、蓝、透明度(透明度是比值, 需要比上0x100)。所以转为rgba颜色为`rgba(21, 74, 198, 50)`。
+
+<img src="/color-opacity.svg" style={{
+  display:'block',
+  margin:'0 auto'
+}}/>
+
+## 在线转化
+<ColorTransform />
+
