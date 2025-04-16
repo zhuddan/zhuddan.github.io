@@ -7,6 +7,7 @@ const config = {
   reactStrictMode: true,
   output: 'export',
   serverExternalPackages: ['oxc-transform'],
+  images: { unoptimized: true },
 }
 
 export default withMDX(config)
