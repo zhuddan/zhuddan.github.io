@@ -60,7 +60,7 @@ const links: {
   },
 ]
 
-const copyright = `Copyright © ${new Date().getFullYear()} zhuddan, Inc. Built with Docusaurus.`
+const copyright = `Copyright © ${new Date().getFullYear()} zhuddan, Inc. Built with Fumadocs.`
 
 function Footer() {
   return (
