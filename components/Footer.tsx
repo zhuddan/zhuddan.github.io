@@ -119,7 +119,7 @@ export default function Footer() {
         }
       </div>
       <p className="text-center text-sm mt-4">{copyright}</p>
-      <Link href="/resume" className="absolute bottom-2 right-2">resume</Link>
+      <Link href="/resume" className="absolute bottom-2 right-2 opacity-0">resume</Link>
     </footer>
   )
 }
