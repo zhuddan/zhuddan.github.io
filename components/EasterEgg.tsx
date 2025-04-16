@@ -18,11 +18,14 @@ export default function EasterEgg() {
 
 function Cake() {
   return (
-    <DotLottieReact
-      src="/Animation - 1744775417256.lottie"
-      loop
-      autoplay
-      width={500}
-    />
+    <>
+
+      <DotLottieReact
+        src="/Animation - 1744775417256.lottie"
+        loop
+        autoplay
+        width={500}
+      />
+    </>
   )
 }
