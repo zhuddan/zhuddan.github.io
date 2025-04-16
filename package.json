@@ -13,6 +13,7 @@
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
+    "@lottiefiles/dotlottie-react": "^0.13.3",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "fumadocs-core": "15.2.6",
