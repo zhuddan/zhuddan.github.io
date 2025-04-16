@@ -27,7 +27,7 @@ function Birthday() {
   )
 }
 
-export function Zd() {
+export function Me() {
   return (
     <div className="inline-grid   md:grid-cols-3 gap-4 ">
       <div className="flex gap-x-1">
