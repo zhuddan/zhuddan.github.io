@@ -43,7 +43,6 @@ export default async function Page(props: {
         </Link>
       </div>
       <article className="container flex flex-col px-0 py-8 lg:flex-row lg:px-4">
-
         <div className="prose min-w-0 flex-1 p-4">
           <InlineTOC items={toc} />
           <Mdx components={getMDXComponents()} />

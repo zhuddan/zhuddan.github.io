@@ -4,11 +4,13 @@ import MDXContent from './content.mdx'
 
 export default function Page() {
   return (
-    <DocsBody>
-      <MDXContent
-        components={getMDXComponents({ })}
-      />
-    </DocsBody>
+    <main className="container relative max-w-[1100px] px-2 py-4">
+      <DocsBody>
+        <MDXContent
+          components={getMDXComponents({ })}
+        />
+      </DocsBody>
+    </main>
   )
 }
 
