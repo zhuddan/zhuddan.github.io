@@ -20,6 +20,7 @@
     "fumadocs-mdx": "11.5.8",
     "fumadocs-ui": "15.2.6",
     "lucide-react": "^0.488.0",
+    "motion": "^12.7.3",
     "next": "15.2.4",
     "react": "^19.1.0",
     "react-confetti": "^6.4.0",

@@ -1,5 +1,7 @@
+/* eslint-disable unused-imports/no-unused-vars */
 'use client'
 import dayjs from 'dayjs'
+import { useEffect, useState } from 'react'
 import solarLunar from 'solarLunar'
 
 const EFFECT_DATE = {
@@ -31,7 +33,9 @@ interface Result {
   month: number
   day: number
   data: string
+  now: Date | undefined
 }
+
 // const debugDate = '2025-01-01'
 // const debugDate = '2025-01-29'
 // const debugDate = '2025-02-12'
@@ -46,13 +50,31 @@ interface Result {
 const debugDate = '2025-08-29'
 // const debugDate = '2025-10-06'
 
-export function getEffectDay() {
+export function useEffectDay() {
+  const [now, setNow] = useState<Date>()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted) {
+      const timer = setInterval(() => {
+        setNow(new Date())
+      }, 1000)
+      return () => clearInterval(timer)
+    }
+  }, [mounted])
+
   // 新历日期
   const fullDate = dayjs(
     // // eslint-disable-next-line node/prefer-global/process
     // process.env.NODE_ENV === 'development'
     //   ? debugDate
     //   : undefined,
+    now,
   ).format('YYYY-MM-DD')
   const [year, month, day] = fullDate.split('-').map(Number)
   const solar = dayjs(fullDate).format('MM-DD')
@@ -67,6 +89,7 @@ export function getEffectDay() {
     month,
     day,
     data: '',
+    now,
   }
 
   for (let index = 0; index < EFFECT_DATE_KEYS.length; index++) {

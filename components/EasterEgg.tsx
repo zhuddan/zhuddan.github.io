@@ -1,6 +1,8 @@
 'use client'
-import { getEffectDay } from '@/utils/getEffectDay'
-import React from 'react'
+import { useEffectDay } from '@/utils/getEffectDay'
+import { motion } from 'framer-motion'
+import { Banner } from 'fumadocs-ui/components/banner'
+import React, { useEffect, useState } from 'react'
 import { Cake } from './effect/Cake'
 import ChildrenSDay from './effect/ChildrenSDay'
 import DuanWu from './effect/DuanWu'
@@ -11,12 +13,51 @@ import MoonFestival from './effect/MoonFestival'
 import NewYear from './effect/NewYear'
 import QingMing from './effect/QingMing'
 import QiXi from './effect/QiXi'
+
 import SpringFestival from './effect/SpringFestival'
 import ValentineSDay from './effect/ValentineSDay'
 import YouthDay from './effect/YouthDay'
 
+// eslint-disable-next-line unused-imports/no-unused-vars
+function AnimatedClock() {
+  const [time, setTime] = useState<string>()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted) {
+      const timer = setInterval(() => {
+        setTime(new Date().toLocaleTimeString())
+      }, 1000)
+      return () => clearInterval(timer)
+    }
+  }, [mounted])
+
+  if (!mounted)
+    return null
+
+  return (
+    <div className="flex items-center justify-center">
+      <motion.div
+        key={time} // 每秒重新渲染动画
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 10 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        style={{ fontSize: '3rem', fontFamily: 'monospace' }}
+      >
+        {time}
+      </motion.div>
+    </div>
+  )
+}
+
 export default function EasterEgg() {
-  const { type, data, date } = getEffectDay()
+  const { type, data, date, now } = useEffectDay()
+
   if (type === 'JUNJUN_BIRTHDAY') {
     return <Cake name="JunJun" birthday={data} />
   }
@@ -59,10 +100,12 @@ export default function EasterEgg() {
   if (type === 'MOON_FESTIVAL') {
     return <MoonFestival />
   }
-
   return (
-    <div>
-      {date}
+    <div className="">
+      <Banner variant="rainbow" className="!h-[100px]">
+        { now?.toString() ?? null}
+      </Banner>
     </div>
   )
+  // return <AnimatedClock />
 }
