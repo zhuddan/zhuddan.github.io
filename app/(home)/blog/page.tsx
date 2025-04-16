@@ -26,9 +26,9 @@ export default function Page(): React.ReactElement {
         className="h-[300px] p-8 md:h-[400px] md:p-12"
         style={{
           backgroundImage: [
-            'radial-gradient(circle at 70% 10%, rgba(255,50,100,0.5), transparent)',
-            'radial-gradient(circle at 0% 80%, rgba(190,0,255,0.5), transparent)',
-            'radial-gradient(circle at 50% 50%, rgba(50,50,255,0.3), transparent)',
+            'radial-gradient(circle at 80% 20%, rgba(0,230,255,0.4), transparent 50%)',
+            'radial-gradient(circle at 10% 60%, rgba(140,0,255,0.3), transparent 60%)',
+            'radial-gradient(circle at 50% 50%, rgba(0,180,255,0.2), rgba(20,20,40,0.7) 90%)',
             `url("data:image/svg+xml,${encodeURIComponent(svg)}")`,
           ].join(', '),
         }}

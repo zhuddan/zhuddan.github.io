@@ -12,7 +12,7 @@ const links: {
   }[]
 }[] = [
   {
-    title: 'Zdecode',
+    title: 'ZDecode',
     items: [
       {
         label: '归档',
@@ -90,7 +90,6 @@ function Footer() {
                   e.items.map((link) => {
                     return (
                       <p className="text-xs" key={link.label}>
-
                         {
                           link.to
                             ? (
