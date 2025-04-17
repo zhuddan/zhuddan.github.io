@@ -7,6 +7,14 @@ const inter = Inter({
   subsets: ['latin'],
 })
 
+export const metadata = ({
+  title: {
+    template: '%s | ZDecode',
+    default: 'ZDecode',
+  },
+  description: 'ZDecode is ZD`s Blog.😎',
+})
+
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>

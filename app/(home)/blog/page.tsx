@@ -61,3 +61,10 @@ export default function Page(): React.ReactElement {
     </main>
   )
 }
+
+export async function generateMetadata() {
+  return {
+    title: '博客列表',
+    description: 'ZD的所有博客',
+  }
+}
