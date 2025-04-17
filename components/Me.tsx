@@ -1,24 +1,27 @@
 import dayjs from 'dayjs'
 
 import {
-  Building2,
-  Cake,
+  BriefcaseBusiness,
+  // Building2,
+  // Cake,
+  // eslint-disable-next-line unused-imports/no-unused-imports
   Calendar1,
+  GraduationCap,
   Mail,
   Milestone,
-  // Phone,
+  School,
   SquareUser,
+  // Phone,
+  // eslint-disable-next-line unused-imports/no-unused-imports
+  Wrench,
 } from 'lucide-react'
 
 const MY_BIRTHDAY = '1995-08-05'
 // const MY_PHONE = '15680717059'
 const MY_EMAIL = 'zdecode@outlook.com'
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function Age() {
-  return <>{MY_BIRTHDAY}</>
-}
-
-function Birthday() {
   return (
     <>
       {dayjs().diff(dayjs(MY_BIRTHDAY), 'year')}
@@ -27,9 +30,15 @@ function Birthday() {
   )
 }
 
+// function Birthday() {
+//   return (
+//     <>{MY_BIRTHDAY}</>
+//   )
+// }
+
 export function Me() {
   return (
-    <div className="inline-grid   md:grid-cols-3 gap-4 ">
+    <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4 " id="me">
       <div className="flex gap-x-1">
         <SquareUser />
         <span>姓名: 朱丹</span>
@@ -39,29 +48,49 @@ export function Me() {
         <span>职业: 前端工程师</span>
       </div>
       <div className="flex gap-x-1">
-        <Calendar1 />
+        <BriefcaseBusiness />
         <span>
-          年龄:
-          <Age />
+          工作经验:
+          {' '}
+          {new Date().getFullYear() - 2019}
+          年
         </span>
       </div>
       <div className="flex gap-x-1">
+        <School />
+        <span>毕业院校: 成都理工大学</span>
+      </div>
+      <div className="flex gap-x-1">
+        <GraduationCap />
+        <span>学历: 本科</span>
+      </div>
+      {/* <div className="flex gap-x-1">
+        <Wrench />
+        <span>专业: 通信专业</span>
+      </div> */}
+      {/* <div className="flex gap-x-1 age">
+        <Calendar1 />
+        <span>
+          年龄:
+          {' '}
+          <Age />
+        </span>
+      </div> */}
+      {/* <div className="flex gap-x-1">
         <Cake />
         <span>
           生日:
           <Birthday />
         </span>
-      </div>
-      <div className="flex gap-x-1">
+      </div> */}
+      {/* <div className="flex gap-x-1">
         <Building2 />
         <span>现居: 昆明</span>
-      </div>
-      <div className="flex gap-x-1">
+      </div> */}
+      <div className="flex gap-x-1 col-span-1">
         <Mail />
         <span>
-          邮箱:
-
-          <a href={`mailto:${MY_EMAIL}`}>
+          <a href={`mailto:${MY_EMAIL}`} className="text-sm">
             {MY_EMAIL}
           </a>
         </span>

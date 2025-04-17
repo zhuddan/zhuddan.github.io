@@ -1,1 +1,1 @@
-declare module 'solarLunar'
+declare module 'solarlunar'

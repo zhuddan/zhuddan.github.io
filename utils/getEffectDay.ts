@@ -2,7 +2,7 @@
 'use client'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
-import solarLunar from 'solarLunar'
+import solarLunar from 'solarlunar'
 
 const EFFECT_DATE = {
   JUNJUN_BIRTHDAY: '06-19',

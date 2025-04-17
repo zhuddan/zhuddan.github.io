@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { DocsBody } from 'fumadocs-ui/page'
+import './print.css'
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (

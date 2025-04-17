@@ -102,7 +102,7 @@ export default function EasterEgg() {
   }
   return (
     <div className="">
-      <Banner variant="rainbow" className="!h-[100px]">
+      <Banner variant="rainbow" changeLayout={false} className="!h-[100px]">
         { now?.toString() ?? null}
       </Banner>
     </div>
