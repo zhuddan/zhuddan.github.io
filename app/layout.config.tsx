@@ -11,7 +11,7 @@ export const baseOptions: BaseLayoutProps = {
   nav: {
     title: (
       <>
-        <img aria-label="Logo" className="size-8 rounded-full" src="/logo.jpg" alt="" />
+        <img aria-label="Logo" className="size-8 rounded-full" src="/logo.svg" alt="" />
         ZDecode
       </>
     ),
