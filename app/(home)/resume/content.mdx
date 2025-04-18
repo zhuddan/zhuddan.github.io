@@ -68,16 +68,15 @@ import { Me } from "@/components/Me"
   - 魔改 `babel` 实现公共组件/样式的按需导入。
   - 基于 `miniprogram-ci` 封装完成工作流, 实现小程序自动打包上传/预览。
   - 基于 `@tanstack/react-query` 封装数据请求层。
-  - 使用 `Taro.connectSocket` 完成用户即时通讯功能, 并且使用 `Zustand` 和小程序本地缓存高效管理即时通讯的数据状态。
-  - 基于 `YunXinMiniappSDK.Client` 实现音视频通话。
-  - 封装 `setup-static` 脚本, 自动上传静态资源到服务器, 并且实现ide预览功能。
+  - 使用 `SocketTask` 完成用户即时通讯功能, 并且使用 `Zustand` 和小程序本地缓存高效管理即时通讯的数据状态。
+  - 基于 `YunXinMiniappSDK` 实现音视频通话。
 
 
 ### 2. **星光华人通手机充值系统**
 
 星光华人通手机充值系统是全球话费充值/流量线上充值平台。
 
-> **技术栈**: React + Vite + TypeScript + TailwindCSS + @tanstack/react-query + Zustand
+> **技术栈**: `React` + `Vite` + `TypeScript` + `TailwindCSS` + `@tanstack/react-query` + `Zustand`
 >
 > 该项目为微信公众号网页。请使用微信搜索`星光华人通`公众号进行查看。
 
@@ -117,7 +116,7 @@ import { Me } from "@/components/Me"
   - 封装图层管理类和任务队列类, 实现图层的动态加载与流畅切换, 不阻塞UI渲染。
   - 基于`Leaflet.js`封装`canvas图层组件`, 结合`chroma-js`与任务队列, 实现气象色斑图的绘制。
   - 基于`canvas图层组件`封装`风羽图`, 用于展示风速与风向信息。
-  - 使用`D3.js(d3-contour.js)`实现等值线的绘制, 提供精确的气象数据展示。
+  - 使用`D3.js`实现等值线的绘制, 提供精确的气象数据展示。
   - 结合`wind-layer`实现风场流线图层, 展示风场的动态变化。
   - 封装三维云图类, 结合`canvas`实现三维云图的展示。
   - 使用`WebWorker`和`[MCB算法](https://en.wikipedia.org/wiki/Marching_cubes)`实现三维雷达图的展示, 提供更丰富的气象数据可视化。
