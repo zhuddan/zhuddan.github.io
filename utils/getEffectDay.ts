@@ -1,4 +1,3 @@
-/* eslint-disable unused-imports/no-unused-vars */
 'use client'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
@@ -20,6 +19,7 @@ const EFFECT_DATE = {
   QI_XI: '七月初七',
   QING_MING: '',
   NONE: '',
+  ZX_BIRTHDAY: '10-17',
 } as const
 
 type ResultType = keyof typeof EFFECT_DATE
@@ -47,8 +47,8 @@ interface Result {
 // const debugDate = '2025-05-31'
 // const debugDate = '2025-06-01'
 // const debugDate = '2025-06-19'
-const debugDate = '2025-08-29'
-// const debugDate = '2025-10-06'
+// const debugDate = '2025-08-29'
+const debugDate = '2025-10-17'
 
 export function useEffectDay() {
   const [now, setNow] = useState<Date>()
@@ -70,11 +70,10 @@ export function useEffectDay() {
 
   // 新历日期
   const fullDate = dayjs(
-    // // eslint-disable-next-line node/prefer-global/process
-    // process.env.NODE_ENV === 'development'
-    //   ? debugDate
-    //   : undefined,
-    now,
+    //  eslint-disable-next-line node/prefer-global/process
+    process.env.NODE_ENV === 'development'
+      ? debugDate
+      : now,
   ).format('YYYY-MM-DD')
   const [year, month, day] = fullDate.split('-').map(Number)
   const solar = dayjs(fullDate).format('MM-DD')

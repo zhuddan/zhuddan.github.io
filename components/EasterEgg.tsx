@@ -64,6 +64,9 @@ export default function EasterEgg() {
   if (type === 'ZD_BIRTHDAY') {
     return <Cake name="ZhuDan" birthday={data} />
   }
+  if (type === 'ZX_BIRTHDAY') {
+    return <Cake name="ZUO XUN" birthday={data} />
+  }
   if (type === 'NEW_YEAR') {
     return <NewYear date={date} />
   }
