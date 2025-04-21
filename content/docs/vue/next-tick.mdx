@@ -1,0 +1,174 @@
+---
+title: nextTick
+---
+
+
+## 场景还原
+
+```vue
+<template>
+  <div v-if="visible" ref="panel">Hello</div>
+</template>
+
+<script setup>
+import { ref, nextTick } from 'vue'
+
+const visible = ref(false)
+
+function showPanel() {
+  visible.value = true
+  console.log('ref now:', $refs.panel) // ❌ undefined
+  nextTick(() => {
+    console.log('ref after tick:', $refs.panel) // ✅ div 元素
+  })
+}
+</script>
+```
+
+
+## 为什么 v-if="xx" 的 DOM 不能立刻访问？
+
+这是因为 Vue 是**“异步渲染”**的框架，为了性能优化，它在 修改响应式数据时不会立即更新 DOM，而是 先缓存更新任务，等当前宏任务结束后批量更新 DOM，再处理微任务队列。
+
+- this.xx = true 只会触发一个更新请求；
+
+- DOM 实际更新会在下一个“tick”时才完成；
+
+- 此时你访问 $refs.panel，DOM 还没挂载，自然是 undefined；
+
+- 等待 nextTick()，Vue 会等所有 DOM 更新完成后再回调你的函数。
+
+##  所以 nextTick 做了什么？
+
+Vue.nextTick(fn) 会把 fn 放入微任务队列（或用宏任务兜底），确保它在 DOM 更新完成之后执行。
+
+它的实现和事件循环息息相关：Vue 利用了 JS 的事件循环机制，在下一个“微任务”或“宏任务”中执行回调。
+
+
+## Vue 2 和 Vue 3 的区别
+| 对比项           | Vue 2                                       | Vue 3                                              |
+|------------------|---------------------------------------------|----------------------------------------------------|
+| 实现机制         | 自己维护 nextTick 队列 + 判断微任务/宏任务  | 使用原生 Promise.then 微任务为主                   |
+| 微任务优先级     | 有兼容性兜底逻辑（如 MutationObserver）      | 更依赖现代浏览器 Promise 微任务队列                |
+| 源码依赖         | 依赖 setTimeout、MessageChannel 兜底         | 利用现代事件循环模型，代码更简洁、可预测           |
+
+
+## nextTick 和事件循环的联系
+
+是的，nextTick 就是一个“延迟执行”的函数，它背后是通过放入微任务队列来实现“等下一轮事件循环”。
+
+Vue 的源码中，nextTick 会优先使用：
+
+- Promise.then(fn)（现代浏览器微任务）
+
+- MutationObserver（老浏览器微任务）
+
+- setImmediate(fn)（IE）
+
+- setTimeout(fn, 0)（最兜底）
+
+## 总结
+
+nextTick(fn) 是 Vue 提供的钩子，让你在 DOM 更新完成后 执行函数。它通过事件循环机制（微任务）来延迟执行。DOM 更新是异步的，所以你不能在数据变更后马上访问更新后的 DOM，必须用 nextTick 等待。
+
+
+## 不直接同步更新 DOM，是为了性能优化，避免重复无意义的 DOM 操作。
+
+```ts
+this.visible = true
+this.count = 5
+this.loading = false
+```
+
+这三行如果每一行都立即同步更新 DOM，那 Vue 就要执行 3 次模板 diff、3 次渲染、3 次 DOM 操作。
+
+非常浪费性能。
+
+但如果等一会儿把这些改动“合并”成一个渲染，就只更新一次 DOM，效率高非常多。
+
+
+这是 Vue 的 “异步批量更新策略”（也叫 “更新队列机制”）
+
+1. 你改数据了 → Vue 记录需要更新；
+
+2. 不会立即更新 DOM；
+
+3. 等当前同步代码跑完，放到一个 微任务（或宏任务）队列；
+
+4. 下一轮事件循环中集中处理这些更新任务，一次性更新所有相关 DOM。
+
+Vue 为什么选“事件循环的下一个任务”时机？
+
+这是前端的黄金时间点：
+
+- 所有数据都更新完了
+
+- 当前 JavaScript 栈清空了
+
+- DOM 一次性统一更新，不会被中断
+
+- 用户的 .nextTick() 回调也可以插队在 DOM 更新后立刻执行
+
+
+这样保证了：
+
+开发体验更好（你能拿到 DOM 的最新状态）
+
+性能更高（只 patch 一次 DOM）
+
+再举个极端的例子：
+
+
+```ts
+for (let i = 0; i < 1000; i++) {
+  this.count++
+}
+```
+
+```ts
+const callbacks = []
+let waiting = false
+
+function nextTick(cb) {
+  callbacks.push(cb)
+
+  if (!waiting) {
+    waiting = true
+    Promise.resolve().then(() => {
+      waiting = false
+      callbacks.forEach(fn => fn())
+      callbacks.length = 0
+    })
+  }
+}
+
+
+console.log('同步开始')
+
+nextTick(() => {
+  console.log('nextTick 回调执行')
+})
+
+console.log('同步结束')
+
+// 同步开始
+// 同步结束
+// nextTick 回调执行
+```
+
+你调用 nextTick(cb) → 回调 cb 被推入 callbacks 队列；
+
+第一次调用时，waiting = false，于是安排了一个微任务：Promise.resolve().then(...)；
+
+当前同步代码继续跑完（比如修改数据）；
+
+微任务阶段触发 → 执行所有队列里的 callbacks；
+
+保证这些 cb 的执行时机就是 “当前同步代码之后，DOM 更新之前或之后”。
+
+
+Vue 的 nextTick 就是注册到一个微任务（如 Promise.then）中；
+
+Vue 的响应式更新逻辑（也就是组件 patch）也用类似机制调度（批量入队 + 微任务统一 flush）；
+
+所以你才必须在 nextTick 里才能访问新的 DOM 节点。
