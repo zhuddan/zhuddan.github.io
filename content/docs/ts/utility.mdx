@@ -1,0 +1,99 @@
+---
+title: 常用内置类型
+---
+
+
+## `Partial<T>` —— 把所有属性变成可选
+
+```ts
+type User = {
+  name: string;
+  age: number;
+};
+
+type PartialUser = Partial<User>;
+// 等价于: { name?: string; age?: number }
+```
+
+## `Required<T>` —— 把所有属性变成必填
+
+```ts
+type User = {
+  name?: string;
+  age?: number;
+};
+
+type FullUser = Required<User>;
+// { name: string; age: number }
+```
+
+## `Readonly<T>` —— 把所有属性变成只读
+```ts
+type User = {
+  name: string;
+};
+
+const u: Readonly<User> = { name: 'Tom' };
+u.name = 'Jerry'; // ❌ 报错，name 是只读的
+```
+
+## `Pick<T, K>` —— 从 T 中挑选某些属性组成新类型
+```ts
+type User = {
+  name: string;
+  age: number;
+  email: string;
+};
+
+type BasicInfo = Pick<User, 'name' | 'email'>;
+// { name: string; email: string }
+```
+
+## `Omit<T, K>` —— 从 T 中移除某些属性组成新类型
+```ts
+type User = {
+  name: string;
+  age: number;
+  email: string;
+};
+
+type NoEmail = Omit<User, 'email'>;
+// { name: string; age: number }
+```
+
+## `Record<K, T>` —— 构造一个键值对类型
+```ts
+type Roles = 'admin' | 'user' | 'guest';
+
+type RolePermissions = Record<Roles, boolean>;
+// 等价于：{ admin: boolean; user: boolean; guest: boolean }
+```
+
+## `Exclude<T, U>` —— 从 T 中排除 U 的类型
+```ts
+type T = Exclude<'a' | 'b' | 'c', 'a'>;
+// 'b' | 'c'
+```
+
+## `Extract<T, U>` —— 从 T 中提取 U 的类型
+```ts
+type T = Extract<'a' | 'b' | 'c', 'a' | 'b'>;
+// 'a' | 'b'
+```
+
+## `NonNullable<T>` —— 移除 null 和 undefined
+```ts
+type T = NonNullable<string | null | undefined>;
+// string
+```
+
+## `ReturnType<T>`  —— 获取函数返回值类型
+```ts
+function getUser() {
+  return { name: 'Tom', age: 25 };
+}
+
+type User = ReturnType<typeof getUser>;
+// { name: string; age: number }
+```
+

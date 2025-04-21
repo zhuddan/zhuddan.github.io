@@ -1,0 +1,32 @@
+---
+title: Css预处理器(less/sass)
+---
+
+CSS 预处理器是一个能让你通过预处理器自己独有的语法来生成CSS的程序。
+
+本文仅仅对比 [less](https://lesscss.org/)/[sass](https://sass-lang.com/)
+
+## 相同
+两者都支持以下功能：
+
+- ✅ 变量(Variables)
+- ✅ 嵌套语法(Nesting)
+- ✅ 混入(Mixins)
+- ✅ 运算(Operations)
+- ✅ 函数(Functions)
+- ✅ 模块化导入(@import)
+- ✅ 自定义函数/逻辑控制(如条件、循环)
+
+
+## 区别
+
+| 特性             | Less                       | Sass (SCSS)                        |
+|------------------|----------------------------|------------------------------------|
+| 语法             | 接近 CSS，基于 JS 写的      | 有两种语法(Sass 和 SCSS)         |
+| 主流语法格式     | .less                      | .scss(更接近 CSS，主流)          |
+| 变量声明         | @color: red;               | $color: red;                       |
+| 编译依赖         | 基于 Node.js               | Dart Sass(官方推荐)、Node Sass(已弃) |
+| 支持条件、循环   | 有限(需结合 JS)          | 强大(内置 @if, @for, @each 等)  |
+| 混入(mixin)    | 用 . 定义，如 .clearfix()   | 用 @mixin 和 @include              |
+| 模块导入         | @import(老方式)          | @use/@forward(Sass 模块化推荐)   |
+| 社区活跃度       | 较弱                        | 更强，使用范围更广                |

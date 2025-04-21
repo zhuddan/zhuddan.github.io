@@ -1,0 +1,175 @@
+---
+title: type vs interface
+---
+
+
+## 相同点
+- 都可以用来描述对象的结构
+- 都支持扩展(继承) 可用交叉类型(&)
+- 都可以被用作函数参数、返回值的类型、泛型等
+
+## 不同点
+| 特性               | interface         | type                |
+|--------------------|-------------------|---------------------|
+| ✅ 用于对象结构     | ✔️                | ✔️                  |
+| ✅ 继承(extends)  | ✔️ 支持多继承      | ✔️ 可用交叉类型(&) |
+| ✅ 合并声明         | ✔️ 支持自动合并    | ❌ 不支持           |
+| ✅ 可用于联合类型   | ❌ 不支持         | ✔️ 支持             |
+| ✅ 定义基本类型别名 | ❌ 不支持         | ✔️ 支持             |
+| ✅ 定义元组         | ❌ 不支持         | ✔️ 支持             |
+| ✅ 映射类型/条件类型 | ❌ 不支持         | ✔️ 支持             |
+
+
+## 示例对比
+
+1. 定义对象结构
+```ts
+interface User {
+  name: string;
+  age: number;
+}
+
+type UserType = {
+  name: string;
+  age: number;
+};
+```
+2. 扩展
+
+```ts
+interface A { x: number }
+interface B extends A { y: number }
+
+type AType = { x: number }
+type BType = AType & { y: number }
+```
+
+3. 接口合并(只适用于 interface)
+
+```ts
+interface Person {
+  name: string;
+}
+
+interface Person {
+  age: number;
+}
+
+// 最终效果：{ name: string; age: number }
+```
+
+4. 联合类型（只有 type 可以）
+```ts
+type Status = 'success' | 'error';
+```
+
+5. 原始类型别名
+```ts
+type ID = string | number;
+```
+
+6. 条件类型(type 专属)
+```ts
+type IsString<T> = T extends string ? true : false;
+```
+
+
+## 补充说明
+
+
+1. 联合类型（Union Type）
+
+表示一个值可以是几种类型之一，用 | 连接。
+
+```ts
+type Status = 'success' | 'error' | 'loading';
+
+function show(status: Status) {
+  // status 只能是三者之一
+}
+```
+
+```ts
+type Id = string | number;
+
+let userId: Id = 123;
+userId = 'abc'; // 都合法
+```
+
+2. 元组类型（Tuple Type）
+
+固定长度、固定类型顺序的数组。
+
+```ts
+const user: [string, number] = ['Tom', 25];
+// user[0] 必须是 string，user[1] 必须是 number
+```
+
+```ts
+type Point = [x: number, y: number];
+type LogEntry = [timestamp: number, message: string, level?: 'info' | 'warn' | 'error'];
+
+```
+
+3. ✅ 交叉类型（Intersection Type）
+
+组合多个类型为一个类型，用 & 连接。所有属性都会被合并。
+
+```ts
+type HasName = { name: string };
+type HasAge = { age: number };
+
+type Person = HasName & HasAge;
+
+const p: Person = {
+  name: 'Alice',
+  age: 30
+};
+
+```
+
+4. 映射类型（Mapped Type）
+
+对已有类型的每个属性做变换，常用于工具类型。
+
+```ts
+type User = {
+  name: string;
+  age: number;
+};
+
+// 所有属性变成可选：
+type PartialUser = {
+  [K in keyof User]?: User[K];
+};
+
+```
+
+等价于内置的 `Partial<T>`。
+
+你也可以变成只读：
+
+```ts
+type ReadonlyUser = {
+  [K in keyof User]: Readonly<User[K]>;
+};
+```
+
+5. 条件类型（Conditional Type）
+根据条件返回不同类型。
+
+```ts
+type IsString<T> = T extends string ? true : false;
+
+type A = IsString<string>; // true
+type B = IsString<number>; // false
+```
+
+再比如提取 Promise 的结果类型：
+
+```ts
+type UnwrapPromise<T> = T extends Promise<infer R> ? R : T;
+
+type A = UnwrapPromise<Promise<number>>; // number
+type B = UnwrapPromise<string>; // string
+```
