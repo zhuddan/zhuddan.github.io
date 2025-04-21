@@ -1,5 +1,5 @@
 'use client'
-import { useEffectDay } from '@/utils/getEffectDay'
+import { useEffectDay } from '@/hooks/useEffectDay'
 import { motion } from 'framer-motion'
 import { Banner } from 'fumadocs-ui/components/banner'
 import React, { useEffect, useState } from 'react'

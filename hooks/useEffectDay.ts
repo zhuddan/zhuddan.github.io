@@ -48,7 +48,8 @@ interface Result {
 // const debugDate = '2025-06-01'
 // const debugDate = '2025-06-19'
 // const debugDate = '2025-08-29'
-const debugDate = '2025-10-17'
+// const debugDate = '2025-10-17'
+const debugDate = '2025-10-25'
 
 export function useEffectDay() {
   const [now, setNow] = useState<Date>()
