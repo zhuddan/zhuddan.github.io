@@ -2,7 +2,7 @@
 title: 生命周期
 ---
 
-## 参考[https://cn.vuejs.org/api/options-lifecycle.html#options-lifecycle](https://cn.vuejs.org/api/options-lifecycle.html#options-lifecycle)
+参考[https://cn.vuejs.org/api/options-lifecycle.html#options-lifecycle](https://cn.vuejs.org/api/options-lifecycle.html#options-lifecycle)
 
 ## beforeCreate
 
@@ -238,7 +238,7 @@ title: 生命周期
 
 - **参考**[深入响应式系统](https://vuejs.org/guide/extras/reactivity-in-depth)
 
-## renderTriggered <sup class="vt-badge dev-only" /> 
+## renderTriggered
 
 在一个响应式依赖被组件触发了重新渲染之后调用。
 
@@ -296,7 +296,7 @@ title: 生命周期
 
 - **参考**[指南 - 被缓存实例的生命周期](https://vuejs.org/guide/built-ins/keep-alive#lifecycle-of-cached-instance)
 
-## serverPrefetch <sup class="vt-badge" data-text="SSR only" /> 
+## serverPrefetch
 
 当组件实例在服务器上被渲染之前要完成的异步函数。
 
@@ -340,3 +340,13 @@ title: 生命周期
   ```
 
 - **参考**[服务端渲染](https://vuejs.org/guide/scaling-up/ssr)
+
+## 简单介绍
+
+- `beforeCreate` 在实例初始化完成并且 `props` 被解析后立即调用, 一般不做什么操作。
+- `created` 在组件实例处理完所有与状态相关的选项后调用。可以做数据请求之类的操作。
+- `beforeMount` 在组件被挂载之前调用。可以理解为创建了虚拟dom, 但是还没有创建真正的dom。
+- `mounted` 在组件被挂载之后调用。可以访问dom。
+- `beforeUnmount` 在一个组件实例被卸载之前调用。可以访问组件的所有东西，用来清除副作用。
+- `unmounted` 在一个组件实例被卸载之后调用。仅仅用来确定组件卸载了。
+- `activated` 和 `deactivated` 是 `<KeepAlive>` 包裹的组件触发, 该组件插入DOM/移除DOM时触发
