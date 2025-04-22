@@ -15,7 +15,7 @@ const links: LinkType[] = [
     items: [
       {
         label: '归档',
-        to: '/docs/css/color-opacity',
+        to: '/docs/css/center',
       },
       {
         label: '博客',

@@ -20,7 +20,7 @@ export const baseOptions: BaseLayoutProps = {
   links: [
     {
       text: '归档',
-      url: '/docs/css/color-opacity',
+      url: '/docs/css/center',
       active: 'nested-url',
     },
     {
