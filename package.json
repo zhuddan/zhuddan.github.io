@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
-    "dev:turbo": "next dev --turbo",
+    "dev": "next dev --turbo",
+    "dev:turbo": "next dev",
     "start": "next start",
     "lint": "eslint . --fix",
     "tag": "bumpp",
