@@ -38,7 +38,7 @@ function Age() {
 
 export function Me() {
   return (
-    <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4 " id="me">
+    <div className="print:grid-cols-3 grid md:grid-cols-4 sm:grid-cols-2 gap-4 " id="me">
       <div className="flex gap-x-1">
         <SquareUser />
         <span>姓名: 朱丹</span>

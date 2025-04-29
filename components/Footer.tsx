@@ -63,7 +63,7 @@ const copyright = `Copyright © ${new Date().getFullYear()} zhuddan, Inc. Built 
 
 export default function Footer() {
   return (
-    <footer className="relative mt-auto border-t bg-fd-card py-12 text-fd-secondary-foreground">
+    <footer className="relative mt-auto border-t bg-fd-card py-12 text-fd-secondary-foreground print:hidden">
       <div className="container justify-start flex flex-col gap-4 sm:flex-row  items-star sm:justify-between">
         <div>
           <p className="mb-1 text-sm font-semibold">Fumadocs</p>
