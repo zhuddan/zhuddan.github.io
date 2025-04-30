@@ -54,7 +54,7 @@ export default function Profile() {
           src="/profile.jpg"
           width={319}
           height={425}
-          className=" sm:max-h-[172px] h-auto !w-auto !m-0"
+          className="sm:max-h-[172px] print:h-[150px] h-auto !w-auto !m-0"
         />
       </div>
     </div>
