@@ -17,7 +17,7 @@ export const metadata = ({
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={inter.className} suppressHydrationWarning>
+    <html lang="zh-CN" className={inter.className} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/logo.jpg" />
       </head>

@@ -1,15 +1,14 @@
 import type { Metadata } from 'next'
-import ResumeNav from '@/components/resume-nav'
+import { getHistoryResumes } from '@/lib/resume-history-server'
 import { getMDXComponents } from '@/mdx-components'
 
 export default async function Page(props: {
   params: Promise<{ id: string }>
 }) {
   const params = await props.params
-  const { default: MDXContent } = await import(`@/app/(home)/resume/[id]/${params.id}.mdx`)
+  const { default: MDXContent } = await import(`@/content/resume/${params.id}.mdx`)
   return (
     <>
-      <ResumeNav />
       <MDXContent
         components={getMDXComponents({ })}
       />
@@ -18,7 +17,9 @@ export default async function Page(props: {
 }
 
 export function generateStaticParams(): { id: string }[] {
-  return [{ id: 'v1' }]
+  return getHistoryResumes().map((id) => {
+    return { id }
+  })
 }
 
 export async function generateMetadata(props: {

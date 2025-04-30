@@ -9,7 +9,8 @@ export default function Layout({ children }: { children: ReactNode }) {
       tree={source.pageTree}
       {...baseOptions}
       links={[
-        baseOptions.links![1],
+        // baseOptions.links![1],
+        // baseOptions.links![2],
       ]}
     >
       {children}

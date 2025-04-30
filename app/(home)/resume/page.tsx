@@ -1,18 +1,15 @@
-import ResumeNav from '@/components/resume-nav'
 import { getHistoryResumes } from '@/lib/resume-history-server'
-import { getMDXComponents } from '@/mdx-components'
-import MDXContent from './content.mdx'
+import Link from 'next/link'
 
-export default async function Page() {
-  const x = await getHistoryResumes()
-  return (
-    <>
-      {x.toString()}
-      {/* <MDXContent
-        components={getMDXComponents({ })}
-      /> */}
-    </>
-  )
+export default function Page() {
+  const resumes = getHistoryResumes()
+  return resumes.map((e) => {
+    return (
+      <Link className="block" key={e} href={`/resume/${e}`}>
+        {e}
+      </Link>
+    )
+  })
 }
 
 export async function generateMetadata() {
