@@ -36,7 +36,7 @@ function Age() {
 //   )
 // }
 
-export function Me() {
+export default function Me() {
   return (
     <div className="print:grid-cols-3 grid md:grid-cols-4 sm:grid-cols-2 gap-4 " id="me">
       <div className="flex gap-x-1">
