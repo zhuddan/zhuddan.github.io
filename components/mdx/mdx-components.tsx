@@ -1,5 +1,6 @@
 import type { MDXComponents } from 'mdx/types'
 import { File, Files, Folder } from 'fumadocs-ui/components/files'
+import { ImageZoom } from 'fumadocs-ui/components/image-zoom'
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
 import { Alert } from './Alert'
 import { CodeDetails } from './CodeDetails'
@@ -14,4 +15,5 @@ export default {
   Alert,
   CodeDetails,
   NodeCmd,
+  img: props => <ImageZoom {...(props as any)} />,
 } satisfies MDXComponents
