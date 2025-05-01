@@ -167,6 +167,17 @@ export const FESTIVALS: FestivalType[] = [
     </>,
   },
   {
+    name: '儿童节',
+    title: '儿童节快乐!',
+    solar: '06-01',
+    img: {
+      src: '/effect/0601.jpg',
+      width: 660,
+      height: 509,
+      alt: '',
+    },
+  },
+  {
     name: '端午节',
     title: '端午安康!',
     lunar: '五月初五',

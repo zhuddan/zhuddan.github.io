@@ -3,6 +3,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import React, { useEffect, useState } from 'react'
 import Confetti from 'react-confetti'
 import { useWindowSize } from 'react-use'
+import AutoPlayAudio from './AutoPlayAudio'
 
 function CakeMask() {
   const { width, height } = useWindowSize()
@@ -31,6 +32,7 @@ export default function BirthdayEffect({
     <>
       { mounted && <CakeMask /> }
       <div className="flex items-center flex-col py-8 gap-y-3">
+        <AutoPlayAudio src="/audio/Happy_Birthday_to_You_-_DmitriyTaras.mp3" />
         <h1 className="text-xl font-bold text-center sm:text-3xl md:text-4xl">
           {/* Happy Birthday to
           {' '}

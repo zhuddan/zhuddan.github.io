@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import solarLunar from 'solarlunar'
 
-const debugDate = '2025-01-01'
+// const debugDate = '2025-01-01'
 // const debugDate = '2025-01-29'
 // const debugDate = '2025-02-12'
 // const debugDate = '2025-02-14'
@@ -14,7 +14,7 @@ const debugDate = '2025-01-01'
 // const debugDate = '2025-05-04'
 // const debugDate = '2025-05-31'
 // const debugDate = '2025-06-01'
-// const debugDate = '2025-06-19'
+const debugDate = '2025-06-19'
 // const debugDate = '2025-08-29'
 // const debugDate = '2025-10-06'
 // const debugDate = '2025-10-25'
@@ -80,20 +80,6 @@ export function useEffectDay() {
         return f
       }
     }
-    // const data = EFFECT_DATE[type]
-    // if (data === solar || data === lunar) {
-    //   result.type = type
-    //   if (type === 'NEW_YEAR') {
-    //     result.data = `${year}`
-    //   }
-    //   else if (type === 'SPRING_FESTIVAL') {
-    //     result.data = `${animal}`
-    //   }
-    //   else {
-    //     result.data = data
-    //   }
-    //   return result
-    // }
   }
   return null
 }
