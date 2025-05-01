@@ -1,0 +1,47 @@
+---
+title: iframe 通信
+---
+
+iframe 主流使用 [Window.postMessage](postMessage) 实现通信。
+
+### 父页面 => iframe
+
+1. 父页面发送消息给 iframe：
+
+```js
+const iframe = document.querySelector('iframe');
+iframe.contentWindow.postMessage('hello iframe', "http://example.org:8080");
+```
+
+2. 子页面接收父页面消息：
+
+```js
+window.addEventListener('message', (event) => {
+  if (event.origin !== "http://example.org:8080") return; // [!code highlight]
+  console.log('接收到来自父页面的消息:', event.data);
+});
+```
+
+<Alert type="info">
+如果你明确的知道消息应该发送到哪个窗口，那么请始终提供一个有确切值的 targetOrigin，而不是 *。不提供确切的目标将导致数据泄露到任何对数据感兴趣的恶意站点。
+</Alert>
+
+
+### iframe => 父页面
+
+1. 子页面发送消息给父页面：
+
+```js
+window.parent.postMessage('hello parent', "http://example.org:8080/child");
+```
+
+2. 父页面接收消息：
+
+```js
+window.addEventListener('message', (event) => {
+  if (event.origin !== "http://example.org:8080/child") return; // [!code highlight]
+  console.log('接收到来自子页面的消息:', event.data);
+});
+```
+
+参考[https://github.com/zhuddan/iframe-communicate.git](https://github.com/zhuddan/iframe-communicate.git)
