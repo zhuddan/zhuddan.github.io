@@ -9,7 +9,21 @@ function CakeMask() {
   const { width, height } = useWindowSize()
   return (
     <div className="fixed inset-0 z-10 pointer-events-none opacity-75">
-      <Confetti width={width} height={height} />
+      <Confetti
+        width={width}
+        height={height}
+        // drawShape={(ctx) => {
+        //   ctx.beginPath()
+        //   for (let i = 0; i < 22; i++) {
+        //     const angle = 0.35 * i
+        //     const x = (0.2 + (1.5 * angle)) * Math.cos(angle)
+        //     const y = (0.2 + (1.5 * angle)) * Math.sin(angle)
+        //     ctx.lineTo(x, y)
+        //   }
+        //   ctx.stroke()
+        //   ctx.closePath()
+        // }}
+      />
     </div>
   )
 }
