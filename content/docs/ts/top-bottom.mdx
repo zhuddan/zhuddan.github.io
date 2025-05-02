@@ -1,0 +1,67 @@
+---
+title: 顶层类型/底层类型
+---
+
+
+在 TypeScript 中，**顶层类型（Top Types）** 和 **底层类型（Bottom Types）** 是类型系统中的术语，主要用于表示类型的包含（分配）关系。
+
+
+## 一、顶层类型（Top Types）
+定义：可以接受任何类型的值。它们是所有类型的“超集”。
+
+常见顶层类型有：
+
+| 类型        | 描述                                |
+| --------- | --------------------------------- |
+| `any`     | 关闭类型检查，任何值都可以赋给它                  |
+| `unknown` | 类型安全的 `any`，可接受任何值，但使用前需类型检查      |
+| `object`  | 只能接收非原始类型的对象（不能是 string/number 等） |
+
+示例：
+```ts
+let a: any = 1;
+let b: unknown = 'str';
+let c: object = { name: 'Tom' };
+```
+
+## 二、底层类型（Bottom Types）
+定义：是所有类型的“子集”，无法被赋值为任何实际值，代表不可能的类型。
+
+常见底层类型有：
+
+| 类型      | 描述                                           |
+| ------- | -------------------------------------------- |
+| `never` | 永远不会有值的类型，代表不可能发生的情况，比如抛错或无限循环     |
+| `null`  | 在 `--strictNullChecks` 为 `false` 时是底层类型；否则不是 |
+
+
+```ts
+function throwError(): never {
+  throw new Error('error'); // 永远不会返回
+}
+
+function infiniteLoop(): never {
+  while (true) {}
+}
+```
+
+
+## 三、关系图（简化）
+
+
+```shell
+any
+ |
+unknown
+ |
+object / string / number / ...
+ |
+never
+```
+
+
+## 四、使用建议
+
+`unknown` 优于 `any`，更安全。
+
+`never` 通常用于类型保护、穷尽检查（如 `switch`）中。

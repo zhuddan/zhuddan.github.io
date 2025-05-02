@@ -65,6 +65,11 @@ export const FESTIVALS: FestivalType[] = [
     birthday: '九月初五',
   },
   {
+    name: '左旭生日',
+    title: '祝左旭生日快乐！',
+    birthday: '10-17',
+  },
+  {
     name: '元旦',
     title: '新年快乐',
     solar: '01-01',

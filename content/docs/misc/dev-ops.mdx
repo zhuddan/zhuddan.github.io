@@ -1,0 +1,142 @@
+---
+title: 前端运维
+---
+
+## 简介
+
+前端运维（Front-end Operations，俗称“前端可观测性”）中的白屏检测、错误日志上报
+
+
+## 白屏检测
+
+白屏一般指用户打开页面但没有正常渲染内容，常见原因包括 JS 加载失败、接口卡住、资源加载慢等。
+
+
+常用检测方式：
+
+1. 采集首屏关键节点
+比如通过定时器检测页面上是否有关键 DOM 出现：
+
+```ts
+setTimeout(() => {
+  const hasContent = document.querySelector('#app')?.children.length > 0;
+  if (!hasContent) {
+    reportWhiteScreen(); // 上报白屏
+  }
+}, 3000);
+```
+
+2. 通过 Performance API 检测资源加载
+
+```js
+window.addEventListener('load', () => {
+  const entries = performance.getEntriesByType('resource');
+  const hasScript = entries.some(e => e.initiatorType === 'script');
+  if (!hasScript) {
+    reportWhiteScreen('No JS Loaded');
+  }
+});
+```
+
+3. 打点检测视觉区域是否有实际内容
+
+取几个固定点，判断这些点上是否都是背景色：
+
+```js
+function isWhiteScreen() {
+  const points = [0.1, 0.3, 0.5, 0.7, 0.9].map(scale => {
+    return document.elementFromPoint(window.innerWidth * scale, window.innerHeight * scale);
+  });
+  return points.every(el => !el || el.tagName === 'HTML' || el.tagName === 'BODY');
+}
+```
+
+## 错误日志上报
+用于自动捕捉页面异常和用户行为，便于调试与告警。
+
+### 常见类型：
+
+| 类型               | 描述 |
+|--------------------|------|
+| JS 异常             | `window.onerror` / `window.addEventListener('error')` |
+| Promise 未处理异常  | `unhandledrejection` 事件 |
+| 资源加载失败         | `img.onload`, `img.onerror` 等 |
+| 自定义打点           | 接口失败、埋点事件等 |
+
+
+### 常用工具或平台：
+1. Sentry（推荐）
+支持 SourceMap，自动捕捉异常和堆栈信息
+
+2. Fundebug / logRocket / 阿里 ARMS / 腾讯 TSW
+
+3. 自建上报平台
+
+   异常捕捉后，通过 `navigator.sendBeacon()` 或 `AJAX` 上报到日志服务
+
+```js
+window.onerror = function (msg, url, line, col, error) {
+  sendToServer({
+    type: 'js-error',
+    msg,
+    url,
+    line,
+    col,
+    stack: error?.stack
+  });
+};
+window.addEventListener('unhandledrejection', event => {
+  sendToServer({
+    type: 'promise-error',
+    reason: event.reason
+  });
+});
+```
+## Raven.js / @sentry/browser
+
+### 简介
+
+是 Sentry 官方的 JS SDK（老版本），用于前端异常捕捉和上报
+
+功能：
+
+- 捕捉错误、Promise 异常
+
+- 自动处理 SourceMap
+
+- 上报用户信息、标签、环境变量等
+
+现在已被新的 SDK（@sentry/browser）替代：
+
+```js
+import * as Sentry from '@sentry/browser';
+
+Sentry.init({
+  dsn: 'https://xxx@xxx.ingest.sentry.io/xxx',
+  tracesSampleRate: 1.0,
+});
+```
+
+# 补充：
+
+除了上面提到的白屏和错误监控，还包括：
+
+- 页面性能监控（FCP、TTI、LCP、CLS）
+
+- 接口响应时间、失败率
+
+- 用户行为回放（如 logRocket）
+
+- 网络请求分析（慢接口、失败接口）
+
+- 资源加载分析（JS、CSS、图片等）
+
+## 总结
+
+| 名称                | 用途                                  |
+| ----------------- | ----------------------------------- |
+| 白屏检测              | 判断页面是否空白未加载成功                       |
+| 错误日志上报            | 捕捉 JS / Promise / 网络等错误             |
+| Raven.js / Sentry | 前端错误监控平台                            |
+| 相关平台工具            | Sentry, 阿里 ARMS, 腾讯 TSW, Fundebug 等 |
+

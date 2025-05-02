@@ -14,9 +14,10 @@ import solarLunar from 'solarlunar'
 // const debugDate = '2025-05-04'
 // const debugDate = '2025-05-31'
 // const debugDate = '2025-06-01'
-const debugDate = '2025-06-19'
+// const debugDate = '2025-06-19'
 // const debugDate = '2025-08-29'
 // const debugDate = '2025-10-06'
+const debugDate = '2025-10-17'
 // const debugDate = '2025-10-25'
 // const debugDate = undefined
 
@@ -58,26 +59,26 @@ export function useEffectDay() {
   const _lunar = monthCn + dayCn
 
   for (let index = 0; index < FESTIVALS.length; index++) {
-    const f = FESTIVALS[index]
-    if ('lunar' in f) {
-      //
-      if (_lunar === f.lunar) {
-        return f
+    const result = FESTIVALS[index]
+    if ('lunar' in result) {
+      if (_lunar === result.lunar) {
+        return result
       }
     }
-    else if ('solar' in f) {
-      if (_solar === f.solar) {
-        return f
+    else if ('solar' in result) {
+      if (_solar === result.solar) {
+        return result
       }
     }
-    else if ('term' in f) {
-      if (term && f.term) {
-        return f
+    else if ('term' in result) {
+      if (term && result.term) {
+        return result
       }
     }
     else {
-      if (f.birthday === _solar || f.birthday === _lunar) {
-        return f
+      // 判断公历或是阳历生日
+      if (result.birthday === _solar || result.birthday === _lunar) {
+        return result
       }
     }
   }
