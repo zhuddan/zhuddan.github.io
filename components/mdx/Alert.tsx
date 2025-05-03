@@ -1,13 +1,15 @@
 import type { ReactNode } from 'react'
 import { Flame, Info, Lightbulb, TriangleAlert } from 'lucide-react'
 
+import './Alert.css'
+
 type AlertType = 'info' | 'warning' | 'danger' | 'tip'
 
 const bgMap: Record<AlertType, ReactNode> = {
-  info: <Info />,
-  warning: <TriangleAlert />,
-  danger: <Flame />,
-  tip: <Lightbulb />,
+  info: <Info size="1.5em" />,
+  warning: <TriangleAlert size="1.5em" />,
+  danger: <Flame size="1.5em" />,
+  tip: <Lightbulb size="1.5em" />,
 }
 
 export function Alert({
@@ -30,13 +32,15 @@ export function Alert({
         backgroundColor: `${bg}19`,
         borderLeftColor: bg,
       }}
-      className="border-l-4 rounded px-2 py-4"
+      className="border-l-4 rounded px-2 py-4 Alert"
     >
-      <div className="flex">
+      <div className="flex items-center mb-1">
         {icon}
-        <span className="ml-2 uppercase font-bold">{type}</span>
+        <span className="ml-2 uppercase text-base font-bold">{type}</span>
       </div>
-      {children}
+      <div className="px-1">
+        {children}
+      </div>
     </div>
   )
 }

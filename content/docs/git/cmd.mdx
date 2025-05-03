@@ -1,0 +1,280 @@
+---
+title: git 常用命令
+---
+
+## 基础配置
+```bash
+# 设置全局用户名
+git config --global user.name "zd"
+
+# 设置全局邮箱
+git config --global user.email "zdecode@outlook.com"
+
+# 查看配置信息
+git config --list
+```
+
+## 仓库操作
+
+```bash
+# 初始化新仓库
+git init
+
+# 克隆远程仓库
+git clone https://github.com/username/repository.git
+
+# 克隆指定分支
+git clone -b branch-name https://github.com/username/repository.git
+```
+
+## 基本工作流
+
+### 文件状态查看
+```bash
+# 查看工作区状态
+git status
+
+# 查看变更详情
+git diff
+
+# 查看暂存区和上一次提交的差异
+git diff --staged
+```
+
+### 添加和提交
+
+```bash
+# 添加指定文件到暂存区
+git add filename.txt
+
+# 添加所有变更文件
+git add .
+
+# 提交暂存的更改
+git commit -m "描述你的提交"
+
+# 合并add和commit操作（仅对已跟踪文件）
+git commit -am "描述你的提交"
+```
+### 分支操作
+
+```bash
+# 列出所有本地分支
+git branch
+
+# 列出所有远程分支
+git branch -r
+
+# 列出所有分支
+git branch -a
+
+# 创建新分支
+git branch branch-name
+
+# 切换分支
+git checkout branch-name
+
+# 创建并切换到新分支
+git checkout -b new-branch
+
+# 合并指定分支到当前分支
+git merge branch-name
+
+# 删除本地分支
+git branch -d branch-name
+
+# 强制删除本地分支
+git branch -D branch-name
+
+```
+
+## 远程操作
+
+### 远程仓库
+
+```bash
+# 查看远程仓库
+git remote -v
+
+# 添加远程仓库
+git remote add origin https://github.com/username/repository.git
+
+# 从远程获取最新代码但不合并
+git fetch origin
+
+# 从远程获取最新代码并合并
+git pull origin branch-name
+
+# 推送到远程仓库
+git push origin branch-name
+
+# 设置上游分支并推送
+git push -u origin branch-name
+```
+
+## 撤销与恢复
+
+### 撤销修改
+```bash
+# 撤销工作区的修改
+git checkout -- filename.txt
+
+# 撤销暂存区的修改（保留工作区修改）
+git reset HEAD filename.txt
+
+# 撤销提交（创建新的提交来撤销之前的提交）
+git revert commit-id
+
+# 重置到指定提交（慎用）
+git reset --hard commit-id
+```
+### 暂存工作
+
+```bash
+# 暂存当前工作
+git stash
+
+# 查看暂存列表
+git stash list
+
+# 应用最近的暂存
+git stash apply
+
+# 应用并删除最近的暂存
+git stash pop
+
+# 删除所有暂存
+git stash clear
+```
+
+## 日志与历史
+
+### 查看历史
+
+```bash
+# 查看提交历史
+git log
+
+# 查看简洁历史
+git log --oneline
+
+# 查看图形化历史
+git log --graph --oneline
+
+# 查看指定文件的历史
+git log -p filename.txt
+```
+## 代理配置
+
+### 设置代理
+
+```shell
+git config --global http.proxy 127.0.0.1:7890
+git config --global https.proxy 127.0.0.1:7890
+
+```
+### 取消代理
+
+```shell
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+```
+
+## 大小写不敏感
+
+```shell
+git config core.ignorecase  false
+```
+
+## 忽略已经在仓库中的文件
+
+1. 在 `gitignore` 文件中添加要忽略的文件或文件夹路径。
+
+```bash title=".gitignore"
+/path/to/ignored_file
+```
+
+2. 删除文件并保留本地副本。
+
+```bash
+git rm --cached /path/to/ignored_file
+```
+
+3. 删除文件并从本地和远程仓库中完全移除
+
+```bash
+git rm -r --cached /path/to/ignored_file
+```
+
+## 回滚版本
+
+### 1. 使用 `git reset` 命令
+
+**软回滚** - 保留工作区和暂存区的修改：
+```bash
+# 回滚到指定提交，但保留所有更改在工作区中
+git reset --soft commit-id
+
+# 回滚到上一个提交
+git reset --soft HEAD~1
+```
+
+- 混合回滚 - 保留工作区但清除暂存区的修改（默认方式）：
+
+```bash
+# 回滚到指定提交，保留更改在工作区但清空暂存区
+git reset commit-id
+# 或
+git reset --mixed commit-id
+
+# 回滚到上一个提交
+git reset HEAD~1
+```
+
+- 硬回滚 - 完全丢弃所有更改（谨慎使用）：
+
+```bash
+# 回滚到指定提交，丢弃所有更改
+git reset --hard commit-id
+
+# 回滚到上一个提交，丢弃所有更改
+git reset --hard HEAD~1
+
+# 回滚到远程分支最新状态
+git reset --hard origin/main
+```
+
+### 2. 使用 `git revert` 命令
+
+- 安全回滚 - 创建新的提交来撤销之前的更改（推荐用于已推送的提交）：
+
+```bash
+# 撤销指定的提交，创建一个新的提交
+git revert commit-id
+
+# 撤销多个提交
+git revert commit-id-1 commit-id-2
+
+# 撤销一系列提交
+git revert commit-id-1..commit-id-n
+```
+
+### 3. 回滚单个文件
+
+```bash
+# 将单个文件回滚到特定版本
+git checkout commit-id -- path/to/file
+
+# 将文件回滚到上一个提交
+git checkout HEAD~1 -- path/to/file
+```
+
+### 对比
+
+| 命令              | 本地更改      | 提交历史     | 适用场景                          |
+|-------------------|---------------|--------------|-----------------------------------|
+| git reset --soft  | 保留          | 删除         | 合并多个提交，前的撤销            |
+| git reset --mixed | 保留（在工作区） | 删除       | 重新整理暂存区                    |
+| git reset --hard  | 删除          | 删除         | 完全丢弃本地更改                  |
+| git revert        | 保留并添加新提交 | 创建新提交 | 撤销更改，已推送到远程的提交也适用 |
+

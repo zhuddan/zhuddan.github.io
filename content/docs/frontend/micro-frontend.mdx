@@ -1,0 +1,296 @@
+---
+title: 微前端
+---
+
+微前端（Micro-Frontend）是一种前端架构模式，它将前端应用分解成一些更小、更易于管理的部分，这些部分可以由不同的团队独立开发、测试和部署，最终组合成一个完整的应用。
+
+
+## 核心理念
+
+- 技术栈无关性：每个微前端可以使用不同的JavaScript框架（如React、Vue、Angular等）独立开发
+- 团队自治：不同团队可以负责不同的微前端，独立开发和部署
+- 松耦合：各微前端之间保持低耦合，通过定义好的接口进行通信
+- 渐进式升级：可以逐步将旧系统迁移到新架构，无需一次性重写整个应用
+- 独立部署：各微前端可以独立部署，不影响其他部分
+
+微前端特别适合大型应用和需要多团队协作的场景。
+
+
+## 常见实现方式
+
+### 1. 模块联邦
+
+模块联邦允许一个JavaScript应用在运行时动态加载另一个应用的代码，实现应用间代码共享。
+
+- 优点
+    - 真正的代码共享
+    - 构建时集成，性能好
+    - 支持热更新
+    - 减少重复依赖
+
+- 缺点
+    - 依赖Web
+
+- 简单示例
+
+主应用(host)配置:
+
+```js
+// webpack.config.js (主应用)
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+
+module.exports = {
+  // ...
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'host',
+      remotes: {
+        app2: 'app2@http://localhost:3002/remoteEntry.js',
+      },
+    }),
+  ],
+};
+```
+
+主应用使用子应用组件:
+
+```jsx
+// 主应用中使用
+import React, { Suspense } from 'react';
+
+const RemoteButton = React.lazy(() => import('app2/Button'));
+
+const App = () => (
+  <div>
+    <h1>主应用</h1>
+    <Suspense fallback="加载中...">
+      <RemoteButton />
+    </Suspense>
+  </div>
+);
+```
+
+子应用配置:
+
+```js
+// webpack.config.js (子应用)
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+
+module.exports = {
+  // ...
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'app2',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './Button': './src/Button',
+      },
+    }),
+  ],
+};
+```
+
+### 2. 基于路由的分发集成
+
+使用前端路由将不同URL映射到不同的微前端应用。
+
+- 优点
+    - 实现简单，易于理解
+    - 子应用完全解耦
+    - 天然支持SEO
+    - 部署独立
+
+- 缺点
+    - 页面刷新体验差
+    - 应用间状态共享困难
+    - 不利于细粒度集成
+
+- 简单示例
+
+```jsx
+// 主应用 app.js
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
+const App = () => (
+  <BrowserRouter>
+    <Switch>
+      <Route path="/app1" component={() => {
+        // 动态加载 app1
+        const script = document.createElement('script');
+        script.src = 'http://localhost:3001/app1.js';
+        document.body.appendChild(script);
+        return <div id="app1-container"></div>;
+      }} />
+      <Route path="/app2" component={() => {
+        // 动态加载 app2
+        const script = document.createElement('script');
+        script.src = 'http://localhost:3002/app2.js';
+        document.body.appendChild(script);
+        return <div id="app2-container"></div>;
+      }} />
+    </Switch>
+  </BrowserRouter>
+);
+```
+
+### 3. iframe集成
+
+使用iframe将各个微前端嵌入主应用。
+
+- 优点
+    - 提供天然隔离
+    - 实现简单
+    - 技术栈完全无关
+    - 安全性高
+
+- 缺点
+    - 性能较差，白屏时间长
+    - 共享状态困难
+    - 用户体验割裂（样式、导航、历史记录）
+    - 不利于SEO
+    
+- 简单示例
+
+```html
+<!-- 主应用 index.html -->
+<div id="app">
+  <header>主应用导航</header>
+  <main>
+    <iframe id="micro-frontend-container" src=""></iframe>
+  </main>
+</div>
+
+<script>
+  // 根据路由切换iframe内容
+  const iframe = document.getElementById('micro-frontend-container');
+  
+  function navigateTo(path) {
+    switch(path) {
+      case '/app1':
+        iframe.src = 'http://localhost:3001/';
+        break;
+      case '/app2':
+        iframe.src = 'http://localhost:3002/';
+        break;
+    }
+  }
+  
+  // 监听路由变化
+  window.addEventListener('popstate', () => {
+    navigateTo(window.location.pathname);
+  });
+  
+  // 初始化
+  navigateTo(window.location.pathname);
+</script>
+```
+
+### 4. Web Components
+使用Custom Elements将微前端封装为标准Web组件。
+
+- 优点
+    - 浏览器原生支持
+    - 良好的封装性
+    - 可与任何框架集成
+    - DOM级别隔离
+
+- 缺点
+    - 兼容性有限
+    - 状态管理相对复杂
+    - 生态相对不成熟
+    - 学习成本较高
+    
+- 简单示例
+
+```js
+// 子应用 app1
+class MicroApp1 extends HTMLElement {
+  connectedCallback() {
+    this.innerHTML = `<div>
+      <h2>微前端应用1</h2>
+      <button>App1 按钮</button>
+    </div>`;
+    
+    this.querySelector('button').addEventListener('click', () => {
+      alert('来自App1的点击');
+    });
+  }
+}
+
+customElements.define('micro-app-1', MicroApp1);
+```
+
+主应用使用:
+
+```html
+<!-- 主应用 index.html -->
+<div id="app">
+  <header>主应用导航</header>
+  <main>
+    <micro-app-1></micro-app-1>
+  </main>
+</div>
+
+<script src="http://localhost:3001/micro-app-1.js"></script>
+```
+
+### 5. JavaScript运行时集成
+
+使用专门的微前端框架如`single-spa`或`qiankun`。
+
+- 优点
+    - 应用级隔离
+    - 框架成熟，生态丰富
+    - 支持多框架共存
+    - 配置灵活，集成度高
+- 缺点
+    - 实现复杂度高
+    - 运行时依赖强
+    - 打包体积较大
+    - 初始加载性能可能受影响
+    
+- 简单示例
+
+
+```js
+// 主应用 index.js
+import { registerApplication, start } from 'single-spa';
+
+// 注册微前端应用
+registerApplication(
+  'app1',
+  () => import('http://localhost:3001/js/app.js'),
+  location => location.pathname.startsWith('/app1')
+);
+
+registerApplication(
+  'app2',
+  () => import('http://localhost:3002/js/app.js'),
+  location => location.pathname.startsWith('/app2')
+);
+
+// 启动
+start();
+```
+
+子应用需要导出生命周期函数:
+
+```js
+// 子应用 app1
+export function bootstrap() {
+  // 应用初始化
+  return Promise.resolve();
+}
+
+export function mount(props) {
+  // 挂载应用到DOM
+  document.getElementById('app1-container').innerHTML = '<h1>App1已加载</h1>';
+  return Promise.resolve();
+}
+
+export function unmount() {
+  // 卸载应用
+  document.getElementById('app1-container').innerHTML = '';
+  return Promise.resolve();
+}
+```
