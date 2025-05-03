@@ -17,9 +17,9 @@ import solarLunar from 'solarlunar'
 // const debugDate = '2025-06-19'
 // const debugDate = '2025-08-29'
 // const debugDate = '2025-10-06'
-const debugDate = '2025-10-17'
+// const debugDate = '2025-10-17'
 // const debugDate = '2025-10-25'
-// const debugDate = undefined
+const debugDate = undefined
 
 export function useEffectDay() {
   const [now, setNow] = useState<Date>()

@@ -1,0 +1,74 @@
+---
+title: 更新异常
+---
+
+vue 在某些情况下数据发送了改变，但是试图没有正常修改：
+
+## 常见数据不更新的情况
+
+1. 直接修改对象属性但 Vue 无法检测
+
+```js
+this.user.age = 25; // 如果 user 是响应式的，这样没问题
+// 但新增属性 Vue2 无法监听：
+this.user.newProp = 'xxx'; // 无法响应式
+```
+解决方法：
+
+- 使用 `this.$set(this.user, 'newProp', 'xxx')`（Vue 2）
+
+- 确保对象是在 data 中声明（Vue 3 使用 Proxy，不存在这个问题）
+
+
+2. 数组变更方法未触发响应
+Vue 2 对以下数组操作不响应：
+```js
+this.list[0] = 123;       // 不触发更新
+this.list.length = 0;     // 不触发更新
+```
+
+解决方法：
+
+- 替代写法：this.$set(this.list, 0, 123)
+
+- 使用 splice: this.list.splice(0, 1, 123)
+
+3. 更新变量后页面未刷新
+
+原因可能包括：
+
+变量不是响应式的（未定义在 `data()` 中）
+
+更新的是 `props`，但未设置 `emits`（Vue 3）
+
+异步更新未触发视图刷新（如 `setTimeout` 中的更新）
+
+4. 未使用正确的响应式 API（Vue 3）
+在 Vue 3 中常见错误：
+
+```js
+var state = reactive({ count: 0 });
+state = reactive({ count: 1 }); // 这样会丢失响应性
+```
+正确做法：
+```js
+state.count = 1; // 修改属性，而不是整个对象
+```
+
+5. `computed` 缓存未触发
+如果 `computed` 没有依赖响应式数据，它不会重新计算。
+
+6. `v-if`、`v-show` 控制了 `DOM`，但数据其实是更新了
+检查 `DOM` 是否被条件语句隐藏或销毁。
+
+
+## 排查建议
+- 确认数据是否定义在 `data` / `reactive` / `ref` 中
+
+- 使用 `Vue Devtools` 查看数据是否确实更新
+
+- `console.log` 查看更新逻辑是否被执行
+
+- 用 `$nextTick` 确保 DOM 已更新
+
+- 简化代码为最小复现，排除其他干扰

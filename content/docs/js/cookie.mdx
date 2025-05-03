@@ -1,0 +1,407 @@
+---
+title: cookie
+---
+
+## Cookie 在传统前后端不分离项目中的使用场景
+
+在传统的前后端不分离项目中，Cookie 是服务器与客户端之间状态管理的核心机制。这些项目通常采用服务器端渲染(SSR)，页面由服务器直接生成并返回给浏览器。以下是传统架构中 Cookie 的主要使用场景：
+
+
+### 1. 会话管理与用户认证
+
+这是最基础也是最常见的使用场景：
+```php
+// PHP 示例 - 登录处理
+session_start();
+if ($_POST['username'] == 'admin' && $_POST['password'] == 'secret') {
+  $_SESSION['user_id'] = 1;
+  $_SESSION['username'] = 'admin';
+  $_SESSION['is_authenticated'] = true;
+  
+  // 设置会话 Cookie
+  setcookie(session_name(), session_id(), [
+    'expires' => time() + 86400,
+    'path' => '/',
+    'secure' => true,
+    'httponly' => true
+  ]);
+  
+  header('Location: /dashboard.php');
+  exit;
+}
+```
+```java
+// Java Servlet 示例
+HttpSession session = request.getSession();
+session.setAttribute("userId", user.getId());
+session.setAttribute("username", user.getUsername());
+
+// 页面访问控制
+if (session.getAttribute("userId") == null) {
+  response.sendRedirect("/login");
+  return;
+}
+```
+
+### 2. 记住用户登录状态
+
+"记住我"功能允许用户在关闭浏览器后仍保持登录状态：
+
+```php
+// PHP - 设置持久化登录 Cookie
+if (isset($_POST['remember_me']) && $_POST['remember_me'] == 'on') {
+  $token = bin2hex(random_bytes(32));
+  $user_id = $user['id'];
+  
+  // 存储到数据库
+  $stmt = $db->prepare("INSERT INTO persistent_logins (user_id, token, expires) VALUES (?, ?, ?)");
+  $expires = time() + (30 * 24 * 60 * 60); // 30天
+  $stmt->execute([$user_id, $token, date('Y-m-d H:i:s', $expires)]);
+  
+  setcookie('remember_user', $token, [
+    'expires' => $expires,
+    'path' => '/',
+    'httponly' => true,
+    'secure' => true
+  ]);
+}
+
+// 登录检查
+function checkRememberMeCookie() {
+  if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_user'])) {
+    $token = $_COOKIE['remember_user'];
+    
+    $stmt = $db->prepare("SELECT user_id FROM persistent_logins WHERE token = ? AND expires > NOW()");
+    $stmt->execute([$token]);
+    $result = $stmt->fetch();
+    
+    if ($result) {
+      // 自动登录用户
+      $user = getUserById($result['user_id']);
+      $_SESSION['user_id'] = $user['id'];
+      $_SESSION['username'] = $user['username'];
+    }
+  }
+}
+```
+
+### 3. 购物车管理
+在电子商务网站中使用 Cookie 跟踪购物车状态：
+```php
+// 添加产品到购物车
+if (isset($_POST['add_to_cart'])) {
+  $product_id = $_POST['product_id'];
+  $quantity = $_POST['quantity'];
+  
+  session_start();
+  if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+  }
+  
+  if (isset($_SESSION['cart'][$product_id])) {
+    $_SESSION['cart'][$product_id] += $quantity;
+  } else {
+    $_SESSION['cart'][$product_id] = $quantity;
+  }
+  
+  header('Location: /cart.php');
+  exit;
+}
+
+// 显示购物车页面
+session_start();
+$cart = $_SESSION['cart'] ?? [];
+$cart_items = [];
+
+foreach ($cart as $product_id => $quantity) {
+  $product = getProductById($product_id);
+  $cart_items[] = [
+    'id' => $product_id,
+    'name' => $product['name'],
+    'price' => $product['price'],
+    'quantity' => $quantity,
+    'total' => $product['price'] * $quantity
+  ];
+}
+
+// 在模板中显示购物车
+require 'templates/cart.php';
+```
+
+### 4. 防止 CSRF 攻击
+
+传统应用中，CSRF 令牌通常与会话关联并在表单中使用：
+
+```php
+// 生成 CSRF 令牌并存储在会话中
+function generateCsrfToken() {
+  if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+  }
+  return $_SESSION['csrf_token'];
+}
+
+// 在表单中输出 CSRF 令牌
+<form method="POST" action="/process-form.php">
+  <input type="hidden" name="csrf_token" value="<?php echo generateCsrfToken(); ?>">
+  <!-- 其他表单字段 -->
+  <button type="submit">提交</button>
+</form>
+
+// 验证表单提交
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    die('CSRF 验证失败');
+  }
+  
+  // 处理表单数据...
+}
+```
+
+### 5. 网站本地化和用户首选项
+存储用户的语言、主题等首选项：
+```php
+// 处理语言切换
+if (isset($_GET['lang'])) {
+  $lang = $_GET['lang'];
+  if (in_array($lang, ['en', 'fr', 'de', 'es'])) {
+    setcookie('user_lang', $lang, [
+      'expires' => time() + 365 * 24 * 60 * 60,
+      'path' => '/'
+    ]);
+  }
+  header('Location: ' . $_SERVER['HTTP_REFERER']);
+  exit;
+}
+
+// 设置页面语言
+$lang = $_COOKIE['user_lang'] ?? 'en';
+require_once "languages/{$lang}.php";
+```
+
+```js
+<!-- JSP 中应用用户首选项 -->
+<%
+String theme = "default";
+Cookie[] cookies = request.getCookies();
+if (cookies != null) {
+  for (Cookie cookie : cookies) {
+    if (cookie.getName().equals("site_theme")) {
+      theme = cookie.getValue();
+      break;
+    }
+  }
+}
+%>
+<link rel="stylesheet" href="/css/themes/<%= theme %>.css">
+```
+
+### 6. 追踪访问统计
+
+使用 Cookie 跟踪用户行为和访问模式：
+
+## Cookie 在前后端分离项目中的应用
+
+在前后端分离的现代架构中，虽然 Cookie 的使用模式有所变化，但它仍然有许多实际应用。以下是 Cookie 在前后端分离项目中的几种重要应用场景：
+
+### 1. 跨域认证方案
+前后端分离项目中，API 服务器和前端应用通常部署在不同域名下，这时 Cookie 可以这样使用：
+
+使用 Cookie + CORS
+
+```js
+// 后端 Node.js Express 设置
+app.use(cors({
+  origin: 'https://frontend.example.com',  // 前端域名
+  credentials: true  // 允许跨域请求携带凭证
+}));
+
+app.post('/login', (req, res) => {
+  // 认证逻辑...
+  res.cookie('authToken', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',  // 允许跨站发送
+    maxAge: 24 * 60 * 60 * 1000  // 24小时
+  });
+  res.json({ success: true });
+});
+
+// 前端 Axios 配置
+axios.defaults.withCredentials = true;  // 允许请求携带 Cookie
+```
+
+### 2.访问令牌与刷新令牌分离存储
+
+在 JWT 认证体系中，将 Refresh Token 存储在 HttpOnly Cookie 中，而 Access Token 存储在内存中：
+
+```js
+// 后端设置
+app.post('/login', (req, res) => {
+  // 验证用户身份...
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+  
+  // refreshToken 存储在 HttpOnly Cookie 中
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+    path: '/api/refresh',  // 限制 Cookie 只在刷新令牌路径可用
+    maxAge: 30 * 24 * 60 * 60 * 1000  // 30天
+  });
+  
+  // accessToken 返回给前端存储在内存中
+  res.json({ accessToken });
+});
+
+// 前端处理
+function login(credentials) {
+  return api.post('/login', credentials)
+    .then(response => {
+      // 将 accessToken 存储在内存中
+      sessionStorage.setItem('accessToken', response.data.accessToken);
+      return response;
+    });
+}
+```
+
+### 3.CSRF 防护令牌
+
+即使在前后端分离架构中，CSRF 攻击仍然是潜在威胁，Cookie 可用于存储 CSRF 令牌：
+
+```js
+// 后端生成 CSRF 令牌
+app.use((req, res, next) => {
+  const csrfToken = generateRandomToken();
+  res.cookie('XSRF-TOKEN', csrfToken, {
+    secure: true,
+    sameSite: 'strict'
+  });
+  next();
+});
+
+// 前端自动从 Cookie 中提取并添加到请求头
+// 例如 Angular 自动从名为 XSRF-TOKEN 的 Cookie 中提取令牌
+// 并添加到 X-XSRF-TOKEN 请求头
+```
+### 4. 用户首选项和个性化设置
+
+非敏感的用户偏好设置可以存储在常规 Cookie 中：
+
+```js
+// 前端设置主题偏好
+document.cookie = `theme=${selectedTheme}; max-age=${60*60*24*365}; path=/`;
+
+// 从 Cookie 读取主题
+function getThemePreference() {
+  const cookies = document.cookie.split(';');
+  const themeCookie = cookies.find(cookie => cookie.trim().startsWith('theme='));
+  return themeCookie ? themeCookie.split('=')[1] : 'light';
+}
+```
+
+### 5. 分布式会话管理
+
+在微服务架构中，Cookie 可以用于在不同服务之间共享会话标识符：
+
+```js
+// 网关服务设置会话 Cookie
+app.post('/login', (req, res) => {
+  const sessionId = generateUniqueSessionId();
+  
+  // 在 Redis 中存储会话数据
+  redisClient.set(`session:${sessionId}`, JSON.stringify(userData));
+  
+  // 设置会话 Cookie
+  res.cookie('sessionId', sessionId, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict'
+  });
+  
+  res.json({ success: true });
+});
+
+// 各微服务使用会话 ID 获取用户数据
+function getUserFromSession(req) {
+  const sessionId = req.cookies.sessionId;
+  return redisClient.get(`session:${sessionId}`);
+}
+```
+
+### 6. 实现"记住我"功能
+
+```js
+app.post('/login', (req, res) => {
+  // 常规认证逻辑...
+  
+  if (req.body.rememberMe) {
+    // 生成持久化令牌
+    const persistentToken = generateSecureToken();
+    
+    // 存储到数据库，关联用户
+    saveTokenToDatabase(persistentToken, userId);
+    
+    // 设置长期有效的 Cookie
+    res.cookie('rememberMe', persistentToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 30 * 24 * 60 * 60 * 1000  // 30天
+    });
+  }
+  
+  res.json({ success: true });
+});
+```
+
+### 7. A/B 测试和特性标记
+
+```js
+// 设置用户实验组
+app.use((req, res, next) => {
+  if (!req.cookies.experimentGroup) {
+    const group = Math.random() > 0.5 ? 'A' : 'B';
+    res.cookie('experimentGroup', group, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+  }
+  next();
+});
+
+// 前端检查用户实验组
+function getExperimentalFeatures() {
+  const experimentGroup = getCookie('experimentGroup');
+  if (experimentGroup === 'A') {
+    return { newHeader: true, darkMode: false };
+  } else {
+    return { newHeader: false, darkMode: true };
+  }
+}
+```
+
+### 8. 会话状态恢复
+即使在使用 JWT 的情况下，Cookie 也可用于在浏览器刷新后恢复会话状态：
+
+```js
+// 登录成功后存储关键会话信息
+function storeSessionInfo(sessionData) {
+  document.cookie = `sessionState=${JSON.stringify({
+    userId: sessionData.userId,
+    lastPage: window.location.pathname,
+    timestamp: Date.now()
+  })}; path=/; max-age=3600; SameSite=Strict`;
+}
+
+// 页面加载时恢复会话
+function restoreSession() {
+  const sessionCookie = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('sessionState='));
+    
+  if (sessionCookie) {
+    const sessionState = JSON.parse(sessionCookie.split('=')[1]);
+    // 恢复应用状态
+    redirectToLastPage(sessionState.lastPage);
+  }
+}
+```

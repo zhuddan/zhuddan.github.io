@@ -7,74 +7,74 @@ title: 垂直水平居中
 
 ``` css
 .center-flex {
- display: flex;
- justify-content: center;
- align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 ```
 ## 2. Grid
 ``` css
 .center-grid {
- display: grid;
- place-items: center;
+  display: grid;
+  place-items: center;
 }
 ```
 
 ## 3. Position + Transform 
 ``` css
 .center-transform {
- position: absolute;
- top: 50%;
- left: 50%;
- transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 ```
 
 ## 4. Position + Margins (适用于已知宽高)
 ``` css
 .center-margin {
- position: absolute;
- top: 0;
- right: 0;
- bottom: 0;
- left: 0;
- margin: auto;
- width: 200px; /* 需指定宽度 */
- height: 100px; /* 需指定高度 */
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 200px; /* 需指定宽度 */
+  height: 100px; /* 需指定高度 */
 }
 ```
 
 ## 5. Table布局
 ``` css
 .center-table {
- display: table-cell;
- text-align: center;
- vertical-align: middle;
- width: 100vw;
- height: 100vh;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  width: 100vw;
+  height: 100vh;
 }
 .center-table-child {
- display: inline-block;
+  display: inline-block;
 }
 ```
 
 ## 6. Calc方法 (适用于已知宽高)
 ``` css
 .center-calc {
- position: absolute;
- top: calc(50% - 50px); /* 减去高度的一半 */
- left: calc(50% - 100px); /* 减去宽度的一半 */
- width: 200px;
- height: 100px;
+  position: absolute;
+  top: calc(50% - 50px); /* 减去高度的一半 */
+  left: calc(50% - 100px); /* 减去宽度的一半 */
+  width: 200px;
+  height: 100px;
 }
 ```
 
 ## 7. Flexbox的另一种写法
 ``` css
 .center-flex-alt {
- display: flex;
+  display: flex;
 }
 .center-flex-alt-child {
- margin: auto;
+  margin: auto;
 }
 ```

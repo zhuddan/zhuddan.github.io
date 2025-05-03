@@ -1,0 +1,186 @@
+---
+title: 单点登录
+---
+
+单点登录(Single Sign-On, SSO)是一种身份验证机制，允许用户使用一组凭据访问多个应用程序。以下是几种实现单点登录的常见方法：
+
+## 基于 Cookie 的简单 SSO
+
+这是最基础的实现方式，适用于同域或子域之间的应用：
+
+1. 用户登录主应用：用户在主域名(如 example.com)登录
+2. 创建共享 Cookie：服务器创建一个设置为顶级域名的 Cookie
+3. 子域应用验证：各子域应用(如 app1.example.com, app2.example.com)可以访问该 Cookie 进行验证
+
+这种方式简单但仅适用于同一顶级域名下的应用。
+
+## 基于令牌的 SSO
+适用于跨域应用的更通用方案：
+
+1. 集中式认证服务：建立一个独立的认证服务(Auth Server)
+2. 登录流程：
+
+    - 用户访问应用 A，被重定向到认证服务
+    - 用户在认证服务登录
+    - 认证服务生成令牌并将用户重定向回应用 A
+    - 应用 A 验证令牌
+
+3. 访问其他应用：用户访问应用 B 时，应用 B 检测无令牌，重定向到认证服务
+4. 无需再次登录：认证服务检测到用户已登录，直接签发令牌并重定向回应用 B
+
+## OAuth 2.0 + OpenID Connect 实现
+
+这是企业级应用的标准实现方式：
+
+1. 设置身份提供商(IdP)：如 Keycloak, Auth0, Okta
+2. 应用注册：将各应用注册为 OAuth 客户端
+3. 实现授权流程：
+    - 授权码流程(Authorization Code Flow)
+    - 隐式流程(Implicit Flow)
+    - 客户端凭证流程(Client Credentials)
+
+## SAML 实现
+
+适用于企业级应用，尤其是与已有企业身份系统集成：
+
+1. 身份提供商(IdP)：配置提供 SAML 断言的服务
+2. 服务提供商(SP)：配置各应用为服务提供商
+3. 元数据交换：IdP 与各 SP 交换元数据以建立信任关系
+4. SAML 断言流程：
+    - 用户访问 SP
+    - SP 生成认证请求并重定向到 IdP
+    - 用户在 IdP 认证
+    - IdP 生成包含用户信息的 SAML 断言
+    - 用户带着断言返回 SP
+
+## 实际实现示例代码 (基于 JWT 的 SSO)
+
+认证服务端 (Node.js + Express)
+
+```js
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const app = express();
+
+app.use(express.json());
+app.use(cookieParser());
+
+const SECRET_KEY = 'your-secret-key';
+const users = [{ id: 1, username: 'user1', password: 'pass1' }];
+
+// 登录端点
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username && u.password === password);
+  
+  if (!user) {
+    return res.status(401).json({ message: '认证失败' });
+  }
+  
+  // 生成 JWT
+  const token = jwt.sign(
+    { id: user.id, username: user.username },
+    SECRET_KEY,
+    { expiresIn: '1h' }
+  );
+  
+  // 设置 Cookie 以及返回令牌
+  res.cookie('sso_token', token, { 
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none'
+  });
+  
+  // 返回重定向URL
+  const redirectUrl = req.query.redirect_uri || '/';
+  res.json({ token, redirect_to: redirectUrl });
+});
+
+// 验证令牌的端点
+app.get('/verify', (req, res) => {
+  const token = req.cookies.sso_token || req.headers.authorization?.split(' ')[1];
+  
+  if (!token) {
+    return res.status(401).json({ valid: false });
+  }
+  
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    res.json({ valid: true, user: decoded });
+  } catch (err) {
+    res.status(401).json({ valid: false });
+  }
+});
+
+app.listen(3000, () => {
+  console.log('SSO Auth server running on port 3000');
+});
+```
+
+客户端应用 (Vue.js)
+
+```js title="ssoService.js"
+import axios from 'axios';
+
+const SSO_SERVER = 'https://auth.example.com';
+
+export default {
+  async checkAuthentication() {
+    try {
+      const response = await axios.get(`${SSO_SERVER}/verify`, { 
+        withCredentials: true 
+      });
+      return response.data;
+    } catch (error) {
+      return { valid: false };
+    }
+  },
+  
+  redirectToLogin() {
+    const currentUrl = encodeURIComponent(window.location.href);
+    window.location.href = `${SSO_SERVER}/login?redirect_uri=${currentUrl}`;
+  },
+  
+  logout() {
+    // 实现登出逻辑
+  }
+};
+```
+
+在 Vue 组件中使用
+```js
+import ssoService from './ssoService';
+
+export default {
+  data() {
+    return {
+      isAuthenticated: false,
+      user: null
+    }
+  },
+  async created() {
+    const authResult = await ssoService.checkAuthentication();
+    if (authResult.valid) {
+      this.isAuthenticated = true;
+      this.user = authResult.user;
+    } else {
+      ssoService.redirectToLogin();
+    }
+  }
+}
+```
+
+# 实施建议
+
+1. 选择合适的方案：根据应用架构、安全需求和现有系统选择方案
+2. 使用现有解决方案：考虑使用 Keycloak、Auth0 等成熟产品
+3. 安全性考虑：
+
+    - 使用 HTTPS
+    - 实施 CSRF 保护
+    - 合理设置 Cookie 属性(HttpOnly, Secure, SameSite)
+    - 令牌定期轮换
+
+
+4. 单点登出：别忘了实现统一的登出机制

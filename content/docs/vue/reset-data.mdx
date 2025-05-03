@@ -1,0 +1,75 @@
+---
+title: 重置data
+---
+
+在 Vue 中，如果你想还原 data 中的数据为初始值，常见做法是：
+
+## 方法一：使用一个初始数据拷贝
+
+```js
+export default {
+  data() {
+    return {
+      formData: {
+        name: '',
+        age: ''
+      },
+      initialData: null
+    };
+  },
+  created() {
+    // 保存初始值的深拷贝
+    this.initialData = JSON.parse(JSON.stringify(this.formData));
+  },
+  methods: {
+    resetForm() {
+      this.formData = JSON.parse(JSON.stringify(this.initialData));
+    }
+  }
+}
+```
+
+## 方法二：封装 data 函数并调用初始化
+
+```js
+export default {
+  data() {
+    return this.getInitialData();
+  },
+  methods: {
+    getInitialData() {
+      return {
+        name: '',
+        age: ''
+      };
+    },
+    reset() {
+      Object.assign(this.$data, this.getInitialData());
+    }
+  }
+}
+```
+## 方法三：使用 this.$options.data()
+
+这是一种非常优雅的方式，直接利用 Vue 实例的 $options 属性：
+
+```js
+export default {
+  data() {
+    return {
+      form: {
+        name: '',
+        age: 0,
+        email: ''
+      }
+    }
+  },
+  methods: {
+    resetData() {
+      // 通过调用原始的 data 函数获取初始值
+      Object.assign(this.$data, this.$options.data())
+    }
+  }
+}
+```
+[demo](https://play.vuejs.org/#eNp9Uk1rFEEQ/StFIySBdUbQ0zIGv3LQgxH12JfOTO1sb3q6h+6adSEsBBQiCPGiHgLiUY+5eVH8NWPWf2H3dGZ2AyEwMFX1XnW/etVH7GFdJ/MG2ZhlLreyJtjlGhe1sQQFTkSjCI64BigEie2dGANYpMbqPgOYGFuN1ymAFhWOYWtrtC6J0lfubBSwElIFUl9axqD7LTtihTQ1hRuOtuiQnlyRApCm8O/4bPXnZHX+9uLTj/b0W/v9w8XZu04ztCe//34+X53+bD9+ad9/9VB7/KtvzY12RmGiTLlNU+l2emD/YIY5JcI5WeoOSm6F40YQY1OT9L1JtOWyLQrn2n9ZGu30bvqEsKqVIPQZQCZ13RDMb1emQHWfs2BeEgzjDNJIOWiIjIYHuZL5oacMc3O2O8RZGmm+JUs3rmAjRs5PNpFlMnNG++V2XnGWm6qWCu1+VM/ZYCxnQinz5llXI9vg5Z58zxTzw2vqM7cINc5eBEF27tUPGAlbIkV479VzXPh4AP3YjfLsG8CX6LfSBI2R9qjRhZe9wevUPq3CO5W6fO32FoTa9UMFoetHxJl/4Y9vGH0t925yr98hW/4HmcENDw==)
