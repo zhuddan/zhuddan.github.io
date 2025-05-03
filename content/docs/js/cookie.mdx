@@ -200,6 +200,179 @@ if (cookies != null) {
 
 使用 Cookie 跟踪用户行为和访问模式：
 
+
+```php
+// 追踪访问统计
+if (!isset($_COOKIE['visitor_id'])) {
+  $visitor_id = uniqid();
+  setcookie('visitor_id', $visitor_id, [
+    'expires' => time() + 365 * 24 * 60 * 60,
+    'path' => '/'
+  ]);
+  
+  // 记录新访客
+  $stmt = $db->prepare("INSERT INTO visitors (visitor_id, first_visit) VALUES (?, NOW())");
+  $stmt->execute([$visitor_id]);
+} else {
+  $visitor_id = $_COOKIE['visitor_id'];
+  
+  // 更新访问记录
+  $stmt = $db->prepare("UPDATE visitors SET visit_count = visit_count + 1, last_visit = NOW() WHERE visitor_id = ?");
+  $stmt->execute([$visitor_id]);
+}
+
+// 记录页面访问
+$page = $_SERVER['REQUEST_URI'];
+$stmt = $db->prepare("INSERT INTO page_views (visitor_id, page, view_date) VALUES (?, ?, NOW())");
+$stmt->execute([$visitor_id, $page]);
+```
+
+### 7. 表单数据自动填充
+保存用户填写的表单数据，防止因页面刷新丢失：
+
+```php
+
+// 保存表单数据到 Cookie
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $contact_info = [
+    'name' => $_POST['name'] ?? '',
+    'email' => $_POST['email'] ?? '',
+    'phone' => $_POST['phone'] ?? ''
+  ];
+  
+  setcookie('saved_contact_form', json_encode($contact_info), [
+    'expires' => time() + 3600, // 1小时
+    'path' => '/'
+  ]);
+}
+
+// 在表单中预填数据
+$saved_data = [];
+if (isset($_COOKIE['saved_contact_form'])) {
+  $saved_data = json_decode($_COOKIE['saved_contact_form'], true);
+}
+?>
+
+<form method="POST">
+  <input type="text" name="name" value="<?php echo htmlspecialchars($saved_data['name'] ?? ''); ?>">
+  <input type="email" name="email" value="<?php echo htmlspecialchars($saved_data['email'] ?? ''); ?>">
+  <input type="tel" name="phone" value="<?php echo htmlspecialchars($saved_data['phone'] ?? ''); ?>">
+  <button type="submit">提交</button>
+</form>
+```
+
+### 8. 实现向导式表单
+
+多步骤表单流程使用 Cookie 保存中间状态：
+
+```php
+// 第一步表单处理
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['step1'])) {
+  $_SESSION['registration'] = [
+    'personal_info' => [
+      'name' => $_POST['name'],
+      'email' => $_POST['email'],
+      'dob' => $_POST['dob']
+    ]
+  ];
+  header('Location: /register-step2.php');
+  exit;
+}
+
+// 第二步表单处理
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['step2'])) {
+  $_SESSION['registration']['address'] = [
+    'street' => $_POST['street'],
+    'city' => $_POST['city'],
+    'postal_code' => $_POST['postal_code'],
+    'country' => $_POST['country']
+  ];
+  header('Location: /register-step3.php');
+  exit;
+}
+
+// 最终步骤 - 完成注册
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['complete'])) {
+  $registration_data = $_SESSION['registration'];
+  $registration_data['preferences'] = [
+    'newsletter' => isset($_POST['newsletter']),
+    'promotions' => isset($_POST['promotions'])
+  ];
+  
+  // 处理注册数据...
+  registerUser($registration_data);
+  
+  // 清除会话数据
+  unset($_SESSION['registration']);
+  
+  header('Location: /registration-success.php');
+  exit;
+}
+```
+
+### 9. 访问控制和权限管理
+
+
+基于角色的访问控制：
+
+```php
+// 检查用户权限
+function checkPermission($permission) {
+  // 用户未登录
+  if (!isset($_SESSION['user_id'])) {
+    return false;
+  }
+  
+  // 从会话中获取用户角色
+  $role = $_SESSION['user_role'] ?? 'guest';
+  
+  // 获取角色权限
+  $permissions = getRolePermissions($role);
+  
+  return in_array($permission, $permissions);
+}
+
+// 在访问页面或执行操作前检查
+if (!checkPermission('manage_users')) {
+  header('Location: /access-denied.php');
+  exit;
+}
+```
+
+### 10. 维护应用状态
+在页面间保持持续的应用状态：
+
+```php
+// 保存搜索过滤器
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['search'])) {
+  $_SESSION['product_filters'] = [
+    'category' => $_POST['category'] ?? 'all',
+    'min_price' => $_POST['min_price'] ?? '',
+    'max_price' => $_POST['max_price'] ?? '',
+    'sort_by' => $_POST['sort_by'] ?? 'popularity'
+  ];
+}
+
+// 在搜索页面使用过滤器
+$filters = $_SESSION['product_filters'] ?? [
+  'category' => 'all',
+  'min_price' => '',
+  'max_price' => '',
+  'sort_by' => 'popularity'
+];
+
+$products = searchProducts(
+  $filters['category'],
+  $filters['min_price'],
+  $filters['max_price'],
+  $filters['sort_by']
+);
+
+// 在模板中显示产品和应用的过滤器
+require 'templates/product-search.php';
+```
+
+
 ## Cookie 在前后端分离项目中的应用
 
 在前后端分离的现代架构中，虽然 Cookie 的使用模式有所变化，但它仍然有许多实际应用。以下是 Cookie 在前后端分离项目中的几种重要应用场景：
