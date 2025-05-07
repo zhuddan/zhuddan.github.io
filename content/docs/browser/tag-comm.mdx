@@ -1,0 +1,64 @@
+---
+title: 标签通信
+---
+
+
+## BroadcastChannel
+> 推荐，现代浏览器支持好
+- 适用于同源的多个标签页或 iframe。
+- 使用简单，API 类似 WebSocket。
+
+```js
+// 页面 A 和 B 都可以使用同一个频道名进行通信
+const channel = new BroadcastChannel('my_channel');
+
+// 发送消息
+channel.postMessage({ type: 'HELLO', data: 'from tab A' });
+
+// 接收消息
+channel.onmessage = (event) => {
+  console.log('Received', event.data);
+};
+```
+
+## localStorage + storage
+
+> 兼容更广
+
+- 支持跨标签页，但同一页内不会触发 storage 事件。
+- 限制：不能传对象，必须序列化成字符串。
+
+```js
+// A 标签页中发送消息
+localStorage.setItem('my_message', JSON.stringify({ time: Date.now(), data: 'hi' }));
+
+// B 标签页中监听
+window.addEventListener('storage', (e) => {
+  if (e.key === 'my_message') {
+    const data = JSON.parse(e.newValue);
+    console.log('Received message:', data);
+  }
+});
+```
+
+## SharedWorker
+
+> 高级方案，支持多个标签共享线程
+
+- 所有标签页共享一个后台线程，可以实现共享状态或通信。
+- 缺点：不支持在某些浏览器（如 Safari）中使用。
+
+```js
+// shared-worker.js
+onconnect = function (e) {
+  const port = e.ports[0];
+  port.onmessage = function (event) {
+    port.postMessage('Echo: ' + event.data);
+  };
+};
+
+// 页面中
+const worker = new SharedWorker('shared-worker.js');
+worker.port.onmessage = (e) => console.log(e.data);
+worker.port.postMessage('hello from tab');
+```
