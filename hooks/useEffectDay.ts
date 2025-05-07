@@ -11,7 +11,7 @@ import solarLunar from 'solarlunar'
 // const debugDate = '2025-03-08'
 // const debugDate = '2025-04-04'
 // const debugDate = '2025-05-01'
-// const debugDate = '2025-05-04'
+const debugDate = '2025-05-05'
 // const debugDate = '2025-05-31'
 // const debugDate = '2025-06-01'
 // const debugDate = '2025-06-19'
@@ -19,7 +19,7 @@ import solarLunar from 'solarlunar'
 // const debugDate = '2025-10-06'
 // const debugDate = '2025-10-17'
 // const debugDate = '2025-10-25'
-const debugDate = undefined
+// const debugDate = undefined
 
 export function useEffectDay() {
   const [now, setNow] = useState<Date>()
@@ -71,7 +71,7 @@ export function useEffectDay() {
       }
     }
     else if ('term' in result) {
-      if (term && result.term) {
+      if (term === '清明' && result.term) {
         return result
       }
     }
