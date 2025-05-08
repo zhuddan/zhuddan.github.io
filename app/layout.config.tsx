@@ -33,5 +33,10 @@ export const baseOptions: BaseLayoutProps = {
       url: '/resume',
       active: 'nested-url',
     },
+    {
+      text: 'interview',
+      url: '/interview',
+      active: 'nested-url',
+    },
   ],
 }

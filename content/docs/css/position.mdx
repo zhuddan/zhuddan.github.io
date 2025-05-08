@@ -1,0 +1,80 @@
+---
+title: 定位
+---
+
+## position
+
+- `static`
+
+  该关键字指定元素使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 `top`, `right`, `bottom`, `left` 和 `z-index` 属性无效。
+
+- `relative` **相对定位**
+
+  该关键字下，元素先放置在未添加定位时的位置，再在不改变页面布局的前提下调整元素位置（因此会在此元素未添加定位时所在位置留下空白）。position:relative 对 table-\*-group, table-row, table-column, table-cell, table-caption 元素无效。
+
+  相对定位的元素是在文档中的正常位置偏移给定的值，但是不影响其他元素的偏移。下面的例子中，注意未应用定位的其他元素是按照 "Two" 在正常位置的情况下进行布局的。
+
+- `absolute` **绝对定位**
+
+  元素会被移出正常文档流，并不为元素预留空间，通过指定元素相对于最近的非 static 定位祖先元素的偏移，来确定元素位置。绝对定位的元素可以设置外边距（margins），且不会与其他边距合并。
+
+- `fixed` **固定定位**
+
+  元素会被移出正常文档流，并不为元素预留空间，而是通过指定元素相对于屏幕视口（viewport）的位置来指定元素位置。元素的位置在屏幕滚动时不会改变。打印时，元素会出现在的每页的固定位置。`fixed` 属性会创建新的层叠上下文。当元素祖先的 `transform`、`perspective`、`filter` 或 `backdrop-filter` 属性非 `none` 时，容器由视口改为该祖先。
+
+- `sticky` **相对定位+固定定位**
+  元素根据正常文档流进行定位，然后相对它的*最近滚动祖先*（nearest scrolling ancestor）和[包含块](/zh-CN/docs/Web/CSS/CSS_display/Containing_block)（最近块级祖先 nearest block-level ancestor），包括 table-related 元素，基于 `top`、`right`、`bottom` 和 `left` 的值进行偏移。偏移值不会影响任何其他元素的位置。
+  该值总是创建一个新的[层叠上下文](/zh-CN/docs/Web/CSS/CSS_positioned_layout/Stacking_context)（stacking context）。注意，一个 sticky 元素会“固定”在离它最近的一个拥有“滚动机制”的祖先上（当该祖先的 `overflow` 是 `hidden`、`scroll`、`auto` 或 `overlay` 时），即便这个祖先不是最近的真实可滚动祖先。这有效地抑制了任何“sticky”行为（详情见 [Github issue on W3C CSSWG](https://github.com/w3c/csswg-drafts/issues/865)）。
+
+
+  元素在跨越特定阈值前为相对定位，之后为固定定位。例如：
+
+  ```css
+  #one {
+    position: sticky;
+    top: 10px;
+  }
+  ```
+
+## sticky 错误排查
+
+### sticky 的基本原理
+
+`sticky` 定位的元素在滚动视图内表现为相对定位(relative)，当元素滚动到特定阈值点时，会切换为固定定位(fixed)。这个阈值点由 top、right、bottom 或 left 等方向属性决定。
+
+```css
+.sticky-element {
+  position: sticky;
+  top: 0; /* 当元素距离视口顶部为0时开始"粘住" */
+}
+```
+
+### sticky 失效的情况
+
+
+sticky 失效的情况
+除了没设置方向属性外，sticky 还有以下几种常见的失效情况：
+
+1. 父元素设置了 overflow 属性：
+
+- 当父元素设置了 overflow: hidden、overflow: scroll 或 overflow: auto 时，sticky 定位会失效，因为这会创建一个新的滚动上下文，粘性定位仅在其滚动上下文内有效。
+
+
+2. 祖先元素的高度限制：
+
+- 当 sticky 元素的任何祖先元素的高度小于或等于 sticky 元素本身时，粘性效果会失效。粘性定位需要足够的滚动空间才能生效。
+
+
+3. 缺少滚动机制：
+
+如果页面或容器没有足够的内容来触发滚动，sticky 效果将无法展现。
+
+
+4. 定位层级问题：
+
+- 当 sticky 元素的父元素或祖先元素设置了 position 值（如 relative、absolute 或 fixed）时，可能会影响 sticky 元素的预期行为。
+
+
+5. 浏览器兼容性问题：
+
+- 某些较旧的浏览器不完全支持 sticky 定位，或存在实现差异。
