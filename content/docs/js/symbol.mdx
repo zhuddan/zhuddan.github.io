@@ -1,0 +1,289 @@
+---
+title: Symbol
+---
+
+`Symbol` 是 ES6 引入的一种 基本数据类型，它的主要作用是**创建一个独一无二的标识符**。即使*两个 Symbol 描述相同，它们也是不相等的*。
+
+
+## 一、Symbol 的特性
+- 使用 `Symbol()` 创建，每次调用都会返回一个唯一的值。
+
+- 可以用作对象属性的键，不会被常规的遍历方法枚举出来（比如 for...in、Object.keys）。
+
+- 适合用于定义**“私有属性”**或**“内部协议”**。
+
+
+## 二、基本用法示例
+
+```js
+const sym1 = Symbol('description');
+const sym2 = Symbol('description');
+
+console.log(sym1 === sym2); // false，唯一性
+```
+
+
+作为对象属性键：
+
+```js
+const sym = Symbol('id');
+const user = {
+  name: 'Tom',
+  [sym]: 123 // 使用 symbol 作为属性名
+};
+
+console.log(user[sym]); // 123
+console.log(Object.keys(user)); // ['name']
+console.log(Object.getOwnPropertySymbols(user)); // [Symbol(id)]
+```
+
+
+## 三、常见用途
+1. 定义对象的私有属性
+
+```js
+const secret = Symbol('secret');
+
+class Person {
+  constructor(name) {
+    this.name = name;
+    this[secret] = 'mySecret';
+  }
+
+  getSecret() {
+    return this[secret];
+  }
+}
+
+const p = new Person('Alice');
+console.log(p.secret); // undefined
+console.log(p.getSecret()); // 'mySecret'
+```
+
+2. 避免属性名冲突
+在扩展第三方对象时可用 Symbol 添加独立属性而不污染已有命名空间。
+
+```js
+const tag = Symbol('tag');
+const obj = {
+  [tag]: 'custom'
+};
+```
+
+
+3. 模拟枚举类型
+
+```js
+const COLOR = {
+  RED: Symbol('red'),
+  GREEN: Symbol('green')
+};
+
+function getColorName(color) {
+  switch (color) {
+    case COLOR.RED:
+      return 'Red';
+    case COLOR.GREEN:
+      return 'Green';
+    default:
+      return 'Unknown';
+  }
+}
+```
+
+4. 内置 Symbol（重要）
+
+ES6 内置了一些 Symbol，用于实现语言底层行为：
+
+    - Symbol.iterator: 实现可迭代协议
+
+    - Symbol.toStringTag: 控制 Object.prototype.toString.call
+
+    - Symbol.hasInstance: 控制 instanceof 行为
+
+    - Symbol.toPrimitive: 控制对象转换为原始值的行为
+
+```js
+const obj = {
+  [Symbol.toPrimitive](hint) {
+    if (hint === 'number') return 42;
+    return 'default';
+  }
+};
+
+console.log(+obj); // 42
+console.log(`${obj}`); // 'default'
+```
+
+## 四、总结
+
+`Symbol` 是唯一且不可变的标识符，非常适合用于**私有属性**、**避免命名冲突**和元编程。
+
+常用于构建更安全、可扩展的模块或库，或增强对象行为的控制。
+
+
+## 五、补充
+
+ES6 提供了一组 内置 Symbol（Well-known Symbols），用于定制语言内部行为，也就是让普通对象可以参与 JavaScript 的底层机制。
+
+这些内置 Symbol 都是挂在全局 Symbol 对象上的静态属性，如 `Symbol.iterator`、`Symbol.toPrimitive` 等。掌握它们可以让你写出更高级、更底层控制的 JavaScript 代码。
+
+
+| 内置 Symbol | 作用 | 典型使用场景 |
+| - | - | - |
+| `Symbol.iterator`                                                    | 定义对象的默认迭代器行为                                | `for...of`、`...` 展开等    |
+| `Symbol.toPrimitive`                                                 | 定义对象转为原始值的方式                                | `+obj`、`${obj}` 等       |
+| `Symbol.toStringTag`                                                 | 控制 `Object.prototype.toString.call(obj)` 输出 | 自定义类型标签                 |
+| `Symbol.hasInstance`                                                 | 控制 `instanceof` 的行为                         | 自定义 `instanceof`        |
+| `Symbol.isConcatSpreadable`                                          | 控制数组/类数组对象是否可被 `concat` 展开                  | 类数组转数组时                 |
+| `Symbol.species`                                                     | 创建派生对象时指定构造函数                               | 自定义继承的返回类型              |
+| `Symbol.match` / `Symbol.replace` / `Symbol.search` / `Symbol.split` | 控制字符串方法的行为                                  | 自定义正则-like 对象           |
+| `Symbol.unscopables`                                                 | 指定 `with` 语句中不暴露的属性                         | 避免冲突                    |
+| `Symbol.asyncIterator`                                               | 定义异步迭代器                                     | `for await...of` 迭代异步数据 |
+
+
+### 常用内置 Symbol 详细说明 + 示例
+
+1. `Symbol.iterator`：让对象可被迭代
+
+```js
+const obj = {
+  data: [1, 2, 3],
+  [Symbol.iterator]() {
+    let index = 0;
+    const self = this;
+    return {
+      next() {
+        return index < self.data.length
+          ? { value: self.data[index++], done: false }
+          : { done: true };
+      }
+    };
+  }
+};
+
+for (const val of obj) {
+  console.log(val); // 1, 2, 3
+}
+```
+
+2. `Symbol.toPrimitive`：对象转原始值时定制行为
+
+```js
+const obj = {
+  name: 'Test',
+  [Symbol.toPrimitive](hint) {
+    if (hint === 'number') return 42;
+    if (hint === 'string') return 'symbolic';
+    return 'default';
+  }
+};
+
+console.log(+obj); // 42
+console.log(`${obj}`); // 'symbolic'
+```
+
+3. `Symbol.toStringTag`：自定义对象类型标签
+
+```js
+const obj = {
+  [Symbol.toStringTag]: 'MyCustomType'
+};
+
+console.log(Object.prototype.toString.call(obj)); // [object MyCustomType]
+```
+
+4. `Symbol.hasInstance`：定制 instanceof
+
+```js
+class MyClass {
+  static [Symbol.hasInstance](instance) {
+    return 'isSpecial' in instance;
+  }
+}
+
+const obj = { isSpecial: true };
+console.log(obj instanceof MyClass); // true
+```
+
+5. `Symbol.isConcatSpreadable`：控制 concat 展开行为
+
+```js
+const arr = [1, 2];
+arr[Symbol.isConcatSpreadable] = false;
+
+console.log([0].concat(arr)); // [0, [1, 2]]
+```
+
+6. `Symbol.species`：控制派生对象的构造函数
+
+```js
+class MyArray extends Array {
+  static get [Symbol.species]() {
+    return Array; // 派生对象使用 Array 构造
+  }
+}
+
+const a = new MyArray(1, 2, 3);
+const b = a.map(x => x * 2);
+
+console.log(b instanceof MyArray); // false
+console.log(b instanceof Array);   // true
+```
+
+7. `Symbol.match` / `replace` / `search` / `split`：模拟正则行为
+
+```js
+const myMatcher = {
+  [Symbol.match](str) {
+    return str.includes('abc') ? ['abc'] : null;
+  }
+};
+
+console.log('abcde'.match(myMatcher)); // ['abc']
+```
+
+8. `Symbol.asyncIterator`：异步可迭代对象（ES2018）
+
+```js
+const asyncIterable = {
+  data: [1, 2, 3],
+  async *[Symbol.asyncIterator]() {
+    for (const val of this.data) {
+      await new Promise(r => setTimeout(r, 100)); // simulate delay
+      yield val;
+    }
+  }
+};
+
+(async () => {
+  for await (const val of asyncIterable) {
+    console.log(val); // 1, 2, 3
+  }
+})();
+```
+
+9. `Symbol.unscopables`：控制 `with` 中的变量屏蔽
+
+```js
+const obj = {
+  foo: 1,
+  bar: 2,
+  [Symbol.unscopables]: {
+    bar: true
+  }
+};
+
+with (obj) {
+  console.log(foo); // 1
+  // console.log(bar); // ReferenceError: bar is not defined
+}
+```
+
+### 总结
+
+内置 `Symbol` 是 `JS` 语言的底层扩展点，能让你控制对象如何参与语言特性（如迭代、类型转换等）。
+
+日常开发中最常用的是：`Symbol.iterator`、`Symbol.toPrimitive`、`Symbol.toStringTag`、`Symbol.asyncIterator`。
+
+它们广泛用于自定义框架行为、库内部实现、与语言机制对接（比如 polyfill、兼容性库等）。

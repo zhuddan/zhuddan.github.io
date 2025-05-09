@@ -1,0 +1,103 @@
+---
+title: URL
+---
+
+浏览器输入 URL → 页面渲染完成
+
+## 一、输入 URL 到页面展示：完整流程
+
+1. 用户输入 URL
+    - 浏览器检查：
+
+        - 是否是搜索关键词（不是完整 URL 会走默认搜索引擎）
+
+        - 自动补全历史记录、书签
+
+    - 补全协议（如输入 example.com → 补全为 http://example.com
+
+2. DNS 解析（域名 → IP 地址）
+
+    - 本地缓存（浏览器、操作系统、hosts 文件）
+
+    - 向 DNS 服务器查询
+
+    - 最终获取目标服务器的 IP 地址
+
+💡 > 优化：使用 DNS 预解析 `<link rel="dns-prefetch" href="//xxx.com" />`
+
+3. 建立 TCP 连接（三次握手）
+
+    - 客户端与服务器通过三次握手建立连接
+
+    - 若是 HTTPS，还需完成 TLS 握手
+
+>💡 可优化：
+
+> 启用 keep-alive 复用 TCP；
+
+> 使用 HTTP/2 或 HTTP/3；
+
+> preconnect 预连接。
+
+
+4. 发送 HTTP 请求
+
+浏览器构造请求头（如 Cookie、User-Agent、Referer 等）
+
+发送 GET 或 POST 请求到目标服务器
+
+
+5. 服务器处理请求并返回响应
+后端接收请求，处理逻辑，返回 HTML 文档内容（可能是静态或 SSR 渲染）
+
+
+6. 浏览器接收响应（HTTP 响应）
+
+状态码 200 / 301 / 404 等
+
+响应头（如 Content-Type、Cache-Control、Set-Cookie 等）
+
+响应体内容（HTML 文本）
+
+## 二、HTML 渲染过程（浏览器内部）
+
+7. 构建 DOM 树
+    - 解析 HTML 结构
+
+    - 动态脚本（如 `<script>`）可能阻塞解析
+
+8. 构建 CSSOM（CSS Object Model）
+    - 解析所有样式表（内联、外链、嵌入式）
+
+    - 遇到 `<link rel="stylesheet">` 同样会阻塞渲染
+
+9. 构建渲染树（Render Tree）
+    - DOM + CSSOM 合并成 Render Tree（仅可见元素）
+
+10. 布局（Layout / 回流）
+    - 根据渲染树计算每个元素的几何位置与尺寸
+
+11. 绘制（Paint / 重绘）
+    - 将每个节点绘制为像素（颜色、边框、文本、阴影等）
+
+12. 分层与合成（Layer + Composite）
+    - 页面中复杂区域（如动画、3D、will-change）被提升为独立图层
+
+    - 将图层合成最终页面图像，显示到屏幕上
+
+
+## 三、执行 JS 和事件绑定
+    - 解析并执行内联、外链 JavaScript（同步脚本会阻塞 DOM 解析）
+
+    - 执行 DOMContentLoaded 回调、绑定事件监听器
+
+    - 启动异步任务（定时器、fetch、监听等）
+
+
+## 四、页面展示完成
+
+    - 页面首次渲染（First Paint、First Contentful Paint）
+
+    - 图片、字体等资源可能在首次渲染后才继续加载
+
+    - 浏览器执行渲染帧循环，响应用户交互

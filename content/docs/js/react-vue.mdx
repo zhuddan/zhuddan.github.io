@@ -1,0 +1,84 @@
+---
+title: React/Vue
+---
+
+Vue（2 和 3）与 React 都是现代前端框架，核心目的是实现高效的视图渲染和状态管理。它们的渲染机制存在相似之处（比如都使用 Virtual DOM），也有很多关键实现上的差异。
+
+下面将从核心机制、更新过程、响应式系统等方面进行对比讲解。
+
+## 1. 核心渲染机制概览
+
+| 对比维度     | Vue 2                   | Vue 3                  | React (16+ Hooks)                |
+| ----------- | ----------------------- | ---------------------- | -------------------------------- |
+| Virtual DOM | ✅ 自定义实现           | ✅ 自定义实现（更轻量）          | ✅ 自定义实现                          |
+| 响应式系统   | `Object.defineProperty` | `Proxy`（响应式追踪更彻底）      | 手动管理状态（useState、useReducer）      |
+| 数据驱动视图 | ✅ 双向绑定 + 模板       | ✅ Composition API + 模板      | ✅ JSX 单向数据流                      |
+| 调度更新策略 | 同步批处理更新            | 支持异步更新调度机制             | Fiber 架构 + 并发调度（Concurrent Mode） |
+| 编译优化     | 有（模板编译成 render 函数）| 静态提升、patchFlag 更极致     | 编译优化相对较少（React 18 开始改进）          |
+
+
+
+## 2. 更新流程对比（核心差异）
+
+- Vue 2 渲染机制：
+
+    - 数据响应式由 `defineProperty` 劫持；
+    - 修改数据后触发依赖更新（`Watcher`）；
+    - 组件使用 `render` 函数生成 `Virtual DOM`；
+    - 使用 `patch` 算法进行 `DOM diff`；
+    - 最后更新真实 `DOM`。
+    - 缺点：`defineProperty` 不能检测新增属性、数组变化，需要 `Vue.set`。
+
+- Vue 3 渲染机制：
+
+    - 使用 `Proxy` 完整劫持对象，依赖通过 `effect()` 追踪；
+    - 修改数据触发 `effect` 重新执行；
+    - 支持异步批量更新（`queueJob`）；
+    - 更细粒度的依赖追踪（`ReactiveEffect + PatchFlag`）；
+    - 编译时**标记静态节点**、跳过不变的树。
+    - 更快、更精准，PatchFlag 是优化重点。
+
+- React 渲染机制（16+ Fiber 架构）：
+
+    - 使用 `useState` / `useReducer` 显式管理状态；
+    - 触发更新时会创建新的 `Virtual DOM`；
+    - 使用 `Fiber` 树结构 分阶段执行更新；
+    - 通过调度器（Scheduler）实现可中断渲染；
+    - 最后 `commit` 阶段执行 `DOM` 更新。
+    - **React 优化重点在调度、打断、优先级控制**。
+
+
+## 3.  响应式系统对比
+
+| 特性    | Vue 2               | Vue 3                   | React               |
+| ----- | ------------------- | ------------------------------ | ------------------- |
+| 响应式引擎 | 基于 `defineProperty` | 基于 `Proxy`              | 手动（Hook 系统）    |
+| 依赖追踪  | Watcher / Dep          | effect / ReactiveEffect   | useEffect / useMemo |
+| 精准更新  | 较粗                    | 非常精准（PatchFlags）     | Virtual DOM diff    |
+| 自动响应  | ✅（模板自动感知依赖）         | ✅                 | ❌（必须手动绑定）   |
+
+
+##  4. 渲染细节优化对比
+
+| 优化点       | Vue 3              | React              |
+| ----------- | ------------------ | ------------------ |
+| 静态提升     | ✅ 编译时提取静态节点   | ❌（静态部分也会参与 diff）   |
+| PatchFlag   | ✅ 精准标记哪些动态变化   | ❌ 全量 diff          |
+| 异步调度     | ✅ job queue           | ✅ Fiber 架构调度       |
+| 可中断更新    | ❌                    | ✅（Concurrent Mode） |
+| Suspense 支持 | ✅（3.x 支持 Suspense） | ✅                  |
+
+
+##  总结：Vue vs React 渲染机制核心异同
+
+
+| 方面          | 相同点                           | 不同点（Vue vs React）                                  |
+| ----------- | ----------------------------- | -------------------------------------------------- |
+| Virtual DOM | 都使用 Virtual DOM 进行 diff       | React 每次全量 diff，Vue 通过 patchFlag 优化                |
+| 数据驱动        | 都是响应式驱动视图                     | Vue 自动追踪依赖，React 需要手动 useEffect/useMemo            |
+| 更新调度        | 都做了批量/异步调度（Vue 3 / React 16+） | React 更强调可中断与优先级（Fiber），Vue 更强调精准更新                |
+| 响应式核心       | 都支持响应式                        | Vue 是响应式系统驱动，React 是函数式驱动                          |
+| 渲染优化        | 都支持懒加载、diff 算法等               | Vue 优化靠编译，React 优化靠开发者 hook / memo / PureComponent |
+
+
+> `Vue` 是“响应式 + 编译优化”的代表，`React` 是“函数式 + 调度优先”的代表。
