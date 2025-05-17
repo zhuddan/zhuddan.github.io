@@ -119,7 +119,7 @@ export default function Footer() {
         }
       </div>
       <p className="text-center text-sm mt-4">{copyright}</p>
-      <Link href="/resume" className="absolute text-xl bottom-4 right-4 opacity-0 hover:opacity-50">📄</Link>
+      {/* <Link href="/resume" className="absolute text-xl bottom-4 right-4 opacity-0 hover:opacity-50">📄</Link> */}
     </footer>
   )
 }
