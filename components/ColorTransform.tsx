@@ -1,10 +1,31 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import React, { useMemo } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
 
+const initColor = '#154AC6'
 export default function ColorTransform() {
+  const searchParams = useSearchParams()
+  const color = searchParams.get('color')
+  const inputColor = useMemo(() => {
+    return color && /^#[0-9a-f]{6}$/i.test(color) ? color : initColor
+  }, [color])
   const [opacity, setOpacity] = React.useState(50)
-  const [inputColor, setInputColor] = useState('#154AC6')
+  const { replace } = useRouter()
+  const pathname = usePathname()
+
+  const setInputColor = useDebouncedCallback((color: string) => {
+    const param = new URLSearchParams(searchParams)
+    if (color) {
+      param.set('color', color)
+    }
+    else {
+      param.delete('color')
+    }
+    replace(`${pathname}?${param.toString()}`)
+  }, 300)
+
   const marks = Array.from({ length: 100 / 5 + 1 }, (_, index) => {
     return String(index * 5)
   })
@@ -61,6 +82,7 @@ export default function ColorTransform() {
             type="color"
             value={inputColor}
             onChange={updateColor}
+            // onInput={updateColor}
           />
           <label htmlFor="opacity" className="inline-block ml-2">
             透明度

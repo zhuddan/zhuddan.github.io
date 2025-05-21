@@ -1,3 +1,4 @@
+import { DEFAULT_DOCS_LINK } from '@/config'
 import Link from 'next/link'
 
 interface LinkType {
@@ -15,7 +16,7 @@ const links: LinkType[] = [
     items: [
       {
         label: '归档',
-        to: '/docs/css/center',
+        to: DEFAULT_DOCS_LINK,
       },
       {
         label: '博客',

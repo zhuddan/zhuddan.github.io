@@ -1,3 +1,4 @@
+import { DEFAULT_DOCS_LINK } from '@/config'
 import clsx from 'clsx'
 import Link from 'next/link'
 
@@ -14,7 +15,7 @@ export default function Hero() {
       </p>
       <div className="inline-flex items-center gap-3 max-md:mx-auto">
         <Link
-          href="/docs/css/center"
+          href={DEFAULT_DOCS_LINK}
           className={clsx(
             'inline-flex items-center justify-center text-sm font-medium ring-offset-fd-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring disabled:pointer-events-none disabled:opacity-50 bg-gradient-to-b from-fd-primary to-fd-primary/60 text-fd-primary-foreground shadow-fd-background/20 hover:bg-fd-primary/90 h-11 px-6 rounded-full',
             // buttonVariants({ size: 'lg', className: 'rounded-full' }),

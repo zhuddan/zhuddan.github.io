@@ -4,6 +4,9 @@ title: HEX透明度
 
 import ColorTransform from "@/components/ColorTransform.tsx"
 
+## 在线转化
+<ColorTransform />
+
 ## 原理
 > 以`#154AC680`为例，透明度是`0x80`和`0x100`比值，结果为`50%`。
 
@@ -23,6 +26,5 @@ const opacity = parseInt('80', 16) / parseInt('100', 16) // => 128 / 256 = 0.5 =
 
 ![Test](/content/center.svg)
 
-## 在线转化
-<ColorTransform />
+
 

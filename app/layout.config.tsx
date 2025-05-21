@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
+import { DEFAULT_DOCS_LINK } from '@/config'
 
 /**
  * Shared layout configurations
@@ -20,7 +21,7 @@ export const baseOptions: BaseLayoutProps = {
   links: [
     {
       text: '归档',
-      url: '/docs/css/center',
+      url: DEFAULT_DOCS_LINK,
       active: 'nested-url',
     },
     {
