@@ -4,28 +4,40 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useMemo } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
-const initColor = '#154AC6'
-export default function ColorTransform() {
-  const searchParams = useSearchParams()
-  const color = searchParams.get('color')
-  const inputColor = useMemo(() => {
-    return color && /^#[0-9a-f]{6}$/i.test(color) ? color : initColor
-  }, [color])
-  const [opacity, setOpacity] = React.useState(50)
-  const { replace } = useRouter()
+function useColorSearchParams(name: string, defaultValue?: string) {
   const pathname = usePathname()
-
-  const setInputColor = useDebouncedCallback((color: string) => {
+  const { replace } = useRouter()
+  const searchParams = useSearchParams()
+  const value = searchParams.get(name) ?? defaultValue
+  const setValue = useDebouncedCallback((value: string) => {
     const param = new URLSearchParams(searchParams)
-    if (color) {
-      param.set('color', color)
+    if (value) {
+      param.set(name, value)
     }
     else {
-      param.delete('color')
+      param.delete(name)
     }
     replace(`${pathname}?${param.toString()}`)
-  }, 300)
+  }, 100)
+  return {
+    value,
+    setValue,
+    defaultValue,
+  }
+}
 
+export default function ColorTransform() {
+  const {
+    value: _color,
+    setValue: setColor,
+    defaultValue: defaultColor,
+  } = useColorSearchParams('color', '#154AC6')
+
+  const inputColor = useMemo(() => {
+    return _color && /^#[0-9a-f]{6}$/i.test(_color) ? _color : defaultColor
+  }, [_color, defaultColor])
+
+  const [opacity, setOpacity] = React.useState(50)
   const marks = Array.from({ length: 100 / 5 + 1 }, (_, index) => {
     return String(index * 5)
   })
@@ -58,15 +70,12 @@ export default function ColorTransform() {
 
   function updateColor(event: React.ChangeEvent<HTMLInputElement>) {
     const colorValue = event.target.value.replace(/^(?=[^#])/, '#')
-    setInputColor(colorValue)
+    setColor(colorValue)
   }
 
   function handleSetOpacity(event: React.ChangeEvent<HTMLInputElement>) {
-    const v = Number.parseInt(event.target.value)
-
-    setOpacity(
-      v >= 100 ? 100 : v <= 0 ? 0 : v,
-    )
+    const nextOpacity = Number.parseInt(event.target.value)
+    setOpacity(nextOpacity >= 100 ? 100 : nextOpacity <= 0 ? 0 : nextOpacity)
   }
 
   return (
@@ -82,7 +91,7 @@ export default function ColorTransform() {
             type="color"
             value={inputColor}
             onChange={updateColor}
-            // onInput={updateColor}
+            onInput={updateColor}
           />
           <label htmlFor="opacity" className="inline-block ml-2">
             透明度
@@ -95,6 +104,7 @@ export default function ColorTransform() {
             value={opacity}
             step={5}
             onChange={handleSetOpacity}
+            onInput={handleSetOpacity}
           />
         </div>
 
@@ -135,7 +145,6 @@ export default function ColorTransform() {
             style={{
               writingMode: 'vertical-lr',
             }}
-
           >
             {
               marks.map((value) => {
