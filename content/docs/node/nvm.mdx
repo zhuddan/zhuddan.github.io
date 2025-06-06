@@ -5,7 +5,6 @@ description: 优雅地管理多个nodejs版本
 
 
 ## 1. 下载NVM
-
 - [windows](https://github.com/coreybutler/nvm-windows)
 - [mac](https://github.com/nvm-sh/nvm)
 
@@ -40,10 +39,26 @@ nvm use 14
 ### 包管理器
 
 ```shell
-npm i pnpm yarn -g
+npm i -g pnpm yarn bun
 ```
 
-### 其他包
+### 工具类
 ```shell
-npm i @antfu/ni degit npkill esno typescript tsx http-server node-gyp bun -g
+npm i -g @antfu/ni npkill
+```
+
+### ts 相关
+```shell
+npm i -g esno typescript tsx
+```
+
+### 本地服务容器
+```shell
+npm i -g http-server serve
+```
+
+### 全部
+
+```shell
+npm i -g pnpm yarn bun @antfu/ni npkill esno typescript tsx http-server serve
 ```
