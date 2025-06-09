@@ -6,7 +6,7 @@ title: 对象类型
    解释：`Record<string, any>` 表示一个对象类型，其中键是字符串，值可以是任意类型。
    用法：通常用于定义具有动态键的对象。
 
-```ts
+```ts twoslash
 const data: Record<string, any> = {
   name: 'Alice',
   age: 30,
@@ -20,12 +20,13 @@ data.newProperty = 'New Value'
    解释：`object` 是 `TypeScript` 的一种原始类型，用于描述非原始类型（即不是 `number`、`string`、`boolean`、`symbol`、`null` 或 `undefined`）。
    用法：用来限制变量为对象，**但不能访问具体的属性**。
 
-```ts
+```ts twoslash
 // 使用 object
 const obj: object = { key: 'value' }
 
 // 错误：不能直接访问属性
-// console.log(obj.key); // Error
+// @errors: 2339
+console.log(obj.key); // Error
 
 // 正确：需先进行类型断言
 const specificObj = obj as { key: string }
@@ -36,7 +37,7 @@ console.log(specificObj.key) // 输出: "value"
    解释：Object 是 TypeScript 中的广义对象类型，所有的值（包括原始值和对象）都派生自 Object。
    用法：不推荐直接使用，因为它过于宽泛且不安全。
 
-```ts
+```ts twoslash
 // 使用 Object
 // eslint-disable-next-line ts/no-wrapper-object-types
 const anything: Object = { name: 'Alice' } // 对象

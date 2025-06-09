@@ -32,7 +32,7 @@ value.toFixed(); // 编译错误：Object is of type 'unknown'
 
 要使用 unknown，必须先做类型检查：
 
-```ts
+```ts 
 if (typeof value === 'string') {
   console.log(value.toUpperCase()); // OK
 }

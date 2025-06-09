@@ -1,13 +1,13 @@
 import { createMDX } from 'fumadocs-mdx/next'
 
-const withMDX = createMDX()
-
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
   output: 'export',
-  serverExternalPackages: ['oxc-transform'],
   images: { unoptimized: true },
+  serverExternalPackages: ['oxc-transform', 'typescript', 'twoslash'],
 }
+
+const withMDX = createMDX()
 
 export default withMDX(config)

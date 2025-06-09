@@ -8,11 +8,9 @@ export default async function Page(props: {
   const params = await props.params
   const { default: MDXContent } = await import(`@/content/resume/${params.id}.mdx`)
   return (
-    <>
-      <MDXContent
-        components={getMDXComponents({ })}
-      />
-    </>
+    <MDXContent
+      components={getMDXComponents({ })}
+    />
   )
 }
 

@@ -1,5 +1,7 @@
+import { rehypeCodeDefaultOptions } from 'fumadocs-core/mdx-plugins'
 import { remarkTypeScriptToJavaScript } from 'fumadocs-docgen/remark-ts2js'
 import { defineCollections, defineConfig, defineDocs, frontmatterSchema } from 'fumadocs-mdx/config'
+import { transformerTwoslash } from 'fumadocs-twoslash'
 import { z } from 'zod'
 // Options: https://fumadocs.vercel.app/docs/mdx/collections#define-docs
 export const docs = defineDocs({
@@ -16,8 +18,18 @@ export const blog = defineCollections({
   }),
 })
 export default defineConfig({
+
   mdxOptions: {
-    // MDX options
     remarkPlugins: [remarkTypeScriptToJavaScript],
+    rehypeCodeOptions: {
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
+      transformers: [
+        ...(rehypeCodeDefaultOptions.transformers ?? []),
+        transformerTwoslash(),
+      ],
+    },
   },
 })
