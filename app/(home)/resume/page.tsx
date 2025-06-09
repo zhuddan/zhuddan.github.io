@@ -1,5 +1,5 @@
-import { getHistoryResumes } from '@/lib/resume-history-server'
 import Link from 'next/link'
+import { getHistoryResumes } from '@/lib/resume-history-server'
 
 export default function Page() {
   const resumes = getHistoryResumes()

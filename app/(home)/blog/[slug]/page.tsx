@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import { blog } from '@/lib/source'
-import { getMDXComponents } from '@/mdx-components'
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { blog } from '@/lib/source'
+import { getMDXComponents } from '@/mdx-components'
 
 export default async function Page(props: {
   params: Promise<{ slug: string }>

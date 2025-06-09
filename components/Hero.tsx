@@ -1,6 +1,6 @@
-import { DEFAULT_DOCS_LINK } from '@/config'
 import clsx from 'clsx'
 import Link from 'next/link'
+import { DEFAULT_DOCS_LINK } from '@/config'
 
 export default function Hero() {
   return (

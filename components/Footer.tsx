@@ -1,5 +1,5 @@
-import { DEFAULT_DOCS_LINK } from '@/config'
 import Link from 'next/link'
+import { DEFAULT_DOCS_LINK } from '@/config'
 
 interface LinkType {
   title: string

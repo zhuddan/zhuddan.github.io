@@ -1,7 +1,7 @@
 'use client'
-import { useEffectDay } from '@/hooks/useEffectDay'
 import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
+import { useEffectDay } from '@/hooks/useEffectDay'
 import BirthdayEffect from './effect/BirthdayEffect'
 import ImageEffect from './effect/ImageEffect'
 

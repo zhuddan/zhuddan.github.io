@@ -4,11 +4,11 @@ title: 继承
 
 1. 泛型约束：
 
-```ts twoslash
+```ts 
 function logLength<T extends { length: number }>(arg: T): void {
   console.log(arg.length)
 }
-  logLength('hello') // OK
+logLength('hello') // OK
 logLength([1, 2, 3]) // OK
 
 // @errors: 2345
@@ -19,7 +19,7 @@ logLength(42) // Error，因为数字类型没有 length 属性
 
 2. 条件类型：
 
-```ts twoslash
+```ts 
 type IsString<T> = T extends string ? true : false 
 const result1: IsString<'hello'> = true // OK
 const result2: IsString<42> = false // OK
@@ -29,7 +29,7 @@ const result2: IsString<42> = false // OK
 
 3. 映射类型：
 
-```ts twoslash
+```ts 
 type MyMappedType<T> = {
   [K in keyof T]: T[K] | null;
 }

@@ -1,6 +1,6 @@
-import Footer from '@/components/Footer'
 import { HomeLayout } from 'fumadocs-ui/layouts/home'
 import Link from 'next/link'
+import Footer from '@/components/Footer'
 import { baseOptions } from './layout.config'
 
 export default function NotFound() {
