@@ -4,14 +4,14 @@ title: 断言
 
 1. 类型断言 (as)： 这是最常见的类型断言形式。它告诉编译器，你确切地知道一个值的类型，并希望在这个上下文中将其视为这个类型。
 
-```ts twoslash
+```ts
 const someValue: any = 'this is a string'
 const strLength: number = (someValue as string).length
 ```
 
 2. 非空断言 (!)： 非空断言告诉 TypeScript 一个表达式的值不为 null 或 undefined。它可以用于从一个可能为 null 或 undefined 的值中去除这些类型。
 
-```ts twoslash
+```ts
 function getStringLength(input: string | null | undefined): number {
   // 非空断言
   return input!.length
@@ -20,7 +20,7 @@ function getStringLength(input: string | null | undefined): number {
 
 3. 类型断言函数： TypeScript 也允许通过定义特定形式的函数来执行自定义的类型断言。这种方法对于复杂的类型转换或校验非常有用。
 
-```ts twoslash
+```ts
 function assert(condition: unknown, msg?: string): asserts condition {
   if (!condition) {
     throw new Error(msg || 'Assertion failed')
