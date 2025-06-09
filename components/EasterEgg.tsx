@@ -40,20 +40,18 @@ function AnimatedClock() {
     </div>
   )
 }
-
+/**
+ * 彩蛋
+ */
 export default function EasterEgg() {
   const f = useEffectDay()
   if (!f)
     return null
   if (f?.img) {
-    return (
-      <ImageEffect {...f.img} title={f.title} footer={f.footer} />
-    )
+    return <ImageEffect {...f.img} title={f.title} footer={f.footer} />
   }
   if ('birthday' in f) {
-    return (
-      <BirthdayEffect title={f.title} birthday={f.birthday} />
-    )
+    return <BirthdayEffect title={f.title} birthday={f.birthday} />
   }
   return <AnimatedClock />
 }
