@@ -3,5 +3,7 @@
     "duan",
     "fumadocs",
     "QING"
-  ]
+  ],
+  "files.useIgnoreFiles": false,
+  "search.useIgnoreFiles": true
 }

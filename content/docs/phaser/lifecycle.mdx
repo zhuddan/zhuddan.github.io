@@ -1,0 +1,52 @@
+---
+title: lifecycle
+---
+
+{/* ```mermaid
+graph TD
+
+StartScene[scene start / launch / run] --> Init[init]
+Init --> Preload[preload]
+Preload --> Create[create]
+Create --> Update[update]
+
+Update --> Pause[scene pause]
+Pause --> Shutdown[shutdown]
+Shutdown --> Resume[scene resume]
+Resume --> Update
+
+Update --> Sleep[scene sleep]
+Sleep --> Wake[scene wake]
+Wake --> Update
+
+Update --> Stop[scene stop]
+Stop --> FinalShutdown[shutdown]
+FinalShutdown --> Destroy[destroy]
+
+``` */}
+
+
+<Mermaid
+  chart="
+  graph TD
+  StartScene[scene start / launch / run] --> Init[init]
+  Init --> Preload[preload]
+  Preload --> Create[create]
+  Create --> Update[update]
+
+  Update --> Pause[scene pause]
+  Pause --> Shutdown[shutdown]
+  Shutdown --> Resume[scene resume]
+  Resume --> Update
+
+  Update --> Sleep[scene sleep]
+  Sleep --> Wake[scene wake]
+  Wake --> Update
+
+  Update --> Stop[scene stop]
+  Stop --> FinalShutdown[shutdown]
+  FinalShutdown --> Destroy[destroy]
+"
+/>
+
+
