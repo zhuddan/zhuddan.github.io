@@ -51,7 +51,7 @@ interface FestivalTypeBase {
 type FestivalType = (FestivalLunar | FestivalSolar | FestivalTerm | FestivalBirthday) & FestivalTypeBase
 
 /**
- * 节日
+ * 节日列表
  */
 export const FESTIVALS: FestivalType[] = [
   {
