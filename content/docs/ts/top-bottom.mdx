@@ -6,6 +6,27 @@ title: 顶层类型/底层类型
 在 TypeScript 中，**顶层类型（Top Types）** 和 **底层类型（Bottom Types）** 是类型系统中的术语，主要用于表示类型的包含（分配）关系。
 
 
+```ts
+any
+|
+unknown
+|
+Object(非 null/undefined/任何不是 null 或 undefined 的值都可以赋给 Object)
+|          \
+object(表示所有非原始类型的对象，也就是 非 string、number、boolean、symbol、null、undefined 这些基本类型。
+例如 {}, [], new Date(), function(){} 都是 object 类型。) ------- string ------- 'foo'
+|              |              |
+{}             |            "hello"
+|              |              |
+null          number ------- 123
+|              |              
+undefined     boolean ------ true/false
+|
+never
+```
+
+
+
 ## 一、顶层类型（Top Types）
 定义：可以接受任何类型的值。它们是所有类型的“超集”。
 
@@ -23,6 +44,102 @@ let a: any = 1;
 let b: unknown = 'str';
 let c: object = { name: 'Tom' };
 ```
+
+
+## 1. any
+
+- 类型系统的`最顶层类型`
+
+1. `any` 类型的变量可以**被赋值**为任何类型的值 (值)
+
+```ts
+let a: any;
+a = 123;         // ✅ number
+a = 'hello';     // ✅ string
+a = true;        // ✅ boolean
+a = [1, 2, 3];   // ✅ array
+a = { x: 1 };    // ✅ object
+a = null;        // ✅ null
+a = undefined;   // ✅ undefined
+a = () => {};    // ✅ function
+```
+
+2. `any` 类型的变量, 可以**值赋**给`任何其他类型的变量` (类型)
+
+```ts
+const a: any = 'hello'
+const str: string = a // ✅ OK
+const num: number = a // ✅ OK
+const obj: object = a // ✅ OK
+const bool: boolean = a // ✅ OK
+const arr: string[] = a // ✅ OK
+```
+
+- 跳过类型检查
+
+使用 `any` 的值，TypeScript 不会对它做任何类型检查
+
+> 暂时逃离类型系统的`救生舱`，而不是“天堂” ?
+
+在你实在不想处理复杂的类型推导或数据结构时，临时用它撑一下，但最终最好还是回到类型系统。本事上变成`js`代码的没用类型的方式，暂时逃离类型系统。
+你只应该在下面几种情况使用它：
+
+- 类型实在无法确认
+- 快速开发
+- 迁移旧代码
+- 声明没有ts类型的第三方库
+
+- 顶层是 `any`
+
+## 2. unknown
+
+- `更安全的顶层类型`
+
+1. `unknown` 类型的变量可以**被赋值**为任何类型的值 (值) , 这一点和 `any` 相同
+
+```ts 
+let a: unknown;
+a = 123;         // ✅ number
+a = 'hello';     // ✅ string
+a = true;        // ✅ boolean
+a = [1, 2, 3];   // ✅ array
+a = { x: 1 };    // ✅ object
+a = null;        // ✅ null
+a = undefined;   // ✅ undefined
+a = () => {};    // ✅ function
+```
+
+2. `unknown` 类型的变量, 不可以**值赋**给`任何其他类型的变量` (类型) 这一点和 `any` 不相同 🚫，这是安全的体现
+
+```ts 
+const a: unknown = 'hello'
+const str: string = a // ❌ error
+const num: number = a // ❌ error
+const obj: object = a // ❌ error
+const bool: boolean = a // ❌ error
+const arr: string[] = a // ❌ error
+```
+
+也就是说你必须要告诉 `ts` 这个 `unknown` 类型的真实类型(断言)，才可以正常工作
+
+```ts
+const a: unknown = 'hello'
+const str: string = a as string // ✅
+```
+
+使用时候也一样
+
+```ts
+const a: unknown = 'hello'
+
+const l0 = a.length // ❌ error 'a' is of type 'unknown'
+
+const l1 = (a as { length: number }).length // ✅
+
+const l2 = (a as string).length // ✅
+```
+
+- 永远不会跳过类型检查
 
 ## 二、底层类型（Bottom Types）
 定义：是所有类型的“子集”，无法被赋值为任何实际值，代表不可能的类型。
@@ -44,24 +161,3 @@ function infiniteLoop(): never {
   while (true) {}
 }
 ```
-
-
-## 三、关系图（简化）
-
-
-```shell
-any
- |
-unknown
- |
-object / string / number / ...
- |
-never
-```
-
-
-## 四、使用建议
-
-`unknown` 优于 `any`，更安全。
-
-`never` 通常用于类型保护、穷尽检查（如 `switch`）中。
