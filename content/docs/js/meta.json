@@ -1,3 +1,10 @@
 {
   "title": "Javascript"
+  ,
+  "pages":[
+    "vue",
+    "phaser",
+    "mini",
+    "..."
+  ]
 }
