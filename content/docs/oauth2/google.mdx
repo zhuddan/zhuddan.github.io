@@ -1,0 +1,126 @@
+---
+title: Google OAuth2
+---
+
+
+## 简介
+> 所有 `OAuth2` 都是大同小异的操作，包括但是不限于 `Google`, `Apple`, `Github`, 甚至国内的 `Wechat`。
+> 本质上都是 `跳转到授权提供方` -> `用户授权` -> `返回到一个携带code的地址` ->  `服务器使用code换取用户信息或者session`
+
+## 准备工作
+
+1. [https://console.cloud.google.com](https://console.cloud.google.com) 创建项目
+
+2. 选择项目后，导航到 "API 和服务" > "OAuth 权限请求页面"
+
+3. 选择客户端，配置 Google Auth Platform
+
+4. 输入应用名称，支持邮箱，应用 logo（可选），域名等信息
+
+5. 创建 OAuth 2.0 客户端 ID
+    - 选择应用类型（Web 应用、Android、iOS 等）
+    - 已获授权的 JavaScript 来源 URI（例如：`http://localhost:3000` ） 这个是允许发起 OAuth 请求的来源
+    - 已获授权的重定向 URI（例如：`http://localhost:3000/api/auth/google/callback`） 这个是 OAuth 授权成功后，Google 重定向回你的应用的地址
+
+6. 保存后，记下客户端 ID 和客户端密钥
+
+7. 安装 `google-auth-library`
+
+## 使用
+
+### Next.js 示例
+
+```tsx
+import Link from 'next/link'
+function GoogleOAuth() {
+  const googleParams = new URLSearchParams({
+    client_id: process.env.NEXT_PUBLIC_OAUTH_GOOGLE_CLIENT_ID!,
+    redirect_uri: process.env.NEXT_PUBLIC_OAUTH_GOOGLE_CALLBACK!,
+    response_type: 'code', // ✅ 关键
+    scope: [
+      'openid',
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/cloud-platform',
+      'https://www.googleapis.com/auth/userinfo.profile',
+    ].join(' '),
+    access_type: 'offline',
+    include_granted_scopes: 'true',
+    state: 'state_parameter_passthrough_value',
+  })
+  const googleHref = `https://accounts.google.com/o/oauth2/v2/auth?${googleParams.toString()}`
+  return <Link href={googleHref}>Login with Google</Link>
+}
+```
+
+```ts title="api/auth/google/callback/route.ts"
+import type { NextRequest } from 'next/server'
+import { OAuth2Client } from 'google-auth-library'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+import { NextResponse } from 'next/server'
+
+const client = new OAuth2Client(
+  process.env.NEXT_PUBLIC_OAUTH_GOOGLE_CLIENT_ID,
+  process.env.OAUTH_GOOGLE_SECRET,
+  process.env.NEXT_PUBLIC_OAUTH_GOOGLE_CALLBACK,
+)
+
+export async function GET(request: NextRequest, ctx: RouteContext<'/api/auth/google/callback'>) {
+  const searchParams = request.nextUrl.searchParams
+  const code = searchParams.get('code')
+  if (!code) {
+    return NextResponse.json({ error: 'Missing code' }, { status: 400 })
+  }
+  // 1. 换取 Token
+  // 这个方法内部会自动处理 axios 类似的 POST 请求
+  const { tokens } = await client.getToken(code)
+
+  // 2. 验证并解析 ID Token
+  // ticket 包含了经过验证的所有用户信息
+  const ticket = await client.verifyIdToken({
+    idToken: tokens.id_token!,
+    audience: process.env.NEXT_PUBLIC_OAUTH_GOOGLE_CLIENT_ID, // 必须匹配，否则报错
+  })
+
+  const payload = ticket.getPayload()
+  const user = { // google user // [!code highlight]
+    sub: payload?.sub, // 唯一 ID // [!code highlight]
+    email: payload?.email, // 邮箱 // [!code highlight]
+    name: payload?.name, // 昵称 // [!code highlight]
+    picture: payload?.picture, // 头像 URL ✅ // [!code highlight]
+    email_verified: payload?.email_verified, // [!code highlight]
+  } // [!code highlight]
+  revalidatePath('/')
+  redirect('/')
+}
+```
+
+
+### SPA App
+
+```html
+<!-- Google OAuth login -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+```
+
+```ts
+declare const google: any;
+let googleCodeClient: any;
+function createGoogleCodeClient() {
+  googleCodeClient ??= google.accounts.oauth2.initCodeClient({
+    client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
+    scope: 'openid email profile',
+    ux_mode: 'popup',
+    callback: async (params) => {
+      // 请求你的服务器使用 code 替换 Google User
+      // 或者进行注册登录，获取token 等操作
+      // 服务器部分和 "api/auth/google/callback/route.ts" 类似
+      params.code // [!code highlight]
+    },
+  });
+  return googleCodeClient;
+}
+
+// 调用授权
+createGoogleCodeClient()?.requestCode();
+```

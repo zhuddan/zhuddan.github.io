@@ -3,7 +3,8 @@
      "...",
      "node",
      "snippets",
-     "misc"
+     "misc",
+     "oauth2"
   ],
   "root": true
 }
