@@ -22,7 +22,7 @@ const profile = [
 
 export default function Profile() {
   return (
-    <div className="grid sm:grid-cols-[repeat(2,1fr)_auto] grid-rows-2 sm:grid-rows-1 grid-cols-[auto_1fr] gap-4 items-start">
+    <div className="grid sm:grid-cols-[repeat(2,1fr)_auto] grid-rows-2 sm:grid-rows-1 grid-cols-[auto_1fr] gap-x-4 items-start">
       {
         profile.map((profileGroup, index) => {
           return (
@@ -46,8 +46,8 @@ export default function Profile() {
         <Image
           alt="profile"
           src="/profile.jpg"
-          width={319}
-          height={425}
+          width={319 * 0.75}
+          height={425 * 0.75}
           className="sm:max-h-[172px] print:h-[150px] h-auto !w-auto !m-0"
         />
       </div>
