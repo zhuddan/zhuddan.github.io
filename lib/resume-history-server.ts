@@ -6,6 +6,7 @@ export function getHistoryResumes() {
   const historyPath = path.join(process.cwd(), 'content', 'resume')
   return fs.readdirSync(historyPath)
     .map(e => e.replace('.mdx', ''))
+    .reverse()
     // .sort((a, b) => {
     //   if (a === 'latest')
     //     return 1

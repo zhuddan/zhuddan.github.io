@@ -13,7 +13,7 @@ export const baseOptions: BaseLayoutProps = {
     title: (
       <>
         <img aria-label="Logo" className="size-8 rounded-full" src="/logo.svg" alt="" />
-        ZDecode
+        <span>ZDecode</span>
       </>
     ),
   },
