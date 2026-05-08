@@ -4,7 +4,7 @@ import Image from 'next/image'
 import React from 'react'
 
 const age = Math.floor((Date.now() - new Date('1995-08-01').getTime()) / (86400 * 1000 * 365))
-
+const MY_PHONE = '15680717059'
 const profile = [
   [
     { label: '姓名', value: '朱丹' },
@@ -15,7 +15,7 @@ const profile = [
   [
     { label: '专业', value: '通信工程' },
     { label: '学历', value: '本科' },
-    { label: '手机', value: '15670717059' },
+    { label: '手机', value: MY_PHONE },
     { label: '邮箱', value: 'yobaci@163.com' },
   ],
 ] as const

@@ -17,7 +17,6 @@ import {
 } from 'lucide-react'
 
 const MY_BIRTHDAY = '1995-08-05'
-// const MY_PHONE = '15680717059'
 const MY_EMAIL = 'zdecode@outlook.com'
 
 // eslint-disable-next-line unused-imports/no-unused-vars
