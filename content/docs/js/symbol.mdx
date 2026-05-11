@@ -36,7 +36,7 @@ console.log(user[sym]); // 123
 console.log(Object.keys(user)); // ['name']
 console.log(Object.getOwnPropertySymbols(user)); // [Symbol(id)]
 ```
-
+> 注意 `symbol`  使用 `Symbol` 定义的对象属性不会出现在普通的遍历中，如 `for...in`、`for...of` 循环或 `Object.keys()`、`Object.getOwnPropertyNames()` 中。它们可以通过 `Object.getOwnPropertySymbols()` 获取。
 
 ## 三、常见用途
 1. 定义对象的私有属性

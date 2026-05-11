@@ -1,0 +1,125 @@
+```mdx
+---
+title: Promise
+---
+
+# Promise 核心概念与异常处理机制解析
+
+## 一、 Promise 的 3 种状态
+
+Promise 的生命周期中存在三种状态，状态的流转是**单向且不可逆**的：
+
+- **pending**    → 待定（初始状态）
+- **fulfilled**  → 已兑现（操作成功完成）
+- **rejected**   → 已拒绝（操作失败或抛出异常）
+
+> **💡 关于 Settled（已落定）：**
+> `fulfilled` 和 `rejected` 统称为 **settled**。一旦 Promise 变为 settled 状态，它的结果就固定了，不能再发生改变。
+> ES2020 引入的 `Promise.allSettled()` 方法正是基于此概念，它会等待所有传入的 Promise 都变为 settled 状态，无论成功还是失败，都不会触发短路（不会因为某一个 rejected 而直接中断）。
+
+---
+
+## 二、 异常与错误处理场景深度剖析
+
+通过以下几个典型场景，我们可以深入理解 Promise 是如何处理（或忽略）错误的。
+
+### 1. 同步抛出错误会被自动捕获并转化为 rejected
+
+在 Promise 的 Executor（执行器函数）中，如果发生**同步**的异常抛出，Promise 内部会自动捕获这个错误，并将其状态变更为 `rejected`。
+
+```ts
+const p1 = new Promise((resolve, reject) => {
+  // 同步抛出错误，等同于执行了 reject(new Error('sync error'))
+  throw new Error('sync error'); 
+});
+
+p1.catch(err => {
+  console.log('caught:', err.message); // ✅ 正常捕获，输出：caught: sync error
+});
+
+```
+
+### 2. 状态一旦落定（Settled），后续的报错或状态更改将被忽略
+
+Promise 的状态机是不可逆的。一旦调用了 `resolve` 或 `reject`，后续的代码虽然还会执行完毕，但任何试图改变状态的操作（包括抛出错误）都会被静默忽略。
+
+```ts
+const p = new Promise((resolve, reject) => {
+  resolve('value'); // 状态已变更为 fulfilled
+  throw new Error('error'); // ❌ 状态不可逆，这里的抛错无法改变 Promise 状态，也不会被 catch 捕获
+});
+
+p.then(val => {
+  console.log(val); // ✅ 输出: value
+});
+
+```
+
+### 3. 异步回调中的抛错无法被 Promise 捕获
+
+Promise 只能捕获在 Executor **同步执行上下文**中的异常。如果错误是在异步宏任务（如 `setTimeout`）或微任务中抛出的，此时 Executor 已经执行完毕，Promise 的机制无法拦截这个错误，它会直接冒泡到全局。
+
+```ts
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    // 这里的异常发生在另一个事件循环 Tick 中，脱离了 Promise 的控制范围
+    throw new Error('async error in setTimeout');
+  }, 0);
+  resolve('value'); // Promise 被正常兑现
+});
+
+p2.then(val => console.log('success:', val)) // ✅ 输出：success: value
+  .catch(err => console.log('error:', err)); // ❌ 不会执行，因为 Promise 并没有被 rejected
+
+// ⚠️ 最终导致程序崩溃或在浏览器控制台显示全局未捕获异常：
+// Uncaught Error: async error in setTimeout
+
+```
+
+### 4. Resolve 传递 Error 对象不会触发拒绝（Rejected）
+
+调用 `resolve()` 并传入一个 `Error` 实例，这**并不等同于**抛出异常或拒绝该 Promise。Promise 会把这个 Error 对象当成一个**普通的值**传递给后续的 `fulfilled` 处理函数。
+
+```ts
+const p = new Promise((resolve) => {
+  // 把 Error 对象作为普通的 resolved 值传递
+  resolve(Error('error')); 
+});
+
+p.then(val => {
+  console.log(val); // 接收到了普通的 Error 对象：Error: error
+  console.log(val instanceof Error); // true
+});
+
+```
+
+### 5. Promise 的嵌套与异步抛错的传递陷阱
+
+如果在 `resolve()` 中传入另一个 Promise，外部 Promise 的状态会**跟随（委托给）**内部 Promise 的状态。但如果内部 Promise 发生了未被捕获的**异步异常**，该异常依然会直接冒泡到全局，且会导致这两个 Promise 都永远卡在 `pending` 状态（因为没有人调用它们的 resolve/reject）。
+
+```ts
+const inner = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    // 同样是异步抛错，inner 本身无法捕获，导致抛出全局异常
+    // inner 的 resolve/reject 永远没有被调用，状态永远是 pending
+    throw new Error('inner error');
+  }, 100);
+});
+
+const outer = new Promise((resolve, reject) => {
+  // 关键操作：outer 等待 inner 的结果
+  // 但因为 inner 永远 pending 且触发了全局错误，outer 也永远 pending
+  resolve(inner); 
+});
+
+outer
+  .then(val => console.log('success:', val)) // 不会执行
+  .catch(err => console.log('caught:', err.message)); // 不会执行
+
+// ⚠️ 最终输出：Uncaught Error: inner error
+// 总结：setTimeout 里的 throw 发生在全局上下文中，
+// 不受任何 Promise 执行器的 try/catch 保护，因此无法沿 Promise 链传递。
+
+```
+
+

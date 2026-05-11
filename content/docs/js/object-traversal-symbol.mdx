@@ -1,0 +1,613 @@
+---
+title: Object Traversal Symbol
+---
+
+
+# 对象遍历方法 + Symbol Key 深度解析
+
+## 🎯 前置概念：对象的三类属性
+
+```javascript
+const obj = {
+  name: 'Alice',           // 普通 key（字符串）
+  age: 25,                 // 普通 key（字符串）
+  [Symbol.iterator]: () => {}, // Symbol key
+  [Symbol('id')]: 'sym123'     // Symbol key（非全局）
+};
+
+Object.defineProperty(obj, 'hidden', {
+  value: 'secret',
+  enumerable: false        // 不可枚举属性
+});
+```
+
+**三类属性：**
+1. **可枚举的字符串 key** - 普通属性
+2. **不可枚举的字符串 key** - 隐藏属性
+3. **Symbol key** - 永远不出现在默认遍历中
+
+---
+
+## 📋 遍历方法总览
+
+| 方法 | 遍历目标 | 继承属性 | Symbol | 不可枚举 | 归类 |
+|------|--------|--------|--------|--------|------|
+| `for...in` | 字符串 key | ✅ | ❌ | ❌ | 简单 |
+| `Object.keys()` | 字符串 key | ❌ | ❌ | ❌ | 简单 |
+| `Object.entries()` | [key, value] | ❌ | ❌ | ❌ | 简单 |
+| `Object.values()` | value 值 | ❌ | ❌ | ❌ | 简单 |
+| `Object.getOwnPropertyNames()` | 字符串 key | ❌ | ❌ | ✅ | 复杂 |
+| `Object.getOwnPropertySymbols()` | Symbol key | ❌ | ✅ | ✅ | **仅 Symbol** |
+| `Reflect.ownKeys()` | 所有 key | ❌ | ✅ | ✅ | 复杂 |
+| `for...of` | 迭代器 | - | - | - | **特殊** |
+
+---
+
+## 🟢 简单遍历（Simple Traversal）
+
+**定义：** 只遍历对象自身的可枚举属性（字符串 key，不含 Symbol）
+
+### 1️⃣ for...in
+
+```javascript
+const obj = {
+  a: 1,
+  b: 2,
+  [Symbol('id')]: 'hidden'
+};
+
+for (const key in obj) {
+  console.log(key); // a, b（不包括 Symbol）
+}
+
+// 包含继承的可枚举属性
+const parent = { x: 10 };
+const child = Object.create(parent);
+child.y = 20;
+
+for (const key in child) {
+  console.log(key); // y, x（包括继承的 x）
+}
+```
+
+**特点：**
+- ✅ 最简单，兼容性最好
+- ❌ 包含继承属性（需要 hasOwnProperty 检查）
+- ❌ 无法获取 Symbol
+- ❌ 顺序可能不稳定（特别是数字 key）
+
+**面试官追问：** "怎样避免遍历继承属性？"
+
+```javascript
+for (const key in obj) {
+  if (Object.prototype.hasOwnProperty.call(obj, key)) {
+    console.log(key); // 仅自身属性
+  }
+}
+```
+
+---
+
+### 2️⃣ Object.keys()
+
+```javascript
+const obj = {
+  name: 'Alice',
+  age: 25,
+  [Symbol('id')]: 'hidden'
+};
+
+console.log(Object.keys(obj)); // ['name', 'age']
+```
+
+**特点：**
+- ✅ 只获取自身属性，不含继承
+- ✅ 仅可枚举的字符串 key
+- ❌ 无法获取 Symbol
+- ✅ 顺序稳定
+
+**应用场景：**
+```javascript
+// 复制对象的可枚举属性
+const obj = { a: 1, b: 2 };
+const copy = {};
+Object.keys(obj).forEach(key => {
+  copy[key] = obj[key];
+});
+
+// 等价于
+const copy = Object.assign({}, obj);
+```
+
+---
+
+### 3️⃣ Object.entries()
+
+```javascript
+const obj = {
+  name: 'Alice',
+  age: 25,
+  [Symbol('id')]: 'hidden'
+};
+
+console.log(Object.entries(obj));
+// [['name', 'Alice'], ['age', 25]]
+
+// 利用 entries 遍历
+Object.entries(obj).forEach(([key, value]) => {
+  console.log(`${key}: ${value}`);
+});
+```
+
+**特点：**
+- 等同于 Object.keys() + Object.values()
+- 返回 [key, value] 对
+- 常用于 Map 转换
+
+```javascript
+// Object 转 Map
+const map = new Map(Object.entries(obj));
+
+// Map 转 Object
+const obj = Object.fromEntries(map);
+```
+
+---
+
+### 4️⃣ Object.values()
+
+```javascript
+const obj = {
+  a: 1,
+  b: 2,
+  [Symbol('id')]: 'hidden'
+};
+
+console.log(Object.values(obj)); // [1, 2]
+```
+
+**特点：**
+- 只获取值，不获取 key
+- 仅可枚举的属性
+- 无法获取 Symbol 值
+
+---
+
+## 🟠 复杂遍历（Complex Traversal）
+
+**定义：** 遍历所有属性，包括不可枚举的，但仍区分 Symbol 和字符串
+
+### 5️⃣ Object.getOwnPropertyNames()
+
+```javascript
+const obj = {
+  visible: 'yes',
+  [Symbol('id')]: 'hidden'
+};
+
+Object.defineProperty(obj, 'secret', {
+  value: 'shh',
+  enumerable: false
+});
+
+console.log(Object.getOwnPropertyNames(obj));
+// ['visible', 'secret']（包括不可枚举，但不包括 Symbol）
+```
+
+**特点：**
+- ✅ 包括不可枚举的字符串 key
+- ✅ 仅自身属性
+- ❌ 仍然不包括 Symbol
+- ✅ 返回所有字符串 key
+
+**应用场景：**
+```javascript
+// 获取类的所有方法（包括隐藏的）
+class MyClass {
+  publicMethod() {}
+}
+
+Object.defineProperty(MyClass.prototype, 'privateMethod', {
+  value: () => {},
+  enumerable: false
+});
+
+const methods = Object.getOwnPropertyNames(MyClass.prototype);
+// ['constructor', 'publicMethod', 'privateMethod']
+```
+
+---
+
+### 6️⃣ Object.getOwnPropertySymbols()
+
+```javascript
+const id = Symbol('id');
+const secret = Symbol('secret');
+
+const obj = {
+  name: 'Alice',
+  [id]: '123456',
+  [secret]: 'password'
+};
+
+Object.defineProperty(obj, 'hidden', {
+  value: 'not visible',
+  enumerable: false
+});
+
+console.log(Object.getOwnPropertySymbols(obj));
+// [Symbol(id), Symbol(secret)]
+```
+
+**特点：**
+- ✅ 仅 Symbol key
+- ✅ 包括不可枚举的 Symbol
+- ❌ 不包括任何字符串 key
+- ✅ 仅自身属性
+
+**面试官重点：** "为什么 Symbol key 要单独遍历？"
+
+```javascript
+// Symbol 的隐蔽性设计
+const obj = {};
+const sym = Symbol('private');
+obj[sym] = 'secret';
+
+// ❌ 普通遍历无法看到
+Object.keys(obj);                     // []
+Object.getOwnPropertyNames(obj);      // []
+
+// ✅ 必须用专门方法
+Object.getOwnPropertySymbols(obj);    // [Symbol(private)]
+
+// 实际应用：库中隐藏内部属性
+const myLib = {
+  _internal: Symbol('internal')
+};
+
+myLib[myLib._internal] = 'secret data'; // 用户无法无意中发现
+```
+
+---
+
+### 7️⃣ Reflect.ownKeys()【终极方法】
+
+```javascript
+const obj = {
+  // 可枚举字符串 key
+  name: 'Alice',
+  age: 25,
+  
+  // Symbol key
+  [Symbol('id')]: '123',
+  
+  // 不可枚举字符串 key
+};
+
+Object.defineProperty(obj, 'hidden', {
+  value: 'secret',
+  enumerable: false
+});
+
+console.log(Reflect.ownKeys(obj));
+// ['name', 'age', 'hidden', Symbol(id)]
+// ✅ 获取所有属性（字符串和 Symbol）！
+```
+
+**特点：**
+- ✅ 完全遍历：所有自身属性
+- ✅ 字符串 key + Symbol key 都包括
+- ✅ 可枚举 + 不可枚举都包括
+- ✅ 不包括继承属性
+- ✅ 最完整的遍历方法
+
+**这是深拷贝的最佳实现方案：**
+
+```javascript
+function deepClone(obj) {
+  if (obj === null || typeof obj !== 'object') return obj;
+  
+  const cloned = {};
+  
+  // 使用 Reflect.ownKeys 获取所有属性
+  Reflect.ownKeys(obj).forEach(key => {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+    
+    // 保留属性描述符（可枚举、可写等）
+    Object.defineProperty(cloned, key, {
+      value: deepClone(obj[key]),
+      enumerable: descriptor.enumerable,
+      writable: descriptor.writable,
+      configurable: descriptor.configurable
+    });
+  });
+  
+  return cloned;
+}
+
+// 测试
+const original = {};
+Object.defineProperty(original, 'visible', {
+  value: 1,
+  enumerable: true
+});
+Object.defineProperty(original, 'hidden', {
+  value: 2,
+  enumerable: false
+});
+original[Symbol('sym')] = 3;
+
+const cloned = deepClone(original);
+console.log(Object.getOwnPropertyNames(cloned));      // ['visible', 'hidden']
+console.log(Object.getOwnPropertySymbols(cloned));    // [Symbol(sym)]
+```
+
+---
+
+## 🔵 特殊：for...of（迭代器模式）
+
+```javascript
+const arr = [1, 2, 3];
+
+for (const item of arr) {
+  console.log(item); // 1, 2, 3
+}
+
+// for...of 使用 Symbol.iterator
+console.log(arr[Symbol.iterator]);
+// ƒ [Symbol.iterator]() { [native code] }
+
+// 自定义 for...of
+const iterable = {
+  data: [1, 2, 3],
+  [Symbol.iterator]() {
+    let index = 0;
+    return {
+      next: () => {
+        if (index < this.data.length) {
+          return { value: this.data[index++], done: false };
+        }
+        return { done: true };
+      }
+    };
+  }
+};
+
+for (const item of iterable) {
+  console.log(item); // 1, 2, 3
+}
+```
+
+**关键点：**
+- for...of 遍历的是迭代器的值，不是对象的 key
+- 依赖 Symbol.iterator 方法
+- 与对象属性的遍历完全不同
+
+---
+
+## 💎 Symbol 作为对象 Key 的核心注意事项
+
+### ⚠️ 1. Symbol 不出现在普通遍历中
+
+```javascript
+const sym = Symbol('id');
+const obj = { name: 'Alice', [sym]: '123' };
+
+// ❌ 都看不到 Symbol
+for (const key in obj) console.log(key);           // name
+Object.keys(obj);                                  // ['name']
+Object.getOwnPropertyNames(obj);                   // ['name']
+JSON.stringify(obj);                               // {"name":"Alice"}
+
+// ✅ 必须用专门方法
+Object.getOwnPropertySymbols(obj);                 // [Symbol(id)]
+Reflect.ownKeys(obj);                              // ['name', Symbol(id)]
+obj[sym];                                          // '123'
+```
+
+**面试官追问：** "这个特性有什么用？"
+
+```javascript
+// 1. 库隐藏内部属性，避免用户冲突
+const myLib = {
+  _internalId: Symbol('id')
+};
+
+myLib[myLib._internalId] = 'secret';
+
+// 2. 用户不会误删或覆盖
+delete obj.name;              // ✅ 可以删除
+delete obj[myLib._internalId]; // ❌ 用户可能不知道这个 Symbol 存在
+
+// 3. 防止属性污染
+const config = {};
+const DEBUG = Symbol('debug');
+config[DEBUG] = true;  // 隐藏的调试开关
+
+// 用户遍历时不会看到
+Object.keys(config);  // []
+```
+
+---
+
+### ⚠️ 2. Symbol 与 JSON 不兼容
+
+```javascript
+const obj = {
+  name: 'Alice',
+  [Symbol('id')]: '123'
+};
+
+JSON.stringify(obj);
+// {"name":"Alice"}
+// Symbol 被完全忽略！
+
+// 需要自定义 replacer
+JSON.stringify(obj, (key, value) => {
+  if (typeof key === 'symbol') {
+    return `[Symbol(${key.description})]`;
+  }
+  return value;
+});
+// {"name":"Alice","[Symbol(id)]":"123"}
+```
+
+---
+
+### ⚠️ 3. Symbol 与对象展开运算符
+
+```javascript
+const obj = {
+  a: 1,
+  [Symbol('id')]: '123'
+};
+
+const spread = { ...obj };
+console.log(spread);           // { a: 1 } Symbol 丢失！
+
+// 正确做法
+const clone = Object.assign({}, obj);
+console.log(Object.getOwnPropertySymbols(clone));  // [Symbol(id)] ✅
+
+// 或用 Reflect.ownKeys
+const fullClone = {};
+Reflect.ownKeys(obj).forEach(key => {
+  fullClone[key] = obj[key];
+});
+```
+
+---
+
+### ⚠️ 4. 全局 Symbol vs 本地 Symbol
+
+```javascript
+// ❌ 本地 Symbol 每次都不同
+const sym1 = Symbol('id');
+const sym2 = Symbol('id');
+console.log(sym1 === sym2);    // false！
+
+const obj = { [sym1]: 'value' };
+obj[sym2];                      // undefined！
+
+// ✅ 全局 Symbol 保持一致
+const globalSym1 = Symbol.for('id');
+const globalSym2 = Symbol.for('id');
+console.log(globalSym1 === globalSym2);  // true
+
+const obj = { [globalSym1]: 'value' };
+obj[globalSym2];               // 'value' ✅
+
+// 获取全局 Symbol 的 key
+Symbol.keyFor(globalSym1);     // 'id'
+Symbol.keyFor(Symbol('local')); // undefined（本地 Symbol）
+```
+
+**面试官追问：** "实际使用中什么时候用本地 Symbol？"
+
+```javascript
+// 本地 Symbol 用于隐蔽内部属性
+class MyClass {
+  #privateId = Symbol('private');  // 真正私有
+  
+  // vs
+  _privateId = Symbol('private');  // 使用 Symbol 伪私有
+}
+
+// 全局 Symbol 用于跨模块或跨 iframe 共享
+// const SHARE_ID = Symbol.for('myapp.id');
+```
+
+---
+
+## 📊 遍历方法对比实战
+
+```javascript
+const obj = {
+  // 可枚举字符串
+  name: 'Alice',
+  age: 25,
+  
+  // Symbol
+  [Symbol('id')]: '123',
+  [Symbol.iterator]: () => {}
+};
+
+// 不可枚举字符串
+Object.defineProperty(obj, 'secret', {
+  value: 'hidden',
+  enumerable: false
+});
+
+// 继承属性
+Object.setPrototypeOf(obj, { inherited: 'yes' });
+
+console.log('for...in:', 
+  Object.getOwnPropertyNames(obj)
+    .filter(key => Object.getOwnPropertyDescriptor(obj, key).enumerable)
+); 
+// for...in: ['name', 'age', 'inherited']
+
+console.log('Object.keys():', Object.keys(obj));
+// ['name', 'age']
+
+console.log('Object.getOwnPropertyNames():', Object.getOwnPropertyNames(obj));
+// ['name', 'age', 'secret']
+
+console.log('Object.getOwnPropertySymbols():', Object.getOwnPropertySymbols(obj));
+// [Symbol(id), Symbol.iterator]
+
+console.log('Reflect.ownKeys():', Reflect.ownKeys(obj));
+// ['name', 'age', 'secret', Symbol(id), Symbol.iterator]
+```
+
+---
+
+## 🎯 面试总结答案
+
+> "对象遍历分为两大类：
+>
+> **简单遍历：** 只获取可枚举的字符串 key
+> - for...in：包括继承属性
+> - Object.keys()：仅自身属性
+> - Object.entries()：返回 [key, value] 对
+> - Object.values()：仅值
+>
+> **复杂遍历：** 获取所有自身属性（包括不可枚举）
+> - Object.getOwnPropertyNames()：所有字符串 key（含不可枚举）
+> - Object.getOwnPropertySymbols()：仅 Symbol key
+> - Reflect.ownKeys()：完全遍历（推荐）
+>
+> **Symbol 作为 Key 的核心特性：**
+> 1. Symbol key 被刻意隐藏，不出现在任何普通遍历中
+> 2. 只能通过 Object.getOwnPropertySymbols() 或 Reflect.ownKeys() 获取
+> 3. JSON.stringify 会忽略 Symbol
+> 4. 展开运算符 `{...obj}` 也会丢失 Symbol
+> 5. 本地 Symbol 每次不同，全局 Symbol 通过 Symbol.for() 共享
+>
+> 这个设计让 Symbol 成为隐蔽内部属性的完美方案，避免用户误操作。"
+
+---
+
+## 🧪 自测题
+
+```javascript
+const obj = {
+  a: 1
+};
+
+const sym = Symbol('b');
+Object.defineProperty(obj, 'c', { value: 3, enumerable: false });
+obj[sym] = 2;
+
+// 问题：
+// 1. Object.keys(obj) 返回什么？
+// 2. Object.getOwnPropertyNames(obj) 返回什么？
+// 3. Object.getOwnPropertySymbols(obj) 返回什么？
+// 4. Reflect.ownKeys(obj) 返回什么？
+
+// 答案：
+// 1. ['a']
+// 2. ['a', 'c']
+// 3. [Symbol(b)]
+// 4. ['a', 'c', Symbol(b)]
+```
